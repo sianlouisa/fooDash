@@ -6,7 +6,8 @@ import {
   ViroAmbientLight,
   ViroBox,
   ViroMaterials,
-  Viro3DObject
+  Viro3DObject,
+  ViroNode
 } from 'react-viro';
 
 import smile from './res/res/emoji_smile/emoji_smile.vrx';
@@ -25,20 +26,24 @@ export default class ARView extends Component {
     this.state = {
       isTracking: false,
       initialized: false,
-      planeWidth: 0,
-      planeLength: 0,
-      userSelected: false
+      planePosition: [],
+      planeWidth: 1,
+      planeLength: 1,
+      planeCenter: [],
+      userSelected: false,
     };
 
     // bind 'this' to functions
     this.onInitialized = this.onInitialized.bind(this);
   }
 
-  onPlaneSelected = () => {
+  onPlaneSelected = (anchor) => {
     this.setState({
-      planeWidth: 0.5,
-      planeLength: 0.5,
-      userSelected: true
+      planePosition: anchor.position,
+      planeWidth: anchor.width,
+      planeLength: anchor.height,
+      planeCenter: anchor.center,
+      userSelected: true,
     });
   };
 
@@ -56,34 +61,42 @@ export default class ARView extends Component {
   };
 
   render() {
-    const { userSelected, planeWidth, planeLength } = this.state;
+    const {
+      userSelected, planeCenter,
+    } = this.state;
+
     return (
       <ViroARScene onTrackingUpdated={this.onInitialized}>
-        <ViroARPlaneSelector onPlaneSelected={this.onPlaneSelected}>
+        <ViroARPlaneSelector onPlaneSelected={this.onPlaneSelected} minWidth={0.5} minHeight={0.5}>
           <ViroAmbientLight color="#ffffff" />
-          {userSelected && (
-            <Viro3DObject
-              source={smile}
-              resources={[diffuse, normal, specular]}
-              position={[0, 0.3, -0.2]}
-              scale={[0.1, 0.1, 0.1]}
-              type="VRX"
-              physicsBody={{
-                type: 'Dynamic',
-                mass: 0.01,
-                force: { value: [0, 0, 0.001] }
-              }}
-              // dragType="FixedToPlane"
-              // onDrag={() => {}}
+          <ViroNode position={planeCenter}>
+
+            <ViroBox
+              position={[0, 0, 0]}
+              materials={['metal']}
+              physicsBody={{ type: 'Static' }}
+              width={0.5}
+              length={0.5}
+              scale={[1, 0.02, 1]}
             />
-          )}
-          <ViroBox
-            materials={['metal']}
-            physicsBody={{ type: 'Static', restitution: 1, friction: 0.3 }}
-            width={planeWidth}
-            length={planeLength}
-            scale={[1, 0.02, 1]}
-          />
+            {userSelected && planeCenter !== 1 && (
+              <Viro3DObject
+                position={[0, 0, 0]}
+                scale={[0.1, 0.1, 0.1]}
+                source={smile}
+                resources={[diffuse, normal, specular]}
+                type="VRX"
+                physicsBody={{
+                  type: 'Dynamic',
+                  mass: 1,
+                  // velocity: [0.1, 0, 0],
+                  shape: {
+                    type: 'Compound',
+                  }
+                }}
+              />
+            )}
+          </ViroNode>
         </ViroARPlaneSelector>
       </ViroARScene>
     );
