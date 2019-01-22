@@ -1,34 +1,30 @@
 import React, { Component } from 'react';
 import { ViroARSceneNavigator } from 'react-viro';
-import VIRO_API_KEY from './config.js';
+import VIRO_API_KEY from './config';
 
-let sharedProps = {
-  apiKey: VIRO_API_KEY,
+const api = {
+  apiKey: VIRO_API_KEY
 };
 
-let InitialARScene = require('./js/ARView');
+const InitialARScene = require('./js/ARView');
 
 export default class App extends Component {
   constructor() {
     super();
 
     this.state = {
-      sharedProps: sharedProps,
+      sharedProps: api
     };
-    this._getARNavigator = this._getARNavigator.bind(this);
+    this.getARNavigator = this.getARNavigator.bind(this);
+  }
+
+  getARNavigator() {
+    const { sharedProps } = this.state;
+    return <ViroARSceneNavigator {...sharedProps} initialScene={{ scene: InitialARScene }} />;
   }
 
   render() {
-    return this._getARNavigator();
-  }
-
-  _getARNavigator() {
-    return (
-      <ViroARSceneNavigator
-        {...this.state.sharedProps}
-        initialScene={{ scene: InitialARScene }}
-      />
-    );
+    return this.getARNavigator();
   }
 }
 
