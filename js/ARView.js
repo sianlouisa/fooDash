@@ -34,10 +34,10 @@ export default class ARView extends Component {
     this.onInitialized = this.onInitialized.bind(this);
   }
 
-  onPlaneSelected = () => {
+  onPlaneSelected = (anchor) => {
     this.setState({
-      planeWidth: 0.5,
-      planeLength: 0.5,
+      planeWidth: anchor.width,
+      planeLength: anchor.height,
       userSelected: true
     });
   };
@@ -65,21 +65,22 @@ export default class ARView extends Component {
             <Viro3DObject
               source={smile}
               resources={[diffuse, normal, specular]}
-              position={[0, 0.3, -0.2]}
+              position={[0, 0.15, 0]}
               scale={[0.1, 0.1, 0.1]}
               type="VRX"
               physicsBody={{
                 type: 'Dynamic',
-                mass: 0.01,
-                force: { value: [0, 0, 0.001] }
+                mass: 1,
+                velocity: [0.1, 0, 0],
+                shape: {
+                  type: 'Compound',
+                }
               }}
-              // dragType="FixedToPlane"
-              // onDrag={() => {}}
             />
           )}
           <ViroBox
             materials={['metal']}
-            physicsBody={{ type: 'Static', restitution: 1, friction: 0.3 }}
+            physicsBody={{ type: 'Static', restitution: 1, friction: 0 }}
             width={planeWidth}
             length={planeLength}
             scale={[1, 0.02, 1]}
