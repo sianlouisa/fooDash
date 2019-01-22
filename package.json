@@ -3,17 +3,26 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-"prestart": "./node_modules/react-viro/bin/run_ngrok.sh",
+    "prestart": "./node_modules/react-viro/bin/run_ngrok.sh",
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "lint": "node ./node_modules/eslint/bin/eslint.js ./",
+    "lint:fix": "node ./node_modules/eslint/bin/eslint.js ./ --fix"
   },
   "dependencies": {
+    "babel-eslint": "^10.0.1",
+    "metro-config": "^0.51.1",
     "react": "16.6.1",
     "react-native": "0.57.7",
     "react-viro": "2.13.0"
   },
   "devDependencies": {
     "babel-jest": "23.6.0",
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.12.4",
     "jest": "23.6.0",
     "metro-react-native-babel-preset": "0.51.1",
     "react-test-renderer": "16.6.1"
