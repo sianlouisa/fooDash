@@ -11,7 +11,9 @@ import {
   ViroLightingEnvironment,
   ViroQuad,
   ViroARPlane,
-  ViroText
+  ViroText,
+  ViroSphere,
+  ViroARCamera
 } from 'react-viro';
 
 import smile from './res/res/emoji_smile/emoji_smile.vrx';
@@ -53,8 +55,20 @@ export default class ARView extends Component {
     this.arPlaneRef.setNativeProps({ pauseUpdates: true });
   };
 
-  onClick = (pos) => {
-    this.forceRef.applyImpulse([0, 0, 0.3], pos);
+  handleUpClick = (pos) => {
+    this.forceRef.applyImpulse([0, 0, -0.5], pos);
+  };
+
+  handleLeftClick = (pos) => {
+    this.forceRef.applyImpulse([-0.5, 0, 0], pos);
+  };
+
+  handleRightClick = (pos) => {
+    this.forceRef.applyImpulse([0.5, 0, 0], pos);
+  };
+
+  handleDownClick = (pos) => {
+    this.forceRef.applyImpulse([0, 0, 0.5], pos);
   };
 
   generatePlayer = () => {
@@ -70,12 +84,11 @@ export default class ARView extends Component {
         params: [0.14]
       }
     };
-    const playerStartPosition = planeLength - planeLength - planeLength / 2 + 0.1;
+    // const playerStartPosition = planeLength - planeLength - planeLength / 2 + 0.1;
 
     return (
       <Viro3DObject
-        onClick={this.onClick}
-        position={[0, 0.1, playerStartPosition]}
+        position={[0, 0.1, 0]}
         scale={[0.1, 0.1, 0.1]}
         rotation={[0, 0, 0]}
         source={smile}
@@ -83,7 +96,7 @@ export default class ARView extends Component {
         type="VRX"
         renderingOrder={0}
         physicsBody={physicsBody}
-        ref={component => (this.forceRef = component)}
+        ref={obj => (this.forceRef = obj)}
       />
     );
   };
@@ -105,8 +118,8 @@ export default class ARView extends Component {
         >
           <ViroNode position={planePosition}>
             <ViroQuad
-              position={[0, 0, 0]}
-              scale={[1, 1, 1]}
+              position={[0, 0, -0.3]}
+              scale={[1.5, 1.5, 1.5]}
               rotation={[-90, 0, 0]}
               physicsBody={{ type: 'Static', restitution: 0.75, friction: 0.7 }}
               materials="ground"
@@ -125,6 +138,32 @@ export default class ARView extends Component {
             <ViroNode position={planePosition}>{this.generatePlayer()}</ViroNode>
           </ViroNode>
         </ViroARPlane>
+        <ViroARCamera active position={[0, 0, -0.2]}>
+          <ViroSphere
+            onClick={this.handleLeftClick}
+            position={[-0.04, -0.05, -0.2]}
+            materials={['spherematerial']}
+            scale={[0.01, 0.01, 0.01]}
+          />
+          <ViroSphere
+            onClick={this.handleRightClick}
+            position={[-0.04, -0.1, -0.2]}
+            materials={['spherematerial']}
+            scale={[0.01, 0.01, 0.01]}
+          />
+          <ViroSphere
+            onClick={this.handleDownClick}
+            position={[-0.055, -0.075, -0.2]}
+            materials={['spherematerial']}
+            scale={[0.01, 0.01, 0.01]}
+          />
+          <ViroSphere
+            onClick={this.handleUpClick}
+            position={[-0.02, -0.075, -0.2]}
+            materials={['spherematerial']}
+            scale={[0.01, 0.01, 0.01]}
+          />
+        </ViroARCamera>
       </ViroARScene>
     );
   }
@@ -133,6 +172,9 @@ export default class ARView extends Component {
 ViroMaterials.createMaterials({
   transparent: {
     diffuseColor: 'rgba(0,0,0,0)'
+  },
+  spherematerial: {
+    diffuseColor: 'rgb(19,42,143)'
   },
   metal: {
     lightingModel: 'Lambert',
