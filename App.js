@@ -4,6 +4,8 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import Login from './js/Components/Login';
 import Signup from './js/Components/Signup';
 import { VIRO_API_KEY } from './config';
+import StartScreen from './js/Components/StartScreen';
+import PlayAgain from './js/Components/PlayAgain';
 
 const api = {
   apiKey: VIRO_API_KEY
@@ -16,23 +18,24 @@ export default class App extends Component {
     sharedProps: api
   };
 
-//   render() {
-//     return <SwitchNavContainer />;
-//   }
-
   getARNavigator = () => {
     const { sharedProps } = this.state;
     return <ViroARSceneNavigator {...sharedProps} initialScene={{ scene: InitialARScene }} />;
   }
-  
+
   render() {
-    return this.getARNavigator();
+    return <SwitchNavContainer />;
   }
+  // render() {
+  //   return this.getARNavigator();
+  // }
 }
 
 const SwitchNav = createSwitchNavigator({
-  Signup: Signup,
-  Login: Login,
+  PlayAgain,
+  StartScreen,
+  Signup,
+  Login,
 });
 
 const SwitchNavContainer = createAppContainer(SwitchNav);
