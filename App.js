@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { ViroARSceneNavigator } from 'react-viro';
-import VIRO_API_KEY from './config';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import Login from './js/Components/Login';
+import Signup from './js/Components/Signup';
+import { VIRO_API_KEY } from './config';
 
 const api = {
   apiKey: VIRO_API_KEY
@@ -9,23 +12,27 @@ const api = {
 const InitialARScene = require('./js/ARView');
 
 export default class App extends Component {
-  constructor() {
-    super();
+  state = {
+    sharedProps: api
+  };
 
-    this.state = {
-      sharedProps: api
-    };
-    this.getARNavigator = this.getARNavigator.bind(this);
-  }
+//   render() {
+//     return <SwitchNavContainer />;
+//   }
 
-  getARNavigator() {
+  getARNavigator = () => {
     const { sharedProps } = this.state;
     return <ViroARSceneNavigator {...sharedProps} initialScene={{ scene: InitialARScene }} />;
   }
-
+  
   render() {
     return this.getARNavigator();
   }
 }
 
-module.exports = App;
+const SwitchNav = createSwitchNavigator({
+  Signup: Signup,
+  Login: Login,
+});
+
+const SwitchNavContainer = createAppContainer(SwitchNav);
