@@ -10,7 +10,8 @@ import {
   ViroNode,
   ViroLightingEnvironment,
   ViroQuad,
-  ViroARPlane
+  ViroARPlane,
+  ViroText
 } from 'react-viro';
 
 import smile from './res/res/emoji_smile/emoji_smile.vrx';
@@ -53,14 +54,11 @@ export default class ARView extends Component {
   };
 
   onClick = (pos) => {
-    this.forceRef.applyImpulse([0, 0, 0.3], this.state.planePosition);
+    this.forceRef.applyImpulse([0, 0, 0.3], pos);
   };
 
-  render() {
-    const { planePosition, planeLength } = this.state;
-
-    const playerStartPosition = planeLength - planeLength - planeLength / 2 + 0.1;
-
+  generatePlayer = () => {
+    const { planeLength } = this.state;
     const physicsBody = {
       type: 'Dynamic',
       mass: 4,
@@ -72,6 +70,26 @@ export default class ARView extends Component {
         params: [0.14]
       }
     };
+    const playerStartPosition = planeLength - planeLength - planeLength / 2 + 0.1;
+
+    return (
+      <Viro3DObject
+        onClick={this.onClick}
+        position={[0, 0.1, playerStartPosition]}
+        scale={[0.1, 0.1, 0.1]}
+        rotation={[0, 0, 0]}
+        source={smile}
+        resources={[diffuse, normal, specular]}
+        type="VRX"
+        renderingOrder={0}
+        physicsBody={physicsBody}
+        ref={component => (this.forceRef = component)}
+      />
+    );
+  };
+
+  render() {
+    const { planePosition } = this.state;
 
     return (
       <ViroARScene
@@ -90,24 +108,21 @@ export default class ARView extends Component {
               position={[0, 0, 0]}
               scale={[1, 1, 1]}
               rotation={[-90, 0, 0]}
-              physicsBody={{ type: 'Static', restitution: 0.75 }}
+              physicsBody={{ type: 'Static', restitution: 0.75, friction: 0.7 }}
               materials="ground"
               renderingOrder={-1}
             />
-            <ViroNode position={planePosition}>
-              <Viro3DObject
-                onClick={this.onClick}
-                position={[0, 0.1, playerStartPosition]}
-                scale={[0.1, 0.1, 0.1]}
-                rotation={[0, 0, 0]}
-                source={smile}
-                resources={[diffuse, normal, specular]}
-                type="VRX"
-                renderingOrder={0}
-                physicsBody={physicsBody}
-                ref={component => (this.forceRef = component)}
-              />
-            </ViroNode>
+            <ViroQuad
+              key="deadSpace"
+              // onCollision={this.generatePlayer}
+              height={100}
+              width={100}
+              rotation={[-90, 0, 0]}
+              position={[0, -1, 0]}
+              materials={['transparent']}
+              physicsBody={{ type: 'Static' }}
+            />
+            <ViroNode position={planePosition}>{this.generatePlayer()}</ViroNode>
           </ViroNode>
         </ViroARPlane>
       </ViroARScene>
