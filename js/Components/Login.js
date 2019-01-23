@@ -9,18 +9,25 @@ class Login extends Component {
   state = {
     email: '',
     password: '',
+    err: null,
   }
 
   handleAuth = () => {
     const { email, password } = this.state;
+    const { navigation } = this.props;
     if (email && password) {
       api
-        .signin(email, password);
+        .signin(email, password)
+        .then(() => navigation.navigate('StartScreen'))
+        .catch(() => {
+          this.setState({ err: true });
+        });
     }
   }
 
   render() {
-    const { email, password } = this.state;
+    const { email, password, err } = this.state;
+    const { navigation } = this.props;
     return (
       <View>
         <TextInput
@@ -39,6 +46,10 @@ class Login extends Component {
         <TouchableOpacity onPress={this.handleAuth}>
           <Text>Login</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+          <Text>Sign up</Text>
+        </TouchableOpacity>
+        {err && <Text>Error</Text>}
       </View>
     );
   }

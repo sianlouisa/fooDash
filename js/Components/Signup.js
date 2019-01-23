@@ -10,7 +10,8 @@ class Signup extends Component {
     email: '',
     confirmEmail: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    err: null,
   }
 
 
@@ -18,7 +19,14 @@ class Signup extends Component {
     if (this.validateEmail && this.validatePassword) {
       const { email, password } = this.state;
       const { navigation } = this.props;
-      api.signup(email, password).then(() => navigation.navigate('StartScreen'));
+      api
+        .signup(email, password)
+        .then(() => navigation.navigate('StartScreen'))
+        .catch(() => {
+          this.setState({ err: true });
+        });
+    } else {
+      this.setState({ err: true });
     }
   }
 
@@ -40,7 +48,7 @@ class Signup extends Component {
 
   render() {
     const {
-      email, confirmEmail, password, confirmPassword
+      email, confirmEmail, password, confirmPassword, err
     } = this.state;
     return (
       <View style={styles.container}>
@@ -81,6 +89,7 @@ class Signup extends Component {
         <TouchableOpacity onPress={this.handleAuth}>
           <Text>Hello Me Again</Text>
         </TouchableOpacity>
+        {err && <Text>Ooops</Text>}
       </View>
     );
   }

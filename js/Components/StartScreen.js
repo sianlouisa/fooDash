@@ -5,9 +5,14 @@ import PlayButton from './PlayButton';
 class StartScreen extends Component {
   state = {}
 
+  navigateToPlay = () => {
+    const { navigation } = this.props;
+    navigation.navigate('InitialiseAR');
+  }
+
   render() {
     return (
-      <PlayButton buttonText="Play" />
+      <PlayButton buttonText="Play" navigateToPlay={this.navigateToPlay} />
     );
   }
 }

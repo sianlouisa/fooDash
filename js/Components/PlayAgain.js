@@ -5,9 +5,14 @@ import PlayButton from './PlayButton';
 class PlayAgain extends Component {
   state = {}
 
+  navigateToPlay = () => {
+    const { navigation } = this.props;
+    navigation.navigate('InitialiseAR');
+  }
+
   render() {
     return (
-      <PlayButton buttonText="Play Again" />
+      <PlayButton buttonText="Play Again" navigateToPlay={this.navigateToPlay} />
     );
   }
 }

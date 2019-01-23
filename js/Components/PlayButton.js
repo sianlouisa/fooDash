@@ -8,10 +8,10 @@ class PlayButton extends Component {
   state = {}
 
   render() {
-    const { buttonText } = this.props;
+    const { buttonText, navigateToPlay } = this.props;
     return (
-      <View>
-        <TouchableOpacity>
+      <View style={{ justifyContent: 'center', flex: 1, }}>
+        <TouchableOpacity onPress={() => navigateToPlay()}>
           <Text>{buttonText}</Text>
         </TouchableOpacity>
       </View>
