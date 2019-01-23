@@ -52,10 +52,26 @@ export default class ARView extends Component {
     this.arPlaneRef.setNativeProps({ pauseUpdates: true });
   };
 
+  onClick = (pos) => {
+    this.forceRef.applyImpulse([0, 0, 0.3], this.state.planePosition);
+  };
+
   render() {
     const { planePosition, planeLength } = this.state;
 
     const playerStartPosition = planeLength - planeLength - planeLength / 2 + 0.1;
+
+    const physicsBody = {
+      type: 'Dynamic',
+      mass: 4,
+      useGravity: true,
+      enabled: true,
+      velocity: [0, 0, 0],
+      shape: {
+        type: 'Sphere',
+        params: [0.14]
+      }
+    };
 
     return (
       <ViroARScene
@@ -80,6 +96,7 @@ export default class ARView extends Component {
             />
             <ViroNode position={planePosition}>
               <Viro3DObject
+                onClick={this.onClick}
                 position={[0, 0.1, playerStartPosition]}
                 scale={[0.1, 0.1, 0.1]}
                 rotation={[0, 0, 0]}
@@ -87,18 +104,8 @@ export default class ARView extends Component {
                 resources={[diffuse, normal, specular]}
                 type="VRX"
                 renderingOrder={0}
-                physicsBody={{
-                  type: 'Dynamic',
-                  mass: 4,
-                  useGravity: true,
-                  enabled: true,
-                  restitution: 0.65,
-                  // velocity: [0, 0, 0.1],
-                  shape: {
-                    type: 'Sphere',
-                    params: [0.14]
-                  }
-                }}
+                physicsBody={physicsBody}
+                ref={component => (this.forceRef = component)}
               />
             </ViroNode>
           </ViroNode>
