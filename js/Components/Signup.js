@@ -11,16 +11,18 @@ class Signup extends Component {
     confirmEmail: '',
     password: '',
     confirmPassword: '',
+    username: '',
     err: null,
   }
 
 
   handleAuth = () => {
-    if (this.validateEmail && this.validatePassword) {
-      const { email, password } = this.state;
+    const { email, password, username } = this.state;
+    if (this.validateEmail && this.validatePassword && username) {
       const { navigation } = this.props;
       api
         .signup(email, password)
+        .then(uid => api.addUser(uid, username))
         .then(() => navigation.navigate('StartScreen'))
         .catch(() => {
           this.setState({ err: true });
@@ -48,10 +50,18 @@ class Signup extends Component {
 
   render() {
     const {
-      email, confirmEmail, password, confirmPassword, err
+      email, confirmEmail, password, confirmPassword, username, err
     } = this.state;
     return (
       <View style={styles.container}>
+        <View style={styles.signupInputs}>
+          <TextInput
+            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+            onChangeText={text => this.setState({ username: text })}
+            value={username}
+            placeholder="Enter Username"
+          />
+        </View>
         <View style={styles.signupInputs}>
           <TextInput
             style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}

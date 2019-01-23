@@ -192,6 +192,7 @@ PODS:
 DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Core
+  - Firebase/Firestore
   - FirebaseUI
   - ViroKit (from `../node_modules/react-viro/ios/dist/ViroRenderer/`)
   - ViroReact (from `../node_modules/react-viro/ios/`)
@@ -271,6 +272,6 @@ SPEC CHECKSUMS:
   ViroKit: b59a8004b4a180fe255356b9d0388173dff0fbdf
   ViroReact: 5520f26ac4654e361786c82da3b29ce0402c3c00
 
-PODFILE CHECKSUM: ee8a2c14a9f482b6aa3431fdc838401976c5d4a0
+PODFILE CHECKSUM: 022d5087c3795223840dbab83659eda700f108db
 
 COCOAPODS: 1.5.3
