@@ -15,6 +15,7 @@ module.exports = {
     'react/jsx-filename-extension': { extensions: ['.js', '.jsx'] },
     'react/prop-types': 'off',
     'comma-dangle': 'off',
-    'react/no-unused-state': 1
+    'react/no-unused-state': 1,
+    'import/prefer-default-export': 0
   }
 };

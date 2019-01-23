@@ -1,9 +1,24 @@
 import * as firebase from 'firebase';
-import { firebaseConfig } from '../config'
+import { firebaseConfig } from '../config';
+import 'firebase/firestore';
 
-firebase.initializeApp(firebaseConfig)
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 export const signup = async (email, password) => {
-    const { user } = await firebase.auth().createUserWithEmailAndPassword(email, password);
-    return user
-}
+  const { user } = await firebase.auth().createUserWithEmailAndPassword(email, password);
+  return user.uid;
+};
+
+export const signin = async (email, password) => {
+  const { user } = await firebase.auth().signInWithEmailAndPassword(email, password);
+  return user;
+};
+
+export const addUser = async (uid, playerName) => {
+  await db.collection('players').add({
+    uid,
+    playerName,
+    score: 0
+  });
+};

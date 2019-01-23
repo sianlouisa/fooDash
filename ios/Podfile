@@ -6,4 +6,5 @@ target 'ViroSample' do
   pod 'Firebase/Core'
   pod 'FirebaseUI'
   pod 'Firebase/Auth'
+  pod 'Firebase/Firestore'
 end
