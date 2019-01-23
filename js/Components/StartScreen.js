@@ -6,8 +6,8 @@ class StartScreen extends Component {
   state = {}
 
   navigateToPlay = () => {
-    const { navigation } = this.props;
-    navigation.navigate('InitialiseAR');
+    const { navigation: { navigate, getParam } } = this.props;
+    navigate('InitialiseAR', { uid: getParam('uid') });
   }
 
   render() {

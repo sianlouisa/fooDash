@@ -18,7 +18,7 @@ class Login extends Component {
     if (email && password) {
       api
         .signin(email, password)
-        .then(() => navigation.navigate('StartScreen'))
+        .then(uid => navigation.navigate('StartScreen', { uid }))
         .catch(() => {
           this.setState({ err: true });
         });

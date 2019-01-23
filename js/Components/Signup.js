@@ -23,7 +23,7 @@ class Signup extends Component {
       api
         .signup(email, password)
         .then(uid => api.addUser(uid, username))
-        .then(() => navigation.navigate('StartScreen'))
+        .then(uid => navigation.navigate('StartScreen', { uid }))
         .catch(() => {
           this.setState({ err: true });
         });

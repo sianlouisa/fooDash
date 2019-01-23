@@ -12,7 +12,7 @@ export const signup = async (email, password) => {
 
 export const signin = async (email, password) => {
   const { user } = await firebase.auth().signInWithEmailAndPassword(email, password);
-  return user;
+  return user.uid;
 };
 
 export const addUser = async (uid, playerName) => {
@@ -20,5 +20,12 @@ export const addUser = async (uid, playerName) => {
     uid,
     playerName,
     score: 0
+  });
+  return uid;
+};
+
+export const updateScore = async (uid, score) => {
+  await db.collection('players').doc(uid).update({
+    score
   });
 };
