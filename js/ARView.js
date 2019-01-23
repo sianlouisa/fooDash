@@ -7,7 +7,10 @@ import {
   ViroBox,
   ViroMaterials,
   Viro3DObject,
-  ViroNode
+  ViroNode,
+  ViroLightingEnvironment,
+  ViroQuad,
+  ViroARPlane
 } from 'react-viro';
 
 import smile from './res/res/emoji_smile/emoji_smile.vrx';
@@ -19,85 +22,87 @@ import planeNormal from './res/textures/Metal_grunge_001_NRM.jpg';
 import planeSpecular from './res/textures/Metal_grunge_001_SPEC.jpg';
 
 export default class ARView extends Component {
-  constructor() {
-    super();
-
-    // Set initial state here
-    this.state = {
-      isTracking: false,
-      initialized: false,
-      planePosition: [],
-      planeWidth: 1,
-      planeLength: 1,
-      planeCenter: [],
-      userSelected: false,
-    };
-
-    // bind 'this' to functions
-    this.onInitialized = this.onInitialized.bind(this);
-  }
+  state = {
+    isTracking: false,
+    initialized: false,
+    planeWidth: 1,
+    planeLength: 1,
+    planeCenter: [0, 0, 0],
+    planePosition: [0, 0, 0],
+    planeRotation: [0, 0, 0],
+    foundPlane: false,
+    quadRendered: false
+  };
 
   onPlaneSelected = (anchor) => {
+    const worldCenterPosition = [
+      anchor.position[0] + anchor.center[0],
+      anchor.position[1] + anchor.center[1],
+      anchor.position[2] + anchor.center[2]
+    ];
     this.setState({
-      planePosition: anchor.position,
+      // planePosition: anchor.position,
+      foundPlane: true,
       planeWidth: anchor.width,
       planeLength: anchor.height,
       planeCenter: anchor.center,
-      userSelected: true,
+      planeRotation: anchor.rotation,
+      planePosition: worldCenterPosition
     });
-  };
-
-  onInitialized = (state) => {
-    if (state === ViroConstants.TRACKING_NORMAL) {
-      this.setState({
-        isTracking: true,
-        initialized: true
-      });
-    } else if (state === ViroConstants.TRACKING_NONE) {
-      this.setState({
-        isTracking: false
-      });
-    }
+    this.arPlaneRef.setNativeProps({ pauseUpdates: true });
   };
 
   render() {
-    const {
-      userSelected, planeCenter,
-    } = this.state;
+    const { planePosition, planeLength } = this.state;
+
+    const playerStartPosition = planeLength - planeLength - planeLength / 2 + 0.1;
 
     return (
-      <ViroARScene onTrackingUpdated={this.onInitialized}>
-        <ViroARPlaneSelector onPlaneSelected={this.onPlaneSelected} minWidth={0.5} minHeight={0.5}>
-          <ViroAmbientLight color="#ffffff" />
-          <ViroNode position={planeCenter}>
-
-            <ViroBox
+      <ViroARScene
+        onTrackingUpdated={this.onInitialized}
+        physicsWorld={{
+          gravity: [0, -9.81, 0]
+        }}
+      >
+        <ViroAmbientLight color="#ffffff" />
+        <ViroARPlane
+          onPlaneSelected={this.onPlaneSelected}
+          ref={component => (this.arPlaneRef = component)}
+        >
+          <ViroNode position={planePosition}>
+            <ViroQuad
               position={[0, 0, 0]}
-              materials={['metal']}
-              physicsBody={{ type: 'Static' }}
-              width={0.5}
-              length={0.5}
-              scale={[1, 0.02, 1]}
+              scale={[1, 1, 1]}
+              rotation={[-90, 0, 0]}
+              physicsBody={{ type: 'Static', restitution: 0.75 }}
+              materials="ground"
+              renderingOrder={-1}
             />
-            {userSelected && planeCenter !== 1 && (
+            <ViroNode position={planePosition}>
               <Viro3DObject
-                position={[0, 0, 0]}
+                position={[0, 0.1, playerStartPosition]}
                 scale={[0.1, 0.1, 0.1]}
+                rotation={[0, 0, 0]}
                 source={smile}
                 resources={[diffuse, normal, specular]}
                 type="VRX"
+                renderingOrder={0}
                 physicsBody={{
                   type: 'Dynamic',
-                  mass: 1,
-                  // velocity: [0.1, 0, 0],
+                  mass: 4,
+                  useGravity: true,
+                  enabled: true,
+                  restitution: 0.65,
+                  // velocity: [0, 0, 0.1],
                   shape: {
-                    type: 'Compound',
+                    type: 'Sphere',
+                    params: [0.14]
                   }
                 }}
               />
-            )}
+            </ViroNode>
           </ViroNode>
-        </ViroARPlaneSelector>
+        </ViroARPlane>
       </ViroARScene>
     );
   }
@@ -112,6 +117,9 @@ ViroMaterials.createMaterials({
     diffuseTexture: planeDiffuse,
     normalTexture: planeNormal,
     specularTexture: planeSpecular
+  },
+  ground: {
+    diffuseColor: '#007CB6E6'
   }
 });
 
