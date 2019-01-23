@@ -16,6 +16,8 @@ module.exports = {
     'react/prop-types': 'off',
     'comma-dangle': 'off',
     'react/no-unused-state': 1,
-    'import/prefer-default-export': 0
+    'import/prefer-default-export': 0,
+    'no-return-assign': 1,
+    'react/sort-comp': 1
   }
 };
