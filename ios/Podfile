@@ -1,0 +1,10 @@
+platform :ios, '9.3'
+target 'ViroSample' do
+  use_frameworks!
+  pod 'ViroReact', :path => '../node_modules/react-viro/ios/'
+  pod 'ViroKit', :path => '../node_modules/react-viro/ios/dist/ViroRenderer/'
+  pod 'Firebase/Core'
+  pod 'FirebaseUI'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Firestore'
+end
