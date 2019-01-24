@@ -53,10 +53,10 @@ class Login extends Component {
             placeholder="Enter Email"
           />
         </View>
-        <View style={Styles.loginInputs}>
+        <View style={styles.loginInputs}>
           <Image style={styles.inputIcon} source={{ uri: passwordIcon }} />
           <TextInput
-            style={Styles.inputs}
+            style={styles.inputs}
             textContentType="password"
             underlineColorAndroid='transparent'
             onChangeText={text => this.setState({ password: text })}
@@ -110,12 +110,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
-  loginIcon: {
-    width: 30,
-    height: 30,
-    marginLeft: 15,
-    justifyContent: 'center'
-  },
+  // loginIcon: {
+  //   width: 30,
+  //   height: 30,
+  //   marginLeft: 15,
+  //   justifyContent: 'center'
+  // },
   inputs: {
     height: 45,
     marginLeft: 16,
