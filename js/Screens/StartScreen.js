@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
-import PlayButton from './PlayButton';
+import PlayButton from '../Components/PlayButton';
 
 class StartScreen extends Component {
   state = {}
