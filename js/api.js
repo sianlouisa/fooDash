@@ -16,8 +16,7 @@ export const signin = async (email, password) => {
 };
 
 export const addUser = async (uid, playerName) => {
-  await db.collection('players').add({
-    uid,
+  await db.collection('players').doc(uid).set({
     playerName,
     score: 0
   });

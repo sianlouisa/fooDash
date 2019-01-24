@@ -23,12 +23,20 @@ class Signup extends Component {
       api
         .signup(email, password)
         .then(uid => api.addUser(uid, username))
-        .then(uid => navigation.navigate('StartScreen', { uid }))
+        .then(uid => navigation.navigate('InitialiseAR', { uid }))
         .catch(() => {
-          this.setState({ err: true });
+          this.setState({
+            err: true,
+            password: '',
+            confirmPassword: ''
+          });
         });
     } else {
-      this.setState({ err: true });
+      this.setState({
+        err: true,
+        password: '',
+        confirmPassword: ''
+      });
     }
   }
 
@@ -52,6 +60,7 @@ class Signup extends Component {
     const {
       email, confirmEmail, password, confirmPassword, username, err
     } = this.state;
+    const { navigation } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.signupInputs}>
@@ -60,6 +69,7 @@ class Signup extends Component {
             onChangeText={text => this.setState({ username: text })}
             value={username}
             placeholder="Enter Username"
+            textContentType="username"
           />
         </View>
         <View style={styles.signupInputs}>
@@ -68,6 +78,8 @@ class Signup extends Component {
             onChangeText={text => this.setState({ email: text })}
             value={email}
             placeholder="Enter Email"
+            keyboardType="email-address"
+            textContentType="emailAddress"
           />
         </View>
         <View style={styles.signupInputs}>
@@ -76,6 +88,8 @@ class Signup extends Component {
             onChangeText={text => this.setState({ confirmEmail: text })}
             value={confirmEmail}
             placeholder="Re-enter Email"
+            keyboardType="email-address"
+            textContentType="emailAddress"
           />
         </View>
         <View style={styles.signupInputs}>
@@ -85,6 +99,7 @@ class Signup extends Component {
             value={password}
             secureTextEntry
             placeholder="Enter Password"
+            textContentType="password"
           />
         </View>
         <View style={styles.signupInputs}>
@@ -94,10 +109,14 @@ class Signup extends Component {
             value={confirmPassword}
             secureTextEntry
             placeholder="Re-enter Password"
+            textContentType="password"
           />
         </View>
         <TouchableOpacity onPress={this.handleAuth}>
           <Text>Hello Me Again</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <Text>Back To Login</Text>
         </TouchableOpacity>
         {err && <Text>Ooops</Text>}
       </View>

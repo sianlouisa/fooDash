@@ -18,9 +18,12 @@ class Login extends Component {
     if (email && password) {
       api
         .signin(email, password)
-        .then(uid => navigation.navigate('StartScreen', { uid }))
+        .then(uid => navigation.navigate('InitialiseAR', { uid }))
         .catch(() => {
-          this.setState({ err: true });
+          this.setState({
+            err: true,
+            password: ''
+          });
         });
     }
   }
@@ -35,6 +38,8 @@ class Login extends Component {
           onChangeText={text => this.setState({ email: text })}
           value={email}
           placeholder="Enter Email"
+          keyboardType="email-address"
+          textContentType="emailAddress"
         />
         <TextInput
           style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
@@ -42,6 +47,7 @@ class Login extends Component {
           value={password}
           secureTextEntry
           placeholder="Enter Password"
+          textContentType="password"
         />
         <TouchableOpacity onPress={this.handleAuth}>
           <Text>Login</Text>

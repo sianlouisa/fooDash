@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import Login from './js/Components/Login';
-import Signup from './js/Components/Signup';
-import StartScreen from './js/Components/StartScreen';
-import PlayAgain from './js/Components/PlayAgain';
+import Login from './js/Screens/Login';
+import Signup from './js/Screens/Signup';
+import StartScreen from './js/Screens/StartScreen';
+import PlayAgain from './js/Screens/PlayAgain';
 import InitialiseAR from './js/Components/InitialiseAR';
 
 export default class App extends Component {

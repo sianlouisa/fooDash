@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PlayButton from './PlayButton';
+import PlayButton from '../Components/PlayButton';
 // import PropTypes from 'prop-types';
 
 class PlayAgain extends Component {
