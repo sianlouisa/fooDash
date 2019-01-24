@@ -38,3 +38,9 @@ export const getPlayersUsernames = async () => {
   const snapshot = await db.collection('players').get();
   return snapshot;
 };
+
+export const getUserDetails = async (uid) => {
+  const doc = await db.collection('players').doc(uid).get();
+  const { playerName, score } = doc.data();
+  return { uid, username: playerName, score };
+};
