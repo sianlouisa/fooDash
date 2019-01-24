@@ -88,11 +88,20 @@ export default class ARView extends Component {
           width={100}
           rotation={[-90, 0, 0]}
           position={[0, -1, 0]}
-          // materials={['transparent']}
+          materials={['transparent']}
           physicsBody={{ type: 'Static' }}
         />
+        <ViroBox
+          key="goal"
+          onCollision={this.resetPlayer}
+          height={0.05}
+          width={0.05}
+          scale={[1, 2, 0.1]}
+          physicsBody={{ type: 'Kinematic' }}
+          position={[0, 0, -0.4]}
+        />
         {this.generatePlayer(this.state.planeCenter)}
-        {this.generateObstacles()}
+        {/* {this.generateObstacles()} */}
       </ViroARPlaneSelector>
       {/* {this.state.showController ? this.getController() : null} */}
     </>
@@ -108,12 +117,12 @@ export default class ARView extends Component {
       friction: 0.75,
       shape: {
         type: 'Sphere',
-        params: [0.14]
+        params: [0.1]
       }
     };
     return (
       <Viro3DObject
-        position={position}
+        position={[0, 0.2, 0]}
         scale={[0.1, 0.1, 0.1]}
         source={smile}
         resources={[diffuse, normal, specular]}
@@ -146,7 +155,7 @@ export default class ARView extends Component {
       friction: 0.75,
       shape: {
         type: 'Sphere',
-        params: [0.14]
+        params: [0.1]
       }
     };
     TimerMixin.setTimeout(() => {
