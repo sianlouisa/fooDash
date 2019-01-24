@@ -58,5 +58,3 @@ buck-out/
 
 #API
 config.js
-
-android/app/google-services.json
