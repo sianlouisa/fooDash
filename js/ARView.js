@@ -4,7 +4,6 @@ import {
   ViroAmbientLight,
   ViroMaterials,
   Viro3DObject,
-  ViroNode,
   ViroQuad,
   ViroSphere,
   ViroBox,
@@ -25,21 +24,62 @@ export default class ARView extends Component {
     planePosition: [0, 0, 0],
     isTracking: false,
     initialized: false,
-    showController: false
+    showController: false,
+    planeHeight: 0,
+    planeWidth: 0,
+    planeCenter: [0, 0, 0],
+    isGeneratedPlayer: false
   };
 
   onPlaneSelected = (anchor) => {
-    const anchoredPosition = [
-      anchor.position[0] + anchor.center[0],
-      anchor.position[1] + anchor.center[1],
-      anchor.position[2] + anchor.center[2]
-    ];
+    // const anchoredPosition = [
+    //   anchor.position[0] + anchor.center[0],
+    //   anchor.position[1] + anchor.center[1],
+    //   anchor.position[2] + anchor.center[2]
+    // ];
     this.setState({
-      planePosition: anchoredPosition,
-      showController: true
+      // planePosition: anchoredPosition,
+      showController: true,
+      planeHeight: anchor.height,
+      planeWidth: anchor.width,
+      planePosition: anchor.position,
+      planeCenter: anchor.center
     });
-    // this.arPlaneRef.setNativeProps({ pauseUpdates: true });
   };
+
+  getScene = () => (
+    <>
+      <ViroAmbientLight color="#ffffff" />
+      <ViroARPlaneSelector
+        onPlaneSelected={this.onPlaneSelected}
+        ref={component => (this.arPlaneRef = component)}
+        maxPlanes={3}
+        onClick={this.placePlane}
+      >
+        <ViroQuad
+          position={this.state.planeCenter}
+          scale={[1, 1, 1]}
+          rotation={[-90, 0, 0]}
+          physicsBody={{ type: 'Static' }}
+          materials="ground"
+          renderingOrder={-1}
+        />
+        <ViroQuad
+          key="deadSpace"
+          onCollision={this.resetPlayer}
+          height={100}
+          width={100}
+          rotation={[-90, 0, 0]}
+          position={[0, -1, 0]}
+          materials={['transparent']}
+          physicsBody={{ type: 'Static' }}
+        />
+        {this.generatePlayer()}
+        {this.generateObstacles()}
+      </ViroARPlaneSelector>
+      {/* {this.state.showController ? this.getController() : null} */}
+    </>
+  );
 
   handleUpClick = (pos) => {
     this.playerRef.applyImpulse([0, 0, -0.5], pos);
@@ -59,7 +99,9 @@ export default class ARView extends Component {
 
   randomObstaclePosition = () => {};
 
-  generateObstales = () => (
+  generateObstacles = () => this.obstacle();
+
+  obstacle = () => (
     <ViroBox
       scale={[0.05, 0.05, 0.05]}
       materials={['obstacle']}
@@ -79,7 +121,7 @@ export default class ARView extends Component {
   generatePlayer = () => {
     const physicsBody = {
       type: 'Dynamic',
-      mass: 4,
+      mass: 20,
       useGravity: true,
       enabled: true,
       velocity: [0, 0, 0],
@@ -88,9 +130,9 @@ export default class ARView extends Component {
         params: [0.14]
       }
     };
+
     return (
       <Viro3DObject
-        position={[0, 0, 0]}
         scale={[0.1, 0.1, 0.1]}
         rotation={[0, 0, 0]}
         source={smile}
@@ -146,41 +188,6 @@ export default class ARView extends Component {
       });
     });
   };
-
-  getScene = () => (
-    <>
-      <ViroAmbientLight color="#ffffff" />
-      <ViroARPlaneSelector
-        onPlaneSelected={this.onPlaneSelected}
-        onAnchorRemoved={this.onAnchorRemoved}
-        onAnchorUpdated={this.onAnchorUpdated}
-        ref={component => (this.arPlaneRef = component)}
-      >
-        <ViroNode position={this.state.planePosition}>
-          <ViroQuad
-            position={[0, 0, 0]}
-            scale={[1, 1, 1]}
-            rotation={[-90, 0, 0]}
-            physicsBody={{ type: 'Static' }}
-            materials="ground"
-            renderingOrder={-1}
-          />
-          <ViroQuad
-            key="deadSpace"
-            onCollision={this.resetPlayer}
-            height={100}
-            width={100}
-            rotation={[-90, 0, 0]}
-            position={[0, -1, 0]}
-            materials={['transparent']}
-            physicsBody={{ type: 'Static' }}
-          />
-          {this.generatePlayer()}
-        </ViroNode>
-      </ViroARPlaneSelector>
-      {this.state.showController ? this.getController() : null}
-    </>
-  );
 
   getController = () => (
     <ViroCamera active>
