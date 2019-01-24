@@ -18,7 +18,6 @@ import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
 import specular from './res/res/emoji_smile/emoji_smile_specular.png';
-import grunge from './res/textures/Metal_grunge_001_COLOR.jpg';
 
 export default class ARView extends Component {
   state = {
@@ -33,6 +32,7 @@ export default class ARView extends Component {
     anchoredPosition: [0, 0, 0]
   };
 
+  // Lets you know if there are any errors with loading the camera
   onInitialized = (state) => {
     if (state === ViroConstants.TRACKING_NORMAL) {
       this.setState({
@@ -47,6 +47,8 @@ export default class ARView extends Component {
     }
   };
 
+  // Once the user has selected the plane set state to the dimensions and position
+  // using anchor (this function is sometimes refered to as onAnchorFound on the docs)
   onPlaneSelected = (anchor) => {
     const anchoredPosition = [
       anchor.position[0] + anchor.center[0],
@@ -54,7 +56,6 @@ export default class ARView extends Component {
       anchor.position[2] + anchor.center[2]
     ];
     this.setState({
-      // planePosition: anchoredPosition,
       showController: true,
       planeHeight: anchor.height,
       planeWidth: anchor.width,
@@ -64,49 +65,56 @@ export default class ARView extends Component {
     });
   };
 
-  getScene = () => (
-    <>
-      <ViroAmbientLight color="#ffffff" />
-      <ViroARPlaneSelector
-        onPlaneSelected={this.onPlaneSelected}
-        ref={component => (this.arPlaneRef = component)}
-        maxPlanes={3}
-        onClick={this.placePlane}
-      >
-        <ViroQuad
-          position={this.state.planeCenter}
-          scale={[1, 1, 1]}
-          rotation={[-90, 0, 0]}
-          physicsBody={{ type: 'Static' }}
-          materials="ground"
-          renderingOrder={-1}
-        />
-        <ViroQuad
-          key="deadSpace"
-          onCollision={this.resetPlayer}
-          height={100}
-          width={100}
-          rotation={[-90, 0, 0]}
-          position={[0, -1, 0]}
-          materials={['transparent']}
-          physicsBody={{ type: 'Static' }}
-        />
-        <ViroBox
-          key="goal"
-          onCollision={this.resetPlayer}
-          height={0.05}
-          width={0.05}
-          scale={[1, 2, 0.1]}
-          physicsBody={{ type: 'Kinematic' }}
-          position={[0, 0, -0.4]}
-        />
-        {this.generatePlayer(this.state.planeCenter)}
-        {/* {this.generateObstacles()} */}
-      </ViroARPlaneSelector>
-      {/* {this.state.showController ? this.getController() : null} */}
-    </>
-  );
+  getScene = () => {
+    const { planeCenter } = this.state;
+    return (
+      <>
+        <ViroAmbientLight color="#ffffff" />
+        <ViroARPlaneSelector
+          onPlaneSelected={this.onPlaneSelected}
+          ref={component => (this.arPlaneRef = component)}
+          maxPlanes={3}
+          onClick={this.placePlane}
+        >
+          {/* Renders the playing surface */}
+          <ViroQuad
+            position={planeCenter}
+            scale={[1, 1, 1]}
+            rotation={[-90, 0, 0]}
+            physicsBody={{ type: 'Static' }}
+            materials="ground"
+            renderingOrder={-1}
+          />
+          {/* Renders the area that respawns character if falls of surface */}
+          <ViroQuad
+            key="deadSpace"
+            onCollision={this.resetPlayer}
+            height={100}
+            width={100}
+            rotation={[-90, 0, 0]}
+            position={[0, -1, 0]}
+            materials={['transparent']}
+            physicsBody={{ type: 'Static' }}
+          />
+          {/* Renders the area the player must reach to win (currently just resetting the player) */}
+          <ViroBox
+            key="goal"
+            onCollision={this.resetPlayer}
+            height={0.05}
+            width={0.05}
+            scale={[1, 2, 0.1]}
+            physicsBody={{ type: 'Kinematic' }}
+            position={[0, 0, -0.4]}
+          />
+          {this.generatePlayer(planeCenter)}
+          {this.generateObstacles()}
+        </ViroARPlaneSelector>
+        {/* {this.state.showController ? this.getController() : null} */}
+      </>
+    );
+  };
 
+  // When getScene is loaded the emoji will be loaded via this function
   generatePlayer = (position) => {
     const physicsBody = {
       type: 'Dynamic',
@@ -131,11 +139,12 @@ export default class ARView extends Component {
         physicsBody={physicsBody}
         ref={obj => (this.playerRef = obj)}
         onClick={this.pushPlayer(3)}
-        onCollision={this.onObstacleCollision}
+        onCollision={this.resetPlayer}
       />
     );
   };
 
+  // Function for onClick event of emoji to move around
   pushPlayer = () => (clickedPos, force) => {
     this.playerRef.getTransformAsync().then((transform) => {
       const pushImpulse = [0, force, 0];
@@ -145,6 +154,7 @@ export default class ARView extends Component {
     });
   };
 
+  // When emoji hits dead zone or goal it resets
   resetPlayer = () => {
     const physicsBody = {
       type: 'Dynamic',
@@ -158,7 +168,10 @@ export default class ARView extends Component {
         params: [0.1]
       }
     };
+    // Had to set physicsBody to null before resetting to initial props, probably a much better way to do this!
     TimerMixin.setTimeout(() => {
+      // passing 'ref={obj => (this.playerRef = obj)}' to the emoji means that it can be accessed on this anywhere else
+      // setNativeProps is React Native function
       this.playerRef.setNativeProps({ physicsBody: null });
       this.playerRef.setNativeProps({ position: [0, 0.1, 0] });
       TimerMixin.setTimeout(() => {
@@ -167,29 +180,36 @@ export default class ARView extends Component {
     });
   };
 
-  randomObstaclePosition = () => {};
+  randomObstaclePosition = () => {
+    const { planeHeight, planeWidth } = this.state;
+    const positionX = Math.floor(Math.random() * planeHeight - planeHeight / 2);
+    const positionY = 1;
+    const positionZ = Math.floor(Math.random() * planeWidth - planeWidth / 2);
+    const randomPosition = [];
+    randomPosition.push(positionX, positionY, positionZ);
+    return randomPosition;
+  };
 
   generateObstacles = () => this.obstacle();
 
-  obstacle = () => (
-    <ViroBox
-      scale={[0.1, 0.1, 0.1]}
-      materials={['obstacle']}
-      physicsBody={{
-        type: 'Dynamic',
-        mass: 10,
-        enabled: true,
-        useGravity: true,
-        restitution: 0.35,
-        friction: 0.75
-      }}
-      position={[0, 1, 0]}
-      ref={obstacle => (this.obstacleRef = obstacle)}
-    />
-  );
-
-  onObstacleCollision = () => {
-    this.playerRef.setNativeProps({ resources: [grunge] });
+  obstacle = () => {
+    const { planeCenter } = this.state;
+    return (
+      <ViroBox
+        scale={[0.1, 0.1, 0.1]}
+        materials={['obstacle']}
+        physicsBody={{
+          type: 'Dynamic',
+          mass: 10,
+          enabled: true,
+          useGravity: true,
+          restitution: 0.35,
+          friction: 0.75
+        }}
+        position={this.randomObstaclePosition()}
+        ref={obstacle => (this.obstacleRef = obstacle)}
+      />
+    );
   };
 
   getText = text => (
@@ -201,6 +221,7 @@ export default class ARView extends Component {
     />
   );
 
+  // Was the D pad controller but not rendering currently as it is causing bugs with the plane
   getController = () => (
     <ViroCamera active>
       <ViroSphere
@@ -287,6 +308,9 @@ ViroMaterials.createMaterials({
   },
   obstacle: {
     diffuseColor: 'rgb(165, 47, 202)'
+  },
+  obstacleCollision: {
+    diffuseColor: 'rgb(255, 0, 0)'
   }
 });
 
