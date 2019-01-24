@@ -60,3 +60,5 @@ buck-out/
 config.js
 
 android/app/google-services.json
+
+/.history 
