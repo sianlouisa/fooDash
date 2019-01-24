@@ -1,7 +1,7 @@
 import React from 'react';
 import { ViroText } from 'react-viro';
 
-const GameRules = props => (
+const GameRules = () => (
   <ViroText
     text="Instructions"
     position={[0, 0, -2]}
