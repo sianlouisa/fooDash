@@ -18,6 +18,7 @@ import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
 import specular from './res/res/emoji_smile/emoji_smile_specular.png';
+import grunge from './res/textures/Metal_grunge_001_COLOR.jpg';
 
 export default class ARView extends Component {
   state = {
@@ -28,22 +29,38 @@ export default class ARView extends Component {
     planeHeight: 0,
     planeWidth: 0,
     planeCenter: [0, 0, 0],
-    isGeneratedPlayer: false
+    isGeneratedPlayer: false,
+    anchoredPosition: [0, 0, 0]
+  };
+
+  onInitialized = (state) => {
+    if (state === ViroConstants.TRACKING_NORMAL) {
+      this.setState({
+        isTracking: true,
+        initialized: true
+      });
+    } else if (state === ViroConstants.TRACKING_NONE) {
+      this.setState({
+        isTracking: false,
+        initialized: false
+      });
+    }
   };
 
   onPlaneSelected = (anchor) => {
-    // const anchoredPosition = [
-    //   anchor.position[0] + anchor.center[0],
-    //   anchor.position[1] + anchor.center[1],
-    //   anchor.position[2] + anchor.center[2]
-    // ];
+    const anchoredPosition = [
+      anchor.position[0] + anchor.center[0],
+      anchor.position[1] + anchor.center[1],
+      anchor.position[2] + anchor.center[2]
+    ];
     this.setState({
       // planePosition: anchoredPosition,
       showController: true,
       planeHeight: anchor.height,
       planeWidth: anchor.width,
       planePosition: anchor.position,
-      planeCenter: anchor.center
+      planeCenter: anchor.center,
+      anchoredPosition
     });
   };
 
@@ -71,110 +88,62 @@ export default class ARView extends Component {
           width={100}
           rotation={[-90, 0, 0]}
           position={[0, -1, 0]}
-          materials={['transparent']}
+          // materials={['transparent']}
           physicsBody={{ type: 'Static' }}
         />
-        {this.generatePlayer()}
+        {this.generatePlayer(this.state.planeCenter)}
         {this.generateObstacles()}
       </ViroARPlaneSelector>
       {/* {this.state.showController ? this.getController() : null} */}
     </>
   );
 
-  handleUpClick = (pos) => {
-    this.playerRef.applyImpulse([0, 0, -0.5], pos);
-  };
-
-  handleLeftClick = (pos) => {
-    this.playerRef.applyImpulse([-0.5, 0, 0], pos);
-  };
-
-  handleRightClick = (pos) => {
-    this.playerRef.applyImpulse([0.5, 0, 0], pos);
-  };
-
-  handleDownClick = (pos) => {
-    this.playerRef.applyImpulse([0, 0, 0.5], pos);
-  };
-
-  randomObstaclePosition = () => {};
-
-  generateObstacles = () => this.obstacle();
-
-  obstacle = () => (
-    <ViroBox
-      scale={[0.05, 0.05, 0.05]}
-      materials={['obstacle']}
-      physicsBody={{
-        type: 'Dynamic',
-        mass: 15,
-        enabled: true,
-        useGravity: true,
-        restitution: 0.35,
-        friction: 0.75
-      }}
-      position={[0, 2, 0]}
-      renderingOrder={1}
-    />
-  );
-
-  generatePlayer = () => {
+  generatePlayer = (position) => {
     const physicsBody = {
       type: 'Dynamic',
       mass: 20,
-      useGravity: true,
       enabled: true,
-      velocity: [0, 0, 0],
+      useGravity: true,
+      restitution: 0.35,
+      friction: 0.75,
       shape: {
         type: 'Sphere',
         params: [0.14]
       }
     };
-
     return (
       <Viro3DObject
+        position={position}
         scale={[0.1, 0.1, 0.1]}
-        rotation={[0, 0, 0]}
         source={smile}
         resources={[diffuse, normal, specular]}
         type="VRX"
         renderingOrder={0}
         physicsBody={physicsBody}
         ref={obj => (this.playerRef = obj)}
+        onClick={this.pushPlayer(3)}
+        onCollision={this.onObstacleCollision}
       />
     );
   };
 
-  onInitialized = (state) => {
-    if (state === ViroConstants.TRACKING_NORMAL) {
-      this.setState({
-        isTracking: true,
-        initialized: true
-      });
-    } else if (state === ViroConstants.TRACKING_NONE) {
-      this.setState({
-        isTracking: false,
-        initialized: false
-      });
-    }
+  pushPlayer = () => (clickedPos, force) => {
+    this.playerRef.getTransformAsync().then((transform) => {
+      const pushImpulse = [0, force, 0];
+      const pos = transform.position;
+      const pushPosition = [clickedPos[0] - pos[0], clickedPos[1] - pos[1], clickedPos[2] - pos[2]];
+      this.playerRef.applyImpulse(pushImpulse, pushPosition);
+    });
   };
-
-  getText = text => (
-    <ViroText
-      text={text}
-      scale={[0.5, 0.5, 0.5]}
-      position={[0, 0, -0.5]}
-      style={styles.helloWorldTextStyle}
-    />
-  );
 
   resetPlayer = () => {
     const physicsBody = {
       type: 'Dynamic',
-      mass: 4,
-      useGravity: true,
+      mass: 20,
       enabled: true,
-      velocity: [0, 0, 0],
+      useGravity: true,
+      restitution: 0.35,
+      friction: 0.75,
       shape: {
         type: 'Sphere',
         params: [0.14]
@@ -188,6 +157,40 @@ export default class ARView extends Component {
       });
     });
   };
+
+  randomObstaclePosition = () => {};
+
+  generateObstacles = () => this.obstacle();
+
+  obstacle = () => (
+    <ViroBox
+      scale={[0.1, 0.1, 0.1]}
+      materials={['obstacle']}
+      physicsBody={{
+        type: 'Dynamic',
+        mass: 10,
+        enabled: true,
+        useGravity: true,
+        restitution: 0.35,
+        friction: 0.75
+      }}
+      position={[0, 1, 0]}
+      ref={obstacle => (this.obstacleRef = obstacle)}
+    />
+  );
+
+  onObstacleCollision = () => {
+    this.playerRef.setNativeProps({ resources: [grunge] });
+  };
+
+  getText = text => (
+    <ViroText
+      text={text}
+      scale={[0.5, 0.5, 0.5]}
+      position={[0, 0, -0.5]}
+      style={styles.helloWorldTextStyle}
+    />
+  );
 
   getController = () => (
     <ViroCamera active>
@@ -217,6 +220,22 @@ export default class ARView extends Component {
       />
     </ViroCamera>
   );
+
+  handleUpClick = (pos) => {
+    this.playerRef.applyImpulse([0, 0, -0.5], pos);
+  };
+
+  handleLeftClick = (pos) => {
+    this.playerRef.applyImpulse([-0.5, 0, 0], pos);
+  };
+
+  handleRightClick = (pos) => {
+    this.playerRef.applyImpulse([0.5, 0, 0], pos);
+  };
+
+  handleDownClick = (pos) => {
+    this.playerRef.applyImpulse([0, 0, 0.5], pos);
+  };
 
   render() {
     const { isTracking, initialized } = this.state;
