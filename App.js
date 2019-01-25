@@ -4,6 +4,7 @@ import Login from './js/Screens/Login';
 import Signup from './js/Screens/Signup';
 import StartScreen from './js/Screens/StartScreen';
 import PlayAgain from './js/Screens/PlayAgain';
+import Instructions from './js/Screens/Instructions';
 import InitialiseAR from './js/Components/InitialiseAR';
 
 export default class App extends Component {
@@ -20,6 +21,7 @@ const SwitchNav = createSwitchNavigator(
     StartScreen,
     Signup,
     Login,
+    Instructions,
     InitialiseAR,
   },
   {
