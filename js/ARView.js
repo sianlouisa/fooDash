@@ -21,15 +21,14 @@ import specular from './res/res/emoji_smile/emoji_smile_specular.png';
 
 export default class ARView extends Component {
   state = {
-    planePosition: [0, 0, 0],
     isTracking: false,
     initialized: false,
     showController: false,
     planeHeight: 0,
     planeWidth: 0,
     planeCenter: [0, 0, 0],
-    isGeneratedPlayer: false,
-    anchoredPosition: [0, 0, 0]
+    anchoredPosition: [0, 0, 0],
+    pushCounter: 0
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -61,12 +60,13 @@ export default class ARView extends Component {
       planeWidth: anchor.width,
       planePosition: anchor.position,
       planeCenter: anchor.center,
-      anchoredPosition
+      anchoredPosition,
+      pushCounter: 0
     });
   };
 
   getScene = () => {
-    const { planeCenter } = this.state;
+    const { planeCenter, pushCounter } = this.state;
     return (
       <>
         <ViroAmbientLight color="#ffffff" />
@@ -74,7 +74,7 @@ export default class ARView extends Component {
           onPlaneSelected={this.onPlaneSelected}
           ref={component => (this.arPlaneRef = component)}
           maxPlanes={3}
-          onClick={this.placePlane}
+          // onClick={this.placePlane}
         >
           {/* Renders the playing surface */}
           <ViroQuad
@@ -96,7 +96,7 @@ export default class ARView extends Component {
             materials={['transparent']}
             physicsBody={{ type: 'Static' }}
           />
-          {/* Renders the area the player must reach to win (currently just resetting the player) */}
+          {/* Renders the area the player must reach to win  */}
           <ViroBox
             key="goal"
             onCollision={this.resetPlayer}
@@ -107,15 +107,15 @@ export default class ARView extends Component {
             position={[0, 0, -0.4]}
           />
           {this.generatePlayer(planeCenter)}
-          {this.generateObstacles()}
+          {pushCounter % 5 === 0 && pushCounter !== 0 && this.generateObstacles()}
         </ViroARPlaneSelector>
-        {/* {this.state.showController ? this.getController() : null} */}
+        {/* {this.state.showController && this.getController()} */}
       </>
     );
   };
 
   // When getScene is loaded the emoji will be loaded via this function
-  generatePlayer = (position) => {
+  generatePlayer = () => {
     const physicsBody = {
       type: 'Dynamic',
       mass: 20,
@@ -138,9 +138,13 @@ export default class ARView extends Component {
         renderingOrder={0}
         physicsBody={physicsBody}
         ref={obj => (this.playerRef = obj)}
-        onClick={this.pushPlayer(3)}
+        onClick={() => this.handleClick()}
       />
     );
+  };
+
+  handleClick = () => {
+    this.setState(state => ({ pushCounter: state.pushCounter + 1 }));
   };
 
   // Function for onClick event of emoji to move around
@@ -167,9 +171,11 @@ export default class ARView extends Component {
         params: [0.1]
       }
     };
-    // Had to set physicsBody to null before resetting to initial props, probably a much better way to do this!
+    // Had to set physicsBody to null before resetting to initial props,
+    // probably a much better way to do this!
     TimerMixin.setTimeout(() => {
-      // passing 'ref={obj => (this.playerRef = obj)}' to the emoji means that it can be accessed on this anywhere else
+      // passing 'ref={obj => (this.playerRef = obj)}'
+      // to the emoji means that it can be accessed on this anywhere else
       // setNativeProps is React Native function
       this.playerRef.setNativeProps({ physicsBody: null });
       this.playerRef.setNativeProps({ position: [0, 0.1, 0] });
@@ -179,44 +185,29 @@ export default class ARView extends Component {
     });
   };
 
-  randomObstaclePosition = () => {
-    const { planeHeight, planeWidth } = this.state;
-    const positionX = Math.floor(Math.random() * planeHeight - planeHeight / 2);
-    const positionY = 1;
-    const positionZ = Math.floor(Math.random() * planeWidth - planeWidth / 2);
-    const randomPosition = [];
-    randomPosition.push(positionX, positionY, positionZ);
-    return randomPosition;
-  };
-
-  generateObstacles = () => this.obstacle();
-
-  obstacle = () => {
-    const { planeCenter } = this.state;
-    return (
-      <ViroBox
-        scale={[0.1, 0.1, 0.1]}
-        materials={['obstacle']}
-        physicsBody={{
-          type: 'Dynamic',
-          mass: 10,
-          enabled: true,
-          useGravity: true,
-          restitution: 0.35,
-          friction: 0.75
-        }}
-        position={this.randomObstaclePosition()}
-        ref={obstacle => (this.obstacleRef = obstacle)}
-        onCollision={this.resetPlayer}
-      />
-    );
-  };
+  generateObstacles = () => (
+    <ViroBox
+      scale={[0.1, 0.1, 0.1]}
+      materials={['obstacle']}
+      physicsBody={{
+        type: 'Dynamic',
+        mass: 25,
+        enabled: true,
+        useGravity: true,
+        restitution: 0.35,
+        friction: 0.75
+      }}
+      position={[0, 1, 0]}
+      ref={obstacle => (this.obstacleRef = obstacle)}
+      onCollision={this.resetPlayer}
+    />
+  );
 
   getText = text => (
     <ViroText
       text={text}
       scale={[0.5, 0.5, 0.5]}
-      position={[0, 0, -0.5]}
+      position={[0, 0, -0.1]}
       style={styles.helloWorldTextStyle}
     />
   );
@@ -253,18 +244,22 @@ export default class ARView extends Component {
 
   handleUpClick = (pos) => {
     this.playerRef.applyImpulse([0, 0, -0.5], pos);
+    this.setState(state => ({ pushCounter: state.pushCounter + 1 }));
   };
 
   handleLeftClick = (pos) => {
     this.playerRef.applyImpulse([-0.5, 0, 0], pos);
+    this.setState(state => ({ pushCounter: state.pushCounter + 1 }));
   };
 
   handleRightClick = (pos) => {
     this.playerRef.applyImpulse([0.5, 0, 0], pos);
+    this.setState(state => ({ pushCounter: state.pushCounter + 1 }));
   };
 
   handleDownClick = (pos) => {
     this.playerRef.applyImpulse([0, 0, 0.5], pos);
+    this.setState(state => ({ pushCounter: state.pushCounter + 1 }));
   };
 
   render() {
