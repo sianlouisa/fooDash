@@ -4,16 +4,17 @@ import { Button } from 'react-native';
 
 class Startscreen extends Component {
     static navigationOptions = {
-        title: 'Welcome',
+      title: 'Welcome',
     };
+
     render() {
-        const { navigate } = this.props.navigation;
-        return (
-            <Button
-                title="Play"
-                onPress={() => navigate('AR')}
-            />
-        );
+      const { navigate } = this.props.navigation;
+      return (
+        <Button
+          title="Play"
+          onPress={() => navigate('AR')}
+        />
+      );
     }
 }
 

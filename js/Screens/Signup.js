@@ -26,7 +26,7 @@ class Signup extends Component {
 
   handleAuth = () => {
     const { email, password, username } = this.state;
-    if (this.validateEmail && this.validatePassword && this.validateUsername) {
+    if (this.validateEmail() && this.validatePassword() && this.validateUsername()) {
       const { navigation } = this.props;
       api
         .signup(email, password)
@@ -92,7 +92,7 @@ class Signup extends Component {
           />
         </View>
         <View style={styles.signupInputs}>
-          <Image style={styles.inputIcon} source={{ uri: emailIcon }}></Image>
+          <Image style={styles.inputIcon} source={{ uri: emailIcon }} />
           <TextInput
             style={styles.inputs}
             onChangeText={text => this.setState({ email: text })}
@@ -100,7 +100,7 @@ class Signup extends Component {
             placeholder="Enter Email"
             keyboardType="email-address"
             textContentType="emailAddress"
-            underlineColorAndroid='transparent'
+            underlineColorAndroid="transparent"
           />
         </View>
         <View style={styles.signupInputs}>
@@ -114,7 +114,7 @@ class Signup extends Component {
           />
         </View>
         <View style={styles.signupInputs}>
-          <Image style={styles.inputIcon} source={{ uri: passwordIcon }}></Image>
+          <Image style={styles.inputIcon} source={{ uri: passwordIcon }} />
           <TextInput
             style={styles.inputs}
             onChangeText={text => this.setState({ password: text })}
@@ -122,7 +122,7 @@ class Signup extends Component {
             secureTextEntry
             placeholder="Enter Password"
             textContentType="password"
-            underlineColorAndroid='transparent'
+            underlineColorAndroid="transparent"
           />
         </View>
         <View style={styles.signupInputs}>
@@ -133,7 +133,7 @@ class Signup extends Component {
             secureTextEntry
             placeholder="Re-enter Password"
             textContentType="password"
-            underlineColorAndroid='transparent'
+            underlineColorAndroid="transparent"
           />
         </View>
         <TouchableOpacity
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   //   height: '100%',
   // },
   text: {
-    fontFamily: "UnreadableSans",
+    fontFamily: 'UnreadableSans',
     fontSize: 20,
   },
   signupInputs: {
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   button: {
-    backgroundColor: "#00b5ec",
+    backgroundColor: '#00b5ec',
   },
   signupText: {
     color: '#FFFFFF',

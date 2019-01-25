@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, TextInput, TouchableOpacity, Text, StyleSheet, Image, ImageBackground
+  View, TextInput, TouchableOpacity, Text, StyleSheet, Image
 } from 'react-native';
 import * as api from '../api';
 // import PropTypes from 'prop-types';
@@ -48,7 +48,7 @@ class Login extends Component {
             style={styles.inputs}
             keyboardType="email-address"
             textContentType="emailAddress"
-            underlineColorAndroid='transparent'
+            underlineColorAndroid="transparent"
             onChangeText={text => this.setState({ email: text })}
             value={email}
             placeholder="Enter Email"
@@ -59,7 +59,7 @@ class Login extends Component {
           <TextInput
             style={styles.inputs}
             textContentType="password"
-            underlineColorAndroid='transparent'
+            underlineColorAndroid="transparent"
             onChangeText={text => this.setState({ password: text })}
             value={password}
             secureTextEntry
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   //   height: '100%',
   // },
   text: {
-    fontFamily: "UnreadableSans",
+    fontFamily: 'UnreadableSans',
     fontSize: 20,
   },
   loginInputs: {
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   button: {
-    backgroundColor: "#00b5ec",
+    backgroundColor: '#00b5ec',
   },
   loginText: {
     color: '#FFFFFF',
