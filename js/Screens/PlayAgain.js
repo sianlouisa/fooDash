@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PlayButton from '../Components/PlayButton';
+import LeaderBoard from '../Components/LeaderBoard';
 // import PropTypes from 'prop-types';
 
 class PlayAgain extends Component {
@@ -12,7 +13,10 @@ class PlayAgain extends Component {
 
   render() {
     return (
-      <PlayButton buttonText="Play Again" navigateToPlay={this.navigateToPlay} />
+      <>
+        <LeaderBoard />
+        <PlayButton buttonText="Play Again" navigateToPlay={this.navigateToPlay} />
+      </>
     );
   }
 }
