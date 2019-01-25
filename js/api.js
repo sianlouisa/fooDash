@@ -28,3 +28,19 @@ export const updateScore = async (uid, score) => {
     score
   });
 };
+
+export const getPlayersScores = async () => {
+  const snapshot = await db.collection('players').orderBy('score', 'desc').limit(10).get();
+  return snapshot;
+};
+
+export const getPlayersUsernames = async () => {
+  const snapshot = await db.collection('players').get();
+  return snapshot;
+};
+
+export const getUserDetails = async (uid) => {
+  const doc = await db.collection('players').doc(uid).get();
+  const { playerName, score } = doc.data();
+  return { uid, username: playerName, score };
+};

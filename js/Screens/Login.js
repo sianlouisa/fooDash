@@ -18,7 +18,8 @@ class Login extends Component {
     if (email && password) {
       api
         .signin(email, password)
-        .then(uid => navigation.navigate('InitialiseAR', { uid }))
+        .then(uid => api.getUserDetails(uid))
+        .then(currentPlayer => navigation.navigate('InitialiseAR', { currentPlayer }))
         .catch(() => {
           this.setState({
             err: true,

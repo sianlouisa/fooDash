@@ -20,7 +20,7 @@ class InitialiseAR extends Component {
     return <ViroARSceneNavigator {...sharedProps} initialScene={{ scene: InitialARScene }} />;
   }
 
-  // uid is passed down in navigation params
+  // currentuserdetails is passed down in navigation params
 
   render() {
     return this.getARNavigator();

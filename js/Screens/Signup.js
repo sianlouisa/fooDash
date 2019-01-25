@@ -13,17 +13,25 @@ class Signup extends Component {
     confirmPassword: '',
     username: '',
     err: null,
+    usernames: []
   }
 
+  componentDidMount() {
+    api.getPlayersUsernames().then((snapshot) => {
+      snapshot.forEach((doc) => {
+        this.setState(state => ({ usernames: [...state.usernames, doc.data().playerName] }));
+      });
+    });
+  }
 
   handleAuth = () => {
     const { email, password, username } = this.state;
-    if (this.validateEmail && this.validatePassword && username) {
+    if (this.validateEmail && this.validatePassword && this.validateUsername) {
       const { navigation } = this.props;
       api
         .signup(email, password)
         .then(uid => api.addUser(uid, username))
-        .then(uid => navigation.navigate('InitialiseAR', { uid }))
+        .then(uid => navigation.navigate('InitialiseAR', { currentPlayer: { uid, username, score: 0 } }))
         .catch(() => {
           this.setState({
             err: true,
@@ -51,6 +59,14 @@ class Signup extends Component {
   validatePassword = () => {
     const { password, confirmPassword } = this.state;
     if (password && password === confirmPassword) {
+      return true;
+    }
+    return false;
+  }
+
+  validateUsername = () => {
+    const { username, usernames } = this.state;
+    if (username && !usernames.includes(username)) {
       return true;
     }
     return false;
