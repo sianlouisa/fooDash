@@ -14,6 +14,7 @@ import {
 } from 'react-viro';
 import TimerMixin from 'react-timer-mixin';
 import { StyleSheet } from 'react-native';
+import _ from 'lodash';
 import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
@@ -107,6 +108,7 @@ export default class ARView extends Component {
             position={[0, 0, -0.4]}
           />
           {this.generatePlayer(planeCenter)}
+          {_.times(5, () => this.generateObstacles())}
           {pushCounter % 5 === 0 && pushCounter !== 0 && this.generateObstacles()}
         </ViroARPlaneSelector>
         {/* {this.state.showController && this.getController()} */}
@@ -184,6 +186,8 @@ export default class ARView extends Component {
       });
     });
   };
+
+  // generateMultiple = (n, func) => _.times(n, func())
 
   generateObstacles = () => (
     <ViroBox
