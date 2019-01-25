@@ -138,7 +138,7 @@ export default class ARView extends Component {
         renderingOrder={0}
         physicsBody={physicsBody}
         ref={obj => (this.playerRef = obj)}
-        onClick={() => this.handleClick()}
+        onClick={this.pushPlayer()}
       />
     );
   };
