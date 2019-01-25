@@ -139,7 +139,6 @@ export default class ARView extends Component {
         physicsBody={physicsBody}
         ref={obj => (this.playerRef = obj)}
         onClick={this.pushPlayer(3)}
-        onCollision={this.resetPlayer}
       />
     );
   };
@@ -208,6 +207,7 @@ export default class ARView extends Component {
         }}
         position={this.randomObstaclePosition()}
         ref={obstacle => (this.obstacleRef = obstacle)}
+        onCollision={this.resetPlayer}
       />
     );
   };
