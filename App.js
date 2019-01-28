@@ -25,7 +25,7 @@ const SwitchNav = createSwitchNavigator(
     InitialiseAR,
   },
   {
-    initialRouteName: 'InitialiseAR',
+    initialRouteName: 'Login',
   }
 );
 
