@@ -12,9 +12,10 @@ class PlayAgain extends Component {
   }
 
   render() {
+    const { navigation: { getParam } } = this.props;
     return (
       <>
-        <LeaderBoard getParam={this.props.navigation.getParam} />
+        <LeaderBoard getParam={getParam} />
         <PlayButton buttonText="Play Again" navigateToPlay={this.navigateToPlay} />
       </>
     );
