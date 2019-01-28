@@ -98,6 +98,7 @@ export default class ARView extends Component {
           />
           {this.generatePlayer(planeCenter)}
           {this.getText(lives.toString(), [0, 0.2, -0.4])}
+          {lives <= 0 && this.getText('GAME OVER', [0, 0.5, -0.1])}
           {_.times(5, () => this.generateObstacles())}
           {pushCounter % 5 === 0 && pushCounter !== 0 && this.generateObstacles()}
         </ViroARPlaneSelector>
@@ -109,9 +110,7 @@ export default class ARView extends Component {
     const { lives } = this.state;
     if (collidedTag === 'player') {
       this.setState({ lives: this.state.lives - 1 }, () => {
-        if (lives <= 0) {
-          this.getText('GAME OVER', [0, 0.2, -0.4]);
-        } else {
+        if (lives !== 1) {
           this.resetPlayer();
         }
       });
@@ -204,9 +203,9 @@ export default class ARView extends Component {
         restitution: 0.35,
         friction: 0.75
       }}
-      position={[0, 1, 0]}
+      position={[0, 1, -0.2]}
       ref={obstacle => (this.obstacleRef = obstacle)}
-      onCollision={this.loseLife}
+      onCollision={this.resetPlayer}
       viroTag="obstacle"
     />
   );
