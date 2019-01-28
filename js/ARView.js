@@ -24,7 +24,8 @@ export default class ARView extends Component {
     initialized: false,
     planeCenter: [0, 0, 0],
     pushCounter: 0,
-    lives: 10
+    lives: 3,
+    playerWon: false,
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -57,7 +58,7 @@ export default class ARView extends Component {
   };
 
   getScene = () => {
-    const { planeCenter, pushCounter, lives } = this.state;
+    const { planeCenter, pushCounter, lives, playerWon } = this.state;
     return (
       <>
         <ViroAmbientLight color="#ffffff" />
@@ -89,7 +90,7 @@ export default class ARView extends Component {
           {/* Renders the area the player must reach to win  */}
           <ViroBox
             key="goal"
-            onCollision={this.resetPlayer}
+            onCollision={this.playerWins}
             height={0.05}
             width={0.05}
             scale={[1, 2, 0.1]}
@@ -97,10 +98,10 @@ export default class ARView extends Component {
             position={[0, 0, -0.4]}
           />
           {this.generatePlayer(planeCenter)}
-          {this.getText(lives.toString(), [0, 0.2, -0.4])}
-
+          {!playerWon && this.getText(lives.toString(), [0, 0.2, -0.4])}
+          {playerWon && this.getText('Winner', [0, 0, -0.5])}
           {lives <= 0 && this.getText('GAME OVER', [0, 0.5, -0.1])}
-          {_.times(10, () => this.generateObstacles())}
+          {/* {_.times(10, () => this.generateObstacles())} */}
           {pushCounter % 5 === 0 && pushCounter !== 0 && this.generateObstacles()}
         </ViroARPlaneSelector>
       </>
@@ -117,6 +118,12 @@ export default class ARView extends Component {
       });
     }
   };
+
+  playerWins = (collidedTag) => {
+    if (collidedTag === 'player') {
+      this.setState({ playerWon: true })
+    }
+  }
 
   // When getScene is loaded the emoji will be loaded via this function
   generatePlayer = () => {
@@ -190,24 +197,24 @@ export default class ARView extends Component {
     });
   };
 
-  generateObstacles = () => (
-    <ViroBox
-      scale={[0.1, 0.1, 0.1]}
-      materials={['obstacle']}
-      physicsBody={{
-        type: 'Dynamic',
-        mass: 25,
-        enabled: true,
-        useGravity: true,
-        restitution: 0.35,
-        friction: 0.75
-      }}
-      position={[0, 1, -0.2]}
-      ref={obstacle => (this.obstacleRef = obstacle)}
-      // onCollision={this.resetPlayer}
-      viroTag="obstacle"
-    />
-  );
+  // generateObstacles = () => (
+  //   <ViroBox
+  //     scale={[0.1, 0.1, 0.1]}
+  //     materials={['obstacle']}
+  //     physicsBody={{
+  //       type: 'Dynamic',
+  //       mass: 25,
+  //       enabled: true,
+  //       useGravity: true,
+  //       restitution: 0.35,
+  //       friction: 0.75
+  //     }}
+  //     position={[0, 1, -0.2]}
+  //     ref={obstacle => (this.obstacleRef = obstacle)}
+  //     // onCollision={this.resetPlayer}
+  //     viroTag="obstacle"
+  //   />
+  // );
 
   getText = (text, pos) => (
     <ViroText
@@ -231,6 +238,7 @@ export default class ARView extends Component {
           {isTracking
             ? this.getScene()
             : this.getText(initialized ? 'Initializing' : 'No Tracking', [0, 0, -0.1])}
+
         </ViroARScene>
       </>
     );
