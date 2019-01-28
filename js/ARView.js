@@ -17,6 +17,7 @@ import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
 import specular from './res/res/emoji_smile/emoji_smile_specular.png';
+import { updateScore } from './api';
 
 export default class ARView extends Component {
   state = {
@@ -24,6 +25,8 @@ export default class ARView extends Component {
     initialized: false,
     planeCenter: [0, 0, 0],
     pushCounter: 0,
+    updatedPosition: 0,
+
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -113,12 +116,26 @@ export default class ARView extends Component {
           {this.generateObstacles(position)}
           {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
-          {/* {_.times(10, () => this.generateObstacles())} */}
-          {/* pushCounter % 5 === 0 && pushCounter !== 0 && this.generateObstacles() */}
+          {/* {_.times(10, () => this.generatetokens())} */}
+          {/* pushCounter % 5 === 0 && pushCounter !== 0 && this.generatetokens() */}
+          {this.generateTokens()}
         </ViroARPlaneSelector>
       </>
     );
   };
+
+collectToken = (collidedTag) => {
+
+    const { updateScore } = this.props.arSceneNavigator.viroAppProps;
+    if (collidedTag === 'player') {
+      const positions = [[0, 1, -0.2], [-0.2, 1, -0.2]]
+      updateScore();
+      this.setState({ updatedPosition: this.state.updatedPosition + 1 }, () => {
+        this.tokenRef.setNativeProps({ position: positions[this.state.updatedPosition] });
+      })
+
+    }
+  }
 
   // When getScene is loaded the emoji will be loaded via this function
   generatePlayer = () => {
@@ -211,6 +228,26 @@ export default class ARView extends Component {
     />
   );
 
+  generateTokens = () => {
+
+    return <ViroBox
+      scale={[0.1, 0.1, 0.1]}
+      materials={['token']}
+      physicsBody={{
+        type: 'Dynamic',
+        mass: 25,
+        enabled: true,
+        useGravity: true,
+        restitution: 0.35,
+        friction: 0.75
+      }}
+      position={[0, 1, -0.2]}
+      ref={token => (this.tokenRef = token)}
+      onCollision={this.collectToken}
+      viroTag="token"
+    />
+  };
+
   getText = (text, pos) => (
     <ViroText
       text={text}
@@ -260,12 +297,13 @@ ViroMaterials.createMaterials({
   ground: {
     diffuseColor: '#007CB6E6'
   },
-  obstacle: {
+  token: {
     diffuseColor: 'rgb(165, 47, 202)'
   },
-  obstacleCollision: {
+  tokenCollision: {
     diffuseColor: 'rgb(255, 0, 0)'
   }
 });
+
 
 module.exports = ARView;
