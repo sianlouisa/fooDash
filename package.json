@@ -16,7 +16,8 @@
     "react-native": "0.57.7",
     "react-native-firebase": "^5.2.1",
     "react-navigation": "^3.0.9",
-    "react-viro": "2.13.0"
+    "react-viro": "2.13.0",
+    "lodash": "^4.17.11"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
