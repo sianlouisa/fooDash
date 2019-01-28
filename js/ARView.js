@@ -205,7 +205,7 @@ export default class ARView extends Component {
       }}
       position={[0, 1, -0.2]}
       ref={obstacle => (this.obstacleRef = obstacle)}
-      onCollision={this.resetPlayer}
+      // onCollision={this.resetPlayer}
       viroTag="obstacle"
     />
   );
