@@ -14,7 +14,7 @@ class PlayAgain extends Component {
   render() {
     return (
       <>
-        <LeaderBoard />
+        <LeaderBoard getParam={this.props.navigation.getParam} />
         <PlayButton buttonText="Play Again" navigateToPlay={this.navigateToPlay} />
       </>
     );
