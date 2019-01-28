@@ -17,7 +17,7 @@ import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
 import specular from './res/res/emoji_smile/emoji_smile_specular.png';
-import { updateScore } from './api';
+
 
 export default class ARView extends Component {
   state = {
@@ -125,17 +125,15 @@ export default class ARView extends Component {
   };
 
 collectToken = (collidedTag) => {
-
-    const { updateScore } = this.props.arSceneNavigator.viroAppProps;
-    if (collidedTag === 'player') {
-      const positions = [[0, 1, -0.2], [-0.2, 1, -0.2]]
-      updateScore();
-      this.setState({ updatedPosition: this.state.updatedPosition + 1 }, () => {
-        this.tokenRef.setNativeProps({ position: positions[this.state.updatedPosition] });
-      })
-
-    }
+  const { arSceneNavigator: { viroAppProps: { updateScore } } } = this.props;
+  if (collidedTag === 'player') {
+    const positions = [[0, 1, -0.2], [-0.2, 1, -0.2]];
+    updateScore();
+    this.setState({ updatedPosition: this.state.updatedPosition + 1 }, () => {
+      this.tokenRef.setNativeProps({ position: positions[this.state.updatedPosition] });
+    });
   }
+}
 
   // When getScene is loaded the emoji will be loaded via this function
   generatePlayer = () => {
@@ -209,7 +207,8 @@ collectToken = (collidedTag) => {
     });
   };
 
-  generateObstacles = (position) => (
+generateObstacles = (position) => {
+  return (
     <ViroBox
       scale={[0.1, 0.1, 0.1]}
       materials={['obstacle']}
@@ -227,10 +226,11 @@ collectToken = (collidedTag) => {
       viroTag="obstacle"
     />
   );
+};
 
-  generateTokens = () => {
-
-    return <ViroBox
+generateTokens = () => {
+  return (
+    <ViroBox
       scale={[0.1, 0.1, 0.1]}
       materials={['token']}
       physicsBody={{
@@ -246,9 +246,11 @@ collectToken = (collidedTag) => {
       onCollision={this.collectToken}
       viroTag="token"
     />
-  };
+  );
+};
 
-  getText = (text, pos) => (
+getText = (text, pos) => {
+  return (
     <ViroText
       text={text}
       scale={[0.5, 0.5, 0.5]}
@@ -256,25 +258,26 @@ collectToken = (collidedTag) => {
       style={styles.helloWorldTextStyle}
     />
   );
+};
 
-  render() {
-    const { isTracking, initialized } = this.state;
-    return (
-      <>
-        <ViroARScene
-          onTrackingUpdated={this.onInitialized}
-          physicsWorld={{
-            gravity: [0, -9.81, 0]
-          }}
-        >
-          {isTracking
-            ? this.getScene()
-            : this.getText(initialized ? 'Initializing' : 'No Tracking', [0, 0, -0.1])}
+render() {
+  const { isTracking, initialized } = this.state;
+  return (
+    <>
+      <ViroARScene
+        onTrackingUpdated={this.onInitialized}
+        physicsWorld={{
+          gravity: [0, -9.81, 0]
+        }}
+      >
+        {isTracking
+          ? this.getScene()
+          : this.getText(initialized ? 'Initializing' : 'No Tracking', [0, 0, -0.1])}
 
-        </ViroARScene>
-      </>
-    );
-  }
+      </ViroARScene>
+    </>
+  );
+}
 }
 
 const styles = StyleSheet.create({

@@ -19,6 +19,7 @@ module.exports = {
     'import/prefer-default-export': 0,
     'no-return-assign': 1,
     'react/sort-comp': 1,
-    'max-len': 1
+    'max-len': 1,
+    'object-curly-newline': 1
   }
 };
