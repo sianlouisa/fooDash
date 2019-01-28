@@ -10,7 +10,9 @@
     "lint:fix": "node ./node_modules/eslint/bin/eslint.js ./ --fix"
   },
   "dependencies": {
+    "@firebase/firestore": "^1.0.1",
     "firebase": "^5.8.0",
+    "lodash": "^4.17.11",
     "metro-config": "^0.51.1",
     "react": "16.6.1",
     "react-native": "0.57.7",
