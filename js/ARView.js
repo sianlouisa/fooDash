@@ -24,8 +24,7 @@ export default class ARView extends Component {
     initialized: false,
     planeCenter: [0, 0, 0],
     pushCounter: 0,
-    lives: 10,
-    pauseGame: false
+    lives: 10
   };
 
   // Lets you know if there are any errors with loading the camera
