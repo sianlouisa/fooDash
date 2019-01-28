@@ -110,7 +110,7 @@ export default class ARView extends Component {
             position={[0, 0, -0.4]}
           />
           {this.generatePlayer(planeCenter)}
-          {!playerWon && this.getText(lives.toString(), [0, 0.2, -0.4])}
+          {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
           {/* {_.times(10, () => this.generateObstacles())} */}
           {/* pushCounter % 5 === 0 && pushCounter !== 0 && this.generateObstacles() */}
