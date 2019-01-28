@@ -17,15 +17,16 @@ import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
 import specular from './res/res/emoji_smile/emoji_smile_specular.png';
+import { updateScore } from './api';
 
 export default class ARView extends Component {
   state = {
     isTracking: false,
     initialized: false,
     planeCenter: [0, 0, 0],
-    pushCounter: 0
+    pushCounter: 0,
     playerWon: false,
-
+    updatedPosition: 0,
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -71,6 +72,7 @@ export default class ARView extends Component {
 
   getScene = () => {
     const { planeCenter, pushCounter, playerWon } = this.state;
+    const { lives } = this.props.arSceneNavigator.viroAppProps;
     return (
       <>
         <ViroAmbientLight color="#ffffff" />
@@ -112,12 +114,26 @@ export default class ARView extends Component {
           {this.generatePlayer(planeCenter)}
           {!playerWon && this.getText(lives.toString(), [0, 0.2, -0.4])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
-          {/* {_.times(10, () => this.generateObstacles())} */}
-          {/* pushCounter % 5 === 0 && pushCounter !== 0 && this.generateObstacles() */}
+          {/* {_.times(10, () => this.generatetokens())} */}
+          {/* pushCounter % 5 === 0 && pushCounter !== 0 && this.generatetokens() */}
+          {this.generateTokens()}
         </ViroARPlaneSelector>
       </>
     );
   };
+
+  collectToken = (collidedTag) => {
+
+    const { updateScore } = this.props.arSceneNavigator.viroAppProps;
+    if (collidedTag === 'player') {
+      const positions = [[0, 1, -0.2], [-0.2, 1, -0.2]]
+      updateScore();
+      this.setState({ updatedPosition: this.state.updatedPosition + 1 }, () => {
+        this.tokenRef.setNativeProps({ position: positions[this.state.updatedPosition] });
+      })
+
+    }
+  }
 
   playerWins = (collidedTag) => {
     if (collidedTag === 'player') {
@@ -197,10 +213,10 @@ export default class ARView extends Component {
     });
   };
 
-  // generateObstacles = () => (
+  // generatetokens = () => (
   //   <ViroBox
   //     scale={[0.1, 0.1, 0.1]}
-  //     materials={['obstacle']}
+  //     materials={['token']}
   //     physicsBody={{
   //       type: 'Dynamic',
   //       mass: 25,
@@ -210,11 +226,31 @@ export default class ARView extends Component {
   //       friction: 0.75
   //     }}
   //     position={[0, 1, -0.2]}
-  //     ref={obstacle => (this.obstacleRef = obstacle)}
+  //     ref={token => (this.tokenRef = token)}
   //     // onCollision={this.resetPlayer}
-  //     viroTag="obstacle"
+  //     viroTag="token"
   //   />
   // );
+
+  generateTokens = () => {
+
+    return <ViroBox
+      scale={[0.1, 0.1, 0.1]}
+      materials={['token']}
+      physicsBody={{
+        type: 'Dynamic',
+        mass: 25,
+        enabled: true,
+        useGravity: true,
+        restitution: 0.35,
+        friction: 0.75
+      }}
+      position={[0, 1, -0.2]}
+      ref={token => (this.tokenRef = token)}
+      onCollision={this.collectToken}
+      viroTag="token"
+    />
+  };
 
   getText = (text, pos) => (
     <ViroText
@@ -265,12 +301,13 @@ ViroMaterials.createMaterials({
   ground: {
     diffuseColor: '#007CB6E6'
   },
-  obstacle: {
+  token: {
     diffuseColor: 'rgb(165, 47, 202)'
   },
-  obstacleCollision: {
+  tokenCollision: {
     diffuseColor: 'rgb(255, 0, 0)'
   }
 });
+
 
 module.exports = ARView;

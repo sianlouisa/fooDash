@@ -12,8 +12,14 @@ class InitialiseAR extends Component {
   state = {
     apiKey: VIRO_API_KEY,
     lives: 3,
-    gameStarted: false
+    gameStarted: false,
+    score: 0
   };
+
+
+  updateScore = () => {
+    this.setState({ score: this.state.score + 10 });
+  }
 
   reduceLife = () => {
     this.setState({ lives: this.state.lives - 1 });
@@ -28,7 +34,7 @@ class InitialiseAR extends Component {
   };
 
   getARNavigator = () => {
-    const { apiKey, lives, gameStarted } = this.state;
+    const { apiKey, lives, gameStarted, score } = this.state;
     return (
       <>
         <View style={localStyles.flex}>
@@ -39,7 +45,8 @@ class InitialiseAR extends Component {
               lives,
               startGame: this.startGame,
               reduceLife: this.reduceLife,
-              gameOver: this.gameOver
+              gameOver: this.gameOver,
+              updateScore: this.updateScore,
             }}
             initialScene={{ scene: InitialARScene }}
           />
@@ -51,7 +58,7 @@ class InitialiseAR extends Component {
                 </TouchableHighlight>
 
                 <TouchableHighlight style={localStyles.buttons}>
-                  <Text style={localStyles.buttonText}>{`Lives: ${lives}`}</Text>
+                  <Text style={localStyles.buttonText}>{`Score: ${score}`} </Text>
                 </TouchableHighlight>
 
                 <TouchableHighlight style={localStyles.buttons} onClick={this.resetGame}>
