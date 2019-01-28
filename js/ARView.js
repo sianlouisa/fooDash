@@ -5,12 +5,10 @@ import {
   ViroMaterials,
   Viro3DObject,
   ViroQuad,
-  ViroSphere,
   ViroBox,
   ViroText,
   ViroConstants,
-  ViroARPlaneSelector,
-  ViroCamera
+  ViroARPlaneSelector
 } from 'react-viro';
 import TimerMixin from 'react-timer-mixin';
 import { StyleSheet } from 'react-native';
@@ -24,12 +22,9 @@ export default class ARView extends Component {
   state = {
     isTracking: false,
     initialized: false,
-    showController: false,
-    planeHeight: 0,
-    planeWidth: 0,
     planeCenter: [0, 0, 0],
-    anchoredPosition: [0, 0, 0],
-    pushCounter: 0
+    pushCounter: 0,
+    lives: 10
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -56,18 +51,13 @@ export default class ARView extends Component {
       anchor.position[2] + anchor.center[2]
     ];
     this.setState({
-      showController: true,
-      planeHeight: anchor.height,
-      planeWidth: anchor.width,
-      planePosition: anchor.position,
       planeCenter: anchor.center,
-      anchoredPosition,
       pushCounter: 0
     });
   };
 
   getScene = () => {
-    const { planeCenter, pushCounter } = this.state;
+    const { planeCenter, pushCounter, lives } = this.state;
     return (
       <>
         <ViroAmbientLight color="#ffffff" />
@@ -75,7 +65,6 @@ export default class ARView extends Component {
           onPlaneSelected={this.onPlaneSelected}
           ref={component => (this.arPlaneRef = component)}
           maxPlanes={3}
-          // onClick={this.placePlane}
         >
           {/* Renders the playing surface */}
           <ViroQuad
@@ -89,7 +78,7 @@ export default class ARView extends Component {
           {/* Renders the area that respawns character if falls of surface */}
           <ViroQuad
             key="deadSpace"
-            onCollision={this.resetPlayer}
+            onCollision={this.loseLife}
             height={100}
             width={100}
             rotation={[-90, 0, 0]}
@@ -108,12 +97,25 @@ export default class ARView extends Component {
             position={[0, 0, -0.4]}
           />
           {this.generatePlayer(planeCenter)}
+          {this.getText(lives.toString(), [0, 0.2, -0.4])}
           {_.times(10, () => this.generateObstacles())}
           {pushCounter % 5 === 0 && pushCounter !== 0 && this.generateObstacles()}
         </ViroARPlaneSelector>
-        {/* {this.state.showController && this.getController()} */}
       </>
     );
+  };
+
+  loseLife = (collidedTag) => {
+    const { lives } = this.state;
+    if (collidedTag === 'player') {
+      this.setState({ lives: this.state.lives - 1 }, () => {
+        if (lives <= 0) {
+          this.getText('GAME OVER', [0, 0.2, -0.4]);
+        } else {
+          this.resetPlayer();
+        }
+      });
+    }
   };
 
   // When getScene is loaded the emoji will be loaded via this function
@@ -141,22 +143,9 @@ export default class ARView extends Component {
         physicsBody={physicsBody}
         ref={obj => (this.playerRef = obj)}
         onClick={this.pushPlayer()}
+        viroTag="player"
       />
     );
-  };
-
-  handleClick = () => {
-    this.setState(state => ({ pushCounter: state.pushCounter + 1 }));
-  };
-
-  // Function for onClick event of emoji to move around
-  pushPlayer = () => (clickedPos, force) => {
-    this.playerRef.getTransformAsync().then((transform) => {
-      const pushImpulse = [0, force, 0];
-      const pos = transform.position;
-      const pushPosition = [clickedPos[0] - pos[0], clickedPos[1] - pos[1], clickedPos[2] - pos[2]];
-      this.playerRef.applyImpulse(pushImpulse, pushPosition);
-    });
   };
 
   // When emoji hits dead zone or goal it resets
@@ -187,6 +176,20 @@ export default class ARView extends Component {
     });
   };
 
+  handleClick = () => {
+    this.setState(state => ({ pushCounter: state.pushCounter + 1 }));
+  };
+
+  // Function for onClick event of emoji to move around
+  pushPlayer = () => (clickedPos, force) => {
+    this.playerRef.getTransformAsync().then((transform) => {
+      const pushImpulse = [0, force, 0];
+      const pos = transform.position;
+      const pushPosition = [clickedPos[0] - pos[0], clickedPos[1] - pos[1], clickedPos[2] - pos[2]];
+      this.playerRef.applyImpulse(pushImpulse, pushPosition);
+    });
+  };
+
   generateObstacles = () => (
     <ViroBox
       scale={[0.1, 0.1, 0.1]}
@@ -201,68 +204,19 @@ export default class ARView extends Component {
       }}
       position={[0, 1, 0]}
       ref={obstacle => (this.obstacleRef = obstacle)}
-      onCollision={this.resetPlayer}
+      onCollision={this.loseLife}
+      viroTag="obstacle"
     />
   );
 
-  getText = text => (
+  getText = (text, pos) => (
     <ViroText
       text={text}
       scale={[0.5, 0.5, 0.5]}
-      position={[0, 0, -0.1]}
+      position={pos}
       style={styles.helloWorldTextStyle}
     />
   );
-
-  // Was the D pad controller but not rendering currently as it is causing bugs with the plane
-  getController = () => (
-    <ViroCamera active>
-      <ViroSphere
-        onClick={this.handleLeftClick}
-        position={[-0.04, -0.05, -0.2]}
-        materials={['spherematerial']}
-        scale={[0.01, 0.01, 0.01]}
-      />
-      <ViroSphere
-        onClick={this.handleRightClick}
-        position={[-0.04, -0.1, -0.2]}
-        materials={['spherematerial']}
-        scale={[0.01, 0.01, 0.01]}
-      />
-      <ViroSphere
-        onClick={this.handleDownClick}
-        position={[-0.055, -0.075, -0.2]}
-        materials={['spherematerial']}
-        scale={[0.01, 0.01, 0.01]}
-      />
-      <ViroSphere
-        onClick={this.handleUpClick}
-        position={[-0.02, -0.075, -0.2]}
-        materials={['spherematerial']}
-        scale={[0.01, 0.01, 0.01]}
-      />
-    </ViroCamera>
-  );
-
-  handleUpClick = (pos) => {
-    this.playerRef.applyImpulse([0, 0, -0.5], pos);
-    this.setState(state => ({ pushCounter: state.pushCounter + 1 }));
-  };
-
-  handleLeftClick = (pos) => {
-    this.playerRef.applyImpulse([-0.5, 0, 0], pos);
-    this.setState(state => ({ pushCounter: state.pushCounter + 1 }));
-  };
-
-  handleRightClick = (pos) => {
-    this.playerRef.applyImpulse([0.5, 0, 0], pos);
-    this.setState(state => ({ pushCounter: state.pushCounter + 1 }));
-  };
-
-  handleDownClick = (pos) => {
-    this.playerRef.applyImpulse([0, 0, 0.5], pos);
-    this.setState(state => ({ pushCounter: state.pushCounter + 1 }));
-  };
 
   render() {
     const { isTracking, initialized } = this.state;
@@ -276,7 +230,7 @@ export default class ARView extends Component {
         >
           {isTracking
             ? this.getScene()
-            : this.getText(initialized ? 'Initializing' : 'No Tracking')}
+            : this.getText(initialized ? 'Initializing' : 'No Tracking', [0, 0, -0.1])}
         </ViroARScene>
       </>
     );
