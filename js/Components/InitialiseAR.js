@@ -14,6 +14,13 @@ class InitialiseAR extends Component {
     lives: 3,
     gameStarted: false,
     playerWon: false,
+    score: 0,
+  };
+
+
+  updateScore = () => {
+    this.setState({ score: this.state.score + 10 });
+    playerWon: false,
   };
 
   componentDidUpdate() {
@@ -60,6 +67,7 @@ class InitialiseAR extends Component {
               startGame: this.startGame,
               reduceLife: this.reduceLife,
               gameOver: this.gameOver,
+              updateScore: this.updateScore,
               playerWins: this.playerWins,
               playerWon,
             }}
@@ -73,7 +81,7 @@ class InitialiseAR extends Component {
                 </TouchableHighlight>
 
                 <TouchableHighlight style={localStyles.buttons}>
-                  <Text style={localStyles.buttonText}>{`Lives: ${lives}`}</Text>
+                  <Text style={localStyles.buttonText}>{`Score: ${score}`} </Text>
                 </TouchableHighlight>
 
                 <TouchableHighlight style={localStyles.buttons} onClick={this.resetGame}>
