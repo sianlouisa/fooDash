@@ -12,7 +12,7 @@ import {
 } from 'react-viro';
 import TimerMixin from 'react-timer-mixin';
 import { StyleSheet } from 'react-native';
-import _ from 'lodash';
+// import _ from 'lodash';
 import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
@@ -25,8 +25,8 @@ export default class ARView extends Component {
     initialized: false,
     planeCenter: [0, 0, 0],
     pushCounter: 0,
-    playerWon: false,
     updatedPosition: 0,
+
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -47,12 +47,12 @@ export default class ARView extends Component {
   // Once the user has selected the plane set state to the dimensions and position
   // using anchor (this function is sometimes refered to as onAnchorFound on the docs)
   onPlaneSelected = (anchor) => {
-    const { startGame } = this.props.arSceneNavigator.viroAppProps;
-    const anchoredPosition = [
-      anchor.position[0] + anchor.center[0],
-      anchor.position[1] + anchor.center[1],
-      anchor.position[2] + anchor.center[2]
-    ];
+    const { arSceneNavigator: { viroAppProps: { startGame } } } = this.props;
+    // const anchoredPosition = [
+    //   anchor.position[0] + anchor.center[0],
+    //   anchor.position[1] + anchor.center[1],
+    //   anchor.position[2] + anchor.center[2]
+    // ];
     this.setState({
       planeCenter: anchor.center,
       pushCounter: 0
@@ -61,7 +61,7 @@ export default class ARView extends Component {
   };
 
   deadSpace = (collidedTag) => {
-    const { reduceLife, lives } = this.props.arSceneNavigator.viroAppProps;
+    const { arSceneNavigator: { viroAppProps: { reduceLife, lives } } } = this.props;
     if (collidedTag === 'player') {
       reduceLife();
     }
@@ -71,8 +71,9 @@ export default class ARView extends Component {
   };
 
   getScene = () => {
-    const { planeCenter, pushCounter, playerWon } = this.state;
-    const { lives } = this.props.arSceneNavigator.viroAppProps;
+    const { planeCenter } = this.state;
+    const { arSceneNavigator: { viroAppProps: { lives, playerWins, playerWon } } } = this.props;
+
     return (
       <>
         <ViroAmbientLight color="#ffffff" />
@@ -104,7 +105,7 @@ export default class ARView extends Component {
           {/* Renders the area the player must reach to win  */}
           <ViroBox
             key="goal"
-            onCollision={this.playerWins}
+            onCollision={playerWins}
             height={0.05}
             width={0.05}
             scale={[1, 2, 0.1]}
@@ -112,7 +113,7 @@ export default class ARView extends Component {
             position={[0, 0, -0.4]}
           />
           {this.generatePlayer(planeCenter)}
-          {!playerWon && this.getText(lives.toString(), [0, 0.2, -0.4])}
+          {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
           {/* {_.times(10, () => this.generatetokens())} */}
           {/* pushCounter % 5 === 0 && pushCounter !== 0 && this.generatetokens() */}
@@ -122,7 +123,7 @@ export default class ARView extends Component {
     );
   };
 
-  collectToken = (collidedTag) => {
+collectToken = (collidedTag) => {
 
     const { updateScore } = this.props.arSceneNavigator.viroAppProps;
     if (collidedTag === 'player') {
@@ -132,12 +133,6 @@ export default class ARView extends Component {
         this.tokenRef.setNativeProps({ position: positions[this.state.updatedPosition] });
       })
 
-    }
-  }
-
-  playerWins = (collidedTag) => {
-    if (collidedTag === 'player') {
-      this.setState({ playerWon: true })
     }
   }
 

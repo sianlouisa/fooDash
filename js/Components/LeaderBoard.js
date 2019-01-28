@@ -1,8 +1,10 @@
-import React, { Component, Fragment } from 'react';
-import { Text, View, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import React, { Component } from 'react';
+import {
+  Text, View, StyleSheet,
+} from 'react-native';
 // import PropTypes from 'prop-types';
+import { Col, Grid } from 'react-native-easy-grid';
 import * as api from '../api';
-import { Col, Row, Grid } from "react-native-easy-grid";
 
 const styles = StyleSheet.create({
   container: {
@@ -32,15 +34,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   }
 
-})
-
+});
 
 
 class LeaderBoard extends Component {
   state = {
     snapshot: [],
   }
-
 
 
   componentDidMount() {
@@ -54,17 +54,25 @@ class LeaderBoard extends Component {
   }
 
   render() {
-    const score = this.props.getParam('score', '0');
+    const { getParam } = this.props;
+    const score = getParam('score', '0');
     const { snapshot } = this.state;
     return (
       <>
         <View style={styles.container}>
-          <Text>Well done, you scored: {score}</Text>
+          <Text>
+            Well done, you scored:
+            {score}
+          </Text>
           <Text style={styles.title}>Leaderboard</Text>
-          {snapshot.map(doc =>
+          {snapshot.map(doc => (
             <Grid key={doc.id} style={styles.row}>
               <Col style={styles.textPlayer}>
-                <Text> {`${doc.data().playerName}: `} </Text>
+                <Text>
+                  {' '}
+                  {`${doc.data().playerName}: `}
+                  {' '}
+                </Text>
               </Col>
               <Col style={styles.textScore}>
                 <Text>
@@ -72,7 +80,7 @@ class LeaderBoard extends Component {
                 </Text>
               </Col>
             </Grid>
-          )}
+          ))}
         </View>
       </>
     );
