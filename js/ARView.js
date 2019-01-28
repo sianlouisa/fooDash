@@ -98,7 +98,7 @@ export default class ARView extends Component {
           />
           {this.generatePlayer(planeCenter)}
           {this.getText(lives.toString(), [0, 0.2, -0.4])}
-          {_.times(5, () => this.generateObstacles())}
+          {_.times(10, () => this.generateObstacles())}
           {pushCounter % 5 === 0 && pushCounter !== 0 && this.generateObstacles()}
         </ViroARPlaneSelector>
       </>
@@ -189,8 +189,6 @@ export default class ARView extends Component {
       this.playerRef.applyImpulse(pushImpulse, pushPosition);
     });
   };
-
-  // generateMultiple = (n, func) => _.times(n, func())
 
   generateObstacles = () => (
     <ViroBox
