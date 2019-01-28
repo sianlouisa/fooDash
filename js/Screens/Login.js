@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, TextInput, TouchableOpacity, Text, StyleSheet, Image
+  View, TextInput, TouchableOpacity, Text, StyleSheet, Image, AsyncStorage
 } from 'react-native';
 import * as api from '../api';
 // import PropTypes from 'prop-types';
@@ -19,7 +19,8 @@ class Login extends Component {
       api
         .signin(email, password)
         .then(uid => api.getUserDetails(uid))
-        .then(currentPlayer => navigation.navigate('InitialiseAR', { currentPlayer }))
+        .then(currentPlayer => AsyncStorage.setItem('currentPlayer', JSON.stringify(currentPlayer)))
+        .then(() => navigation.navigate('InitialiseAR'))
         .catch(() => {
           this.setState({
             err: true,
