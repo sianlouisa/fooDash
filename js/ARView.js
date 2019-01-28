@@ -5,12 +5,10 @@ import {
   ViroMaterials,
   Viro3DObject,
   ViroQuad,
-  ViroSphere,
   ViroBox,
   ViroText,
   ViroConstants,
-  ViroARPlaneSelector,
-  ViroCamera
+  ViroARPlaneSelector
 } from 'react-viro';
 import TimerMixin from 'react-timer-mixin';
 import { StyleSheet } from 'react-native';
@@ -24,13 +22,10 @@ export default class ARView extends Component {
   state = {
     isTracking: false,
     initialized: false,
-    showController: false,
-    planeHeight: 0,
-    planeWidth: 0,
     planeCenter: [0, 0, 0],
-    anchoredPosition: [0, 0, 0],
     pushCounter: 0,
-    lives: 10
+    lives: 10,
+    pauseGame: false
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -57,12 +52,7 @@ export default class ARView extends Component {
       anchor.position[2] + anchor.center[2]
     ];
     this.setState({
-      showController: true,
-      planeHeight: anchor.height,
-      planeWidth: anchor.width,
-      planePosition: anchor.position,
       planeCenter: anchor.center,
-      anchoredPosition,
       pushCounter: 0
     });
   };
@@ -117,9 +107,15 @@ export default class ARView extends Component {
   };
 
   loseLife = (collidedTag) => {
+    const { lives } = this.state;
     if (collidedTag === 'player') {
-      this.setState({ lives: this.state.lives - 1 });
-      this.resetPlayer();
+      this.setState({ lives: this.state.lives - 1 }, () => {
+        if (lives <= 0) {
+          this.getText('GAME OVER', [0, 0.2, -0.4]);
+        } else {
+          this.resetPlayer();
+        }
+      });
     }
   };
 
@@ -211,7 +207,8 @@ export default class ARView extends Component {
       }}
       position={[0, 1, 0]}
       ref={obstacle => (this.obstacleRef = obstacle)}
-      onCollision={this.resetPlayer}
+      onCollision={this.loseLife}
+      viroTag="obstacle"
     />
   );
 
