@@ -124,16 +124,16 @@ export default class ARView extends Component {
     );
   };
 
-collectToken = (collidedTag) => {
-  const { arSceneNavigator: { viroAppProps: { updateScore } } } = this.props;
-  if (collidedTag === 'player') {
-    const positions = [[0, 1, -0.2], [-0.2, 1, -0.2]];
-    updateScore();
-    this.setState({ updatedPosition: this.state.updatedPosition + 1 }, () => {
-      this.tokenRef.setNativeProps({ position: positions[this.state.updatedPosition] });
-    });
+  collectToken = (collidedTag) => {
+    const { arSceneNavigator: { viroAppProps: { updateScore } } } = this.props;
+    if (collidedTag === 'player') {
+      const positions = [[0, 1, -0.2], [-0.2, 1, -0.2]];
+      updateScore();
+      this.setState({ updatedPosition: this.state.updatedPosition + 1 }, () => {
+        this.tokenRef.setNativeProps({ position: positions[this.state.updatedPosition] });
+      });
+    }
   }
-}
 
   // When getScene is loaded the emoji will be loaded via this function
   generatePlayer = () => {
@@ -207,77 +207,76 @@ collectToken = (collidedTag) => {
     });
   };
 
-generateObstacles = (position) => {
-  return (
-    <ViroBox
-      scale={[0.1, 0.1, 0.1]}
-      materials={['obstacle']}
-      physicsBody={{
-        type: 'Dynamic',
-        mass: 25,
-        enabled: true,
-        useGravity: true,
-        restitution: 0,
-        friction: 0.75
-      }}
-      position={position}
-      ref={obstacle => (this.obstacleRef = obstacle)}
-      // onCollision={this.resetPlayer}
-      viroTag="obstacle"
-    />
-  );
-};
-
-generateTokens = () => {
-  return (
-    <ViroBox
-      scale={[0.1, 0.1, 0.1]}
-      materials={['token']}
-      physicsBody={{
-        type: 'Dynamic',
-        mass: 25,
-        enabled: true,
-        useGravity: true,
-        restitution: 0.35,
-        friction: 0.75
-      }}
-      position={[0, 1, -0.2]}
-      ref={token => (this.tokenRef = token)}
-      onCollision={this.collectToken}
-      viroTag="token"
-    />
-  );
-};
-
-getText = (text, pos) => {
-  return (
-    <ViroText
-      text={text}
-      scale={[0.5, 0.5, 0.5]}
-      position={pos}
-      style={styles.helloWorldTextStyle}
-    />
-  );
-};
-
-render() {
-  const { isTracking, initialized } = this.state;
-  return (
-    <>
-      <ViroARScene
-        onTrackingUpdated={this.onInitialized}
-        physicsWorld={{
-          gravity: [0, -9.81, 0]
+  generateObstacles = (position) => {
+    return (
+      <ViroBox
+        scale={[0.1, 0.1, 0.1]}
+        materials={['obstacle']}
+        physicsBody={{
+          type: 'Dynamic',
+          mass: 25,
+          enabled: true,
+          useGravity: true,
+          restitution: 0,
+          friction: 0.75
         }}
-      >
-        {isTracking
-          ? this.getScene()
-          : this.getText(initialized ? 'Initializing' : 'No Tracking', [0, 0, -0.1])}
+        position={position}
+        ref={obstacle => (this.obstacleRef = obstacle)}
+      // onCollision={this.resetPlayer}
+        viroTag="obstacle"
+      />
+    );
+  };
 
-      </ViroARScene>
-    </>
-  );
-}
+  generateTokens = () => {
+    return (
+      <ViroBox
+        scale={[0.1, 0.1, 0.1]}
+        materials={['token']}
+        physicsBody={{
+          type: 'Dynamic',
+          mass: 25,
+          enabled: true,
+          useGravity: true,
+          restitution: 0.35,
+          friction: 0.75
+        }}
+        position={[0, 1, -0.2]}
+        ref={token => (this.tokenRef = token)}
+        onCollision={this.collectToken}
+        viroTag="token"
+      />
+    );
+  };
+
+  getText = (text, pos) => {
+    return (
+      <ViroText
+        text={text}
+        scale={[0.5, 0.5, 0.5]}
+        position={pos}
+        style={styles.helloWorldTextStyle}
+      />
+    );
+  };
+
+  render() {
+    const { isTracking, initialized } = this.state;
+    return (
+      <>
+        <ViroARScene
+          onTrackingUpdated={this.onInitialized}
+          physicsWorld={{
+            gravity: [0, -9.81, 0]
+          }}
+        >
+          {isTracking
+            ? this.getScene()
+            : this.getText(initialized ? 'Initializing' : 'No Tracking', [0, 0, -0.1])}
+        </ViroARScene>
+      </>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
