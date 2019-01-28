@@ -12,11 +12,22 @@ class InitialiseAR extends Component {
   state = {
     apiKey: VIRO_API_KEY,
     lives: 3,
-    gameStarted: false
+    gameStarted: false,
+    playerWon: false,
   };
 
+  componentDidUpdate() {
+    const { playerWon } = this.state;
+    if (playerWon) {
+      setTimeout(() => {
+        const { navigation: { navigate } } = this.props;
+        navigate('PlayAgain');
+      }, 2000);
+    }
+  }
+
   reduceLife = () => {
-    this.setState({ lives: this.state.lives - 1 });
+    this.setState(state => ({ lives: state.lives - 1 }));
   };
 
   startGame = () => {
@@ -27,8 +38,17 @@ class InitialiseAR extends Component {
     this.setState({ lives: 3 });
   };
 
+  playerWins = (collidedTag) => {
+    if (collidedTag === 'player') {
+      this.setState({ playerWon: true });
+    }
+  }
+
+
   getARNavigator = () => {
-    const { apiKey, lives, gameStarted } = this.state;
+    const {
+      apiKey, lives, gameStarted, playerWon
+    } = this.state;
     return (
       <>
         <View style={localStyles.flex}>
@@ -39,7 +59,9 @@ class InitialiseAR extends Component {
               lives,
               startGame: this.startGame,
               reduceLife: this.reduceLife,
-              gameOver: this.gameOver
+              gameOver: this.gameOver,
+              playerWins: this.playerWins,
+              playerWon,
             }}
             initialScene={{ scene: InitialARScene }}
           />
