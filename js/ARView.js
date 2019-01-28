@@ -23,9 +23,9 @@ export default class ARView extends Component {
     isTracking: false,
     initialized: false,
     planeCenter: [0, 0, 0],
-    pushCounter: 0,
-    lives: 3,
+    pushCounter: 0
     playerWon: false,
+
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -46,6 +46,7 @@ export default class ARView extends Component {
   // Once the user has selected the plane set state to the dimensions and position
   // using anchor (this function is sometimes refered to as onAnchorFound on the docs)
   onPlaneSelected = (anchor) => {
+    const { startGame } = this.props.arSceneNavigator.viroAppProps;
     const anchoredPosition = [
       anchor.position[0] + anchor.center[0],
       anchor.position[1] + anchor.center[1],
@@ -55,10 +56,21 @@ export default class ARView extends Component {
       planeCenter: anchor.center,
       pushCounter: 0
     });
+    startGame();
+  };
+
+  deadSpace = (collidedTag) => {
+    const { reduceLife, lives } = this.props.arSceneNavigator.viroAppProps;
+    if (collidedTag === 'player') {
+      reduceLife();
+    }
+    if (lives !== 1) {
+      this.resetPlayer();
+    }
   };
 
   getScene = () => {
-    const { planeCenter, pushCounter, lives, playerWon } = this.state;
+    const { planeCenter, pushCounter, playerWon } = this.state;
     return (
       <>
         <ViroAmbientLight color="#ffffff" />
@@ -79,7 +91,7 @@ export default class ARView extends Component {
           {/* Renders the area that respawns character if falls of surface */}
           <ViroQuad
             key="deadSpace"
-            onCollision={this.loseLife}
+            onCollision={this.deadSpace}
             height={100}
             width={100}
             rotation={[-90, 0, 0]}
@@ -100,23 +112,11 @@ export default class ARView extends Component {
           {this.generatePlayer(planeCenter)}
           {!playerWon && this.getText(lives.toString(), [0, 0.2, -0.4])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
-          {lives <= 0 && this.getText('GAME OVER', [0, 0.5, -0.1])}
           {/* {_.times(10, () => this.generateObstacles())} */}
-          {pushCounter % 5 === 0 && pushCounter !== 0 && this.generateObstacles()}
+          {/* pushCounter % 5 === 0 && pushCounter !== 0 && this.generateObstacles() */}
         </ViroARPlaneSelector>
       </>
     );
-  };
-
-  loseLife = (collidedTag) => {
-    const { lives } = this.state;
-    if (collidedTag === 'player') {
-      this.setState({ lives: this.state.lives - 1 }, () => {
-        if (lives !== 1) {
-          this.resetPlayer();
-        }
-      });
-    }
   };
 
   playerWins = (collidedTag) => {
