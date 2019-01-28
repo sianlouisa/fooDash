@@ -17,8 +17,8 @@ class InitialiseAR extends Component {
   };
 
   componentDidUpdate() {
-    const { playerWon } = this.state;
-    if (playerWon) {
+    const { playerWon, lives } = this.state;
+    if (playerWon || !lives) {
       setTimeout(() => {
         const { navigation: { navigate } } = this.props;
         navigate('PlayAgain');
