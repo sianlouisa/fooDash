@@ -6,6 +6,7 @@ import StartScreen from './js/Screens/StartScreen';
 import PlayAgain from './js/Screens/PlayAgain';
 import Instructions from './js/Screens/Instructions';
 import InitialiseAR from './js/Components/InitialiseAR';
+import AuthLoadingScreen from './js/Screens/AuthLoadingScreen';
 
 export default class App extends Component {
   state = {};
@@ -23,9 +24,10 @@ const SwitchNav = createSwitchNavigator(
     Login,
     Instructions,
     InitialiseAR,
+    AuthLoadingScreen,
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: 'AuthLoadingScreen',
   }
 );
 

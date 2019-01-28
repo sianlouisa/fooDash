@@ -65,8 +65,6 @@ class InitialiseAR extends Component {
     );
   };
 
-  // currentuserdetails is passed down in navigation params
-
   render() {
     return this.getARNavigator();
   }

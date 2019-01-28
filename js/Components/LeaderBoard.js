@@ -34,10 +34,14 @@ const styles = StyleSheet.create({
 
 })
 
+
+
 class LeaderBoard extends Component {
   state = {
     snapshot: [],
   }
+
+
 
   componentDidMount() {
     api
@@ -50,10 +54,12 @@ class LeaderBoard extends Component {
   }
 
   render() {
+    const score = this.props.getParam('score', '0');
     const { snapshot } = this.state;
     return (
       <>
         <View style={styles.container}>
+          <Text>Well done, you scored: {score}</Text>
           <Text style={styles.title}>Leaderboard</Text>
           {snapshot.map(doc =>
             <Grid key={doc.id} style={styles.row}>
