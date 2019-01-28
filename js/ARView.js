@@ -69,7 +69,7 @@ export default class ARView extends Component {
 
   getScene = () => {
     const { planeCenter } = this.state;
-    const { arSceneNavigator: { viroAppProps: { lives, playerWins, playerWon } } } = this.props;
+    const { arSceneNavigator: { viroAppProps: { lives, playerWins, playerWon, position } } } = this.props;
 
     return (
       <>
@@ -110,6 +110,7 @@ export default class ARView extends Component {
             position={[0, 0, -0.4]}
           />
           {this.generatePlayer(planeCenter)}
+          {this.generateObstacles(position)}
           {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
           {/* {_.times(10, () => this.generateObstacles())} */}
@@ -191,24 +192,24 @@ export default class ARView extends Component {
     });
   };
 
-  // generateObstacles = () => (
-  //   <ViroBox
-  //     scale={[0.1, 0.1, 0.1]}
-  //     materials={['obstacle']}
-  //     physicsBody={{
-  //       type: 'Dynamic',
-  //       mass: 25,
-  //       enabled: true,
-  //       useGravity: true,
-  //       restitution: 0.35,
-  //       friction: 0.75
-  //     }}
-  //     position={[0, 1, -0.2]}
-  //     ref={obstacle => (this.obstacleRef = obstacle)}
-  //     // onCollision={this.resetPlayer}
-  //     viroTag="obstacle"
-  //   />
-  // );
+  generateObstacles = (position) => (
+    <ViroBox
+      scale={[0.1, 0.1, 0.1]}
+      materials={['obstacle']}
+      physicsBody={{
+        type: 'Dynamic',
+        mass: 25,
+        enabled: true,
+        useGravity: true,
+        restitution: 0,
+        friction: 0.75
+      }}
+      position={position}
+      ref={obstacle => (this.obstacleRef = obstacle)}
+      // onCollision={this.resetPlayer}
+      viroTag="obstacle"
+    />
+  );
 
   getText = (text, pos) => (
     <ViroText

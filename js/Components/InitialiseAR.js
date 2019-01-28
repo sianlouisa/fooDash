@@ -14,7 +14,16 @@ class InitialiseAR extends Component {
     lives: 3,
     gameStarted: false,
     playerWon: false,
+    position: [0.1, 1, -0.2],
   };
+
+  componentDidMount() {
+    setInterval(() => {
+      let timesBy = Math.round(Math.random()) ? 0.5 : -0.5;
+      console.warn(timesBy)
+      this.setState({ position: [Math.random() * timesBy, 1, Math.random() * -0.9] })
+    }, 3000)
+  }
 
   componentDidUpdate() {
     const { playerWon, lives } = this.state;
@@ -47,7 +56,7 @@ class InitialiseAR extends Component {
 
   getARNavigator = () => {
     const {
-      apiKey, lives, gameStarted, playerWon
+      apiKey, lives, gameStarted, playerWon, position
     } = this.state;
     return (
       <>
@@ -62,6 +71,7 @@ class InitialiseAR extends Component {
               gameOver: this.gameOver,
               playerWins: this.playerWins,
               playerWon,
+              position
             }}
             initialScene={{ scene: InitialARScene }}
           />
