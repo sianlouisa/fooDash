@@ -8,7 +8,7 @@ import {
   ViroBox,
   ViroText,
   ViroConstants,
-  ViroARPlaneSelector
+  ViroARPlaneSelector,
 } from 'react-viro';
 import TimerMixin from 'react-timer-mixin';
 import { StyleSheet } from 'react-native';
@@ -36,7 +36,6 @@ export default class ARView extends Component {
     isTracking: false,
     initialized: false,
     planeCenter: [0, 0, 0],
-    pushCounter: 0,
     updatedPosition: 0
   };
 
@@ -68,7 +67,6 @@ export default class ARView extends Component {
     // ];
     this.setState({
       planeCenter: anchor.center,
-      pushCounter: 0
     });
     startGame();
   };
@@ -148,11 +146,11 @@ export default class ARView extends Component {
           />
           {this.generatePlayer(planeCenter)}
           {this.generateStaticObstacles(staticPosition)}
-          {/* {this.generateDynamicObstacles(dynamicPosition)} */}
+          {this.generateDynamicObstacle([0, 1, 0.4])}
+          {this.generateDynamicObstacle([0, 1, 0.2])}
+          {this.generateDynamicObstacle([-0.4, 1, 0])}
           {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
-          {/* {_.times(10, () => this.generatetokens())} */}
-          {/* pushCounter % 5 === 0 && pushCounter !== 0 && this.generatetokens() */}
           {this.generateTokens()}
         </ViroARPlaneSelector>
       </>
@@ -200,10 +198,6 @@ export default class ARView extends Component {
     });
   };
 
-  handleClick = () => {
-    this.setState(state => ({ pushCounter: state.pushCounter + 1 }));
-  };
-
   pushPlayer = () => (clickedPos, force) => {
     this.playerRef.getTransformAsync().then((transform) => {
       const pushImpulse = [0, force, 0];
@@ -230,10 +224,10 @@ export default class ARView extends Component {
     />
   )
 
-  generateDynamicObstacles = position => (
+  generateDynamicObstacle = position => (
     <ViroBox
       scale={[0.1, 0.1, 0.1]}
-      materials={['obstacle']}
+      materials={['fallingObstacle']}
       physicsBody={{
         type: 'Dynamic',
         mass: 25,
@@ -244,7 +238,7 @@ export default class ARView extends Component {
       }}
       position={position}
       ref={obstacle => (this.obstacleRef = obstacle)}
-      // onCollision={this.resetPlayer}
+      onCollision={this.handleObstacleCollision}
       viroTag="obstacle"
     />
   )
@@ -321,6 +315,9 @@ ViroMaterials.createMaterials({
   },
   obstacle: {
     diffuseColor: 'rgb(0, 0, 255)'
+  },
+  fallingObstacle: {
+    diffuseColor: 'rgb(255, 0, 0)'
   },
   tokenCollision: {
     diffuseColor: 'rgb(255, 0, 0)'

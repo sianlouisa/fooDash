@@ -15,7 +15,7 @@ class InitialiseAR extends Component {
     gameStarted: false,
     playerWon: false,
     staticPosition: [0.1, 0, -0.2],
-    dynamicPosition: [0.2, 1, -0.4],
+    dynamicPosition: [0.2, 3, -0.4],
     score: 0
   };
 
@@ -48,11 +48,10 @@ class InitialiseAR extends Component {
   startGame = () => {
     this.setState({ gameStarted: true });
     setInterval(() => {
-      this.setState({ staticPosition: this.generateRandomPosition(0), dynamicPosition: this.generateRandomPosition(3) });
-    }, 10000);
-    // setInterval(() => {
-    //   this.setState({ dynamicPosition: this.generateRandomPosition(3) });
-    // }, 5000);
+      this.setState({
+        staticPosition: this.generateRandomPosition(0)
+      });
+    }, 5000);
   };
 
   resetGame = () => {
