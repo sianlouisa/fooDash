@@ -1,12 +1,9 @@
 import Leaderboard from 'react-native-leaderboard';
-import {
-  View, Text, StyleSheet, ImageBackground
-} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import React, { Component } from 'react';
 import * as api from '../api';
-import background from '../res/jf-background.jpg';
-import PlayButton from './PlayButton';
-import ToMenuBtn from './ToMenuBtn';
+import PlayAgainBtn from '../Components/PlayAgainBtn';
+import ToMenuBtn from '../Components/ToMenuBtn';
 
 class LeaderBoard extends Component {
   state = {
@@ -40,60 +37,79 @@ class LeaderBoard extends Component {
     // const score = getParam('score', '0');
     return (
       <>
-        <ImageBackground source={background} style={styles.backgroundImg}>
-          <View colors={['#1da2c6', '#1695b7']} style={styles.container}>
-            <Text style={styles.header}>Leaderboard</Text>
-            <View style={styles.subHeader}>
-              <Text style={styles.name}>Name</Text>
-              <Text style={styles.score}>Score</Text>
-            </View>
-            <Leaderboard
-              data={this.sortData()}
-              sortBy="highScore"
-              labelBy="userName"
-              containerStyle={styles.leaderboardContainer}
-            />
-            <View style={styles.buttonContainer}>
-              <PlayButton
-                buttonText="Play Again"
-                navigateToPlay={this.navigateToPlay}
-                buttonStyles={buttonStyles}
-              />
-              <ToMenuBtn
-                buttonText="Main Menu"
-                navigateToMenu={this.navigateToMenu}
-                buttonStyles={buttonStyles}
-              />
-            </View>
+        <View colors={['#1da2c6', '#1695b7']} style={styles.container}>
+          <Text style={styles.header}>Leaderboard</Text>
+          <View style={styles.subHeader}>
+            <Text style={styles.name}>Name</Text>
+            <Text style={styles.score}>Score</Text>
           </View>
-        </ImageBackground>
+          <Leaderboard
+            data={this.sortData()}
+            sortBy="highScore"
+            labelBy="userName"
+            containerStyle={styles.leaderboardContainer}
+          />
+          <View style={buttonStyles.main}>
+            <PlayAgainBtn
+              buttonText="Play Again"
+              navigateToPlay={this.navigateToPlay}
+              buttonStyles={buttonStyles}
+            />
+            <ToMenuBtn
+              buttonText="Main Menu"
+              navigateToMenu={this.navigateToMenu}
+              buttonStyles={buttonStyles}
+            />
+          </View>
+        </View>
       </>
     );
   }
 }
 
 const buttonStyles = StyleSheet.create({
-  toMenu: {
-    textAlign: 'right',
-    fontSize: 24,
-    marginLeft: 70,
-    borderWidth: 1,
-    borderColor: '#000000'
+  main: {
+    borderRadius: 30,
+    borderBottomWidth: 1,
+    width: 100,
+    height: 45,
+    marginBottom: 100,
+    flexDirection: 'column',
+    alignItems: 'center',
+    opacity: 0.8
   },
-  toPlay: {
-    textAlign: 'left',
-    fontSize: 24,
-    marginRight: 70,
-    borderWidth: 1,
-    borderColor: '#000000'
+  inputs: {
+    height: 45,
+    marginLeft: 16,
+    borderBottomColor: '#FFFFFF',
+    flex: 1
+  },
+  buttonContainer: {
+    height: 45,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    width: 250,
+    borderRadius: 30,
+    backgroundColor: '#00b5ec'
+  },
+  buttonText: {
+    fontFamily: 'Arial',
+    fontSize: 20,
+    color: 'white'
   }
 });
 
 const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
-    flexDirection: 'row',
-    alignContent: 'center'
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignContent: 'center',
+
+    borderWidth: 1,
+    borderColor: 'black'
   },
   container: {
     padding: 15,

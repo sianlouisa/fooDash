@@ -12,8 +12,8 @@ class ToMenuBtn extends Component {
   render() {
     const { navigateToMenu, buttonStyles } = this.props;
     return (
-      <TouchableOpacity onPress={() => navigateToMenu()}>
-        <Text style={buttonStyles.toMenu}>Menu</Text>
+      <TouchableOpacity onPress={() => navigateToMenu()} style={buttonStyles.buttonContainer}>
+        <Text style={buttonStyles.buttonText}>Menu</Text>
       </TouchableOpacity>
     );
   }
