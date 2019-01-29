@@ -37,17 +37,17 @@ class LeaderBoard extends Component {
     // const score = getParam('score', '0');
     return (
       <>
-        <View colors={['#1da2c6', '#1695b7']} style={styles.container}>
-          <Text style={styles.header}>Leaderboard</Text>
-          <View style={styles.subHeader}>
-            <Text style={styles.name}>Name</Text>
-            <Text style={styles.score}>Score</Text>
+        <View colors={['#1da2c6', '#1695b7']} style={leaderboardStyles.container}>
+          <Text style={leaderboardStyles.header}>Leaderboard</Text>
+          <View style={leaderboardStyles.nameScoreContainer}>
+            <Text style={leaderboardStyles.name}>Name</Text>
+            <Text style={leaderboardStyles.score}>Score</Text>
           </View>
           <Leaderboard
             data={this.sortData()}
             sortBy="highScore"
             labelBy="userName"
-            containerStyle={styles.leaderboardContainer}
+            containerStyle={leaderboardStyles.leaderboardContainer}
           />
           <View style={buttonStyles.main}>
             <PlayAgainBtn
@@ -75,8 +75,7 @@ const buttonStyles = StyleSheet.create({
     height: 45,
     marginBottom: 100,
     flexDirection: 'column',
-    alignItems: 'center',
-    opacity: 0.8
+    alignItems: 'center'
   },
   inputs: {
     height: 45,
@@ -90,65 +89,44 @@ const buttonStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
-    width: 250,
+    width: 200,
     borderRadius: 30,
     backgroundColor: '#00b5ec'
   },
   buttonText: {
-    fontFamily: 'Arial',
-    fontSize: 20,
     color: 'white'
   }
 });
 
-const styles = StyleSheet.create({
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignContent: 'center',
-
-    borderWidth: 1,
-    borderColor: 'black'
-  },
+const leaderboardStyles = StyleSheet.create({
   container: {
     padding: 15,
     paddingTop: 35,
     alignItems: 'center',
     height: '100%'
   },
-  leaderboardContainer: {
-    width: '100%',
-    textAlign: 'center',
-    margin: 'auto',
-    padding: '10%',
-    paddingTop: 0
-  },
-  backgroundImg: {
-    width: '100%',
-    height: '100%'
-  },
-  header: { fontSize: 25, color: 'black' },
-  subHeader: {
+  leaderboardContainer: {},
+  nameScoreContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 15,
-    marginTop: 20
+    marginBottom: 20
+  },
+  header: {
+    fontSize: 40,
+    marginBottom: 20
   },
   name: {
-    color: 'black',
-    fontSize: 25,
-    flex: 1,
-    textAlign: 'right',
-    marginRight: 80
-  },
-  score: {
-    color: 'black',
-    fontSize: 25,
     flex: 1,
     textAlign: 'left',
-    marginLeft: 80
+    fontSize: 24,
+    paddingLeft: 10
+  },
+  score: {
+    flex: 1,
+    textAlign: 'right',
+    fontSize: 24,
+    paddingRight: 10
   }
 });
 

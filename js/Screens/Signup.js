@@ -8,10 +8,8 @@ import {
   StyleSheet,
   Image,
   AsyncStorage,
-  ImageBackground
 } from 'react-native';
 import * as api from '../api';
-import background from '../res/jf-background.jpg';
 
 class Signup extends Component {
   state = {
@@ -40,7 +38,7 @@ class Signup extends Component {
         .signup(email, password)
         .then(uid => api.addUser(uid, username))
         .then(uid => AsyncStorage('currentPlayer', JSON.stringify({ uid, username, score: 0 })))
-        .then(() => navigation.navigate('InitialiseAR'))
+        .then(() => navigation.navigate('StartScreen'))
         .catch(() => {
           this.setState({
             err: true,
@@ -91,92 +89,86 @@ class Signup extends Component {
 
     return (
       <>
-        <ImageBackground source={background} style={styles.backgroundImg}>
-          <View style={styles.container}>
-            <View style={styles.signupInputs}>
-              <TextInput
-                style={styles.inputs}
-                onChangeText={text => this.setState({ username: text })}
-                value={username}
-                placeholder="Enter Username"
-                placeholderTextColor="#00b5ec"
-                textContentType="username"
-              />
-            </View>
-            <View style={styles.signupInputs}>
-              <Image style={styles.inputIcon} source={{ uri: emailIcon }} />
-              <TextInput
-                style={styles.inputs}
-                onChangeText={text => this.setState({ email: text })}
-                value={email}
-                placeholder="Enter Email"
-                placeholderTextColor="#00b5ec"
-                keyboardType="email-address"
-                textContentType="emailAddress"
-                underlineColorAndroid="transparent"
-              />
-            </View>
-            <View style={styles.signupInputs}>
-              <TextInput
-                style={styles.inputs}
-                onChangeText={text => this.setState({ confirmEmail: text })}
-                value={confirmEmail}
-                placeholder="Re-enter Email"
-                placeholderTextColor="#00b5ec"
-                keyboardType="email-address"
-                textContentType="emailAddress"
-              />
-            </View>
-            <View style={styles.signupInputs}>
-              <Image style={styles.inputIcon} source={{ uri: passwordIcon }} />
-              <TextInput
-                style={styles.inputs}
-                onChangeText={text => this.setState({ password: text })}
-                value={password}
-                secureTextEntry
-                placeholder="Enter Password"
-                placeholderTextColor="#00b5ec"
-                textContentType="password"
-                underlineColorAndroid="transparent"
-              />
-            </View>
-            <View style={styles.signupInputs}>
-              <TextInput
-                style={styles.inputs}
-                onChangeText={text => this.setState({ confirmPassword: text })}
-                value={confirmPassword}
-                secureTextEntry
-                placeholder="Re-enter Password"
-                placeholderTextColor="#00b5ec"
-                textContentType="password"
-                underlineColorAndroid="transparent"
-              />
-            </View>
-            <TouchableOpacity
-              onPress={this.handleAuth}
-              style={[styles.buttonContainer, styles.button]}
-            >
-              <Text style={styles.signupText}>Hello Me Again</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Login')}
-              style={[styles.buttonContainer, styles.button]}
-            >
-              <Text style={styles.signupText}>Back To Login</Text>
-            </TouchableOpacity>
-            {err && <Text style={styles.error}>Ooops</Text>}
+        <View style={styles.container}>
+          <View style={styles.signupInputs}>
+            <TextInput
+              style={styles.inputs}
+              onChangeText={text => this.setState({ username: text })}
+              value={username}
+              placeholder="Enter Username"
+              placeholderTextColor="#00b5ec"
+              textContentType="username"
+            />
           </View>
-        </ImageBackground>
+          <View style={styles.signupInputs}>
+            <Image style={styles.inputIcon} source={{ uri: emailIcon }} />
+            <TextInput
+              style={styles.inputs}
+              onChangeText={text => this.setState({ email: text })}
+              value={email}
+              placeholder="Enter Email"
+              placeholderTextColor="#00b5ec"
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              underlineColorAndroid="transparent"
+            />
+          </View>
+          <View style={styles.signupInputs}>
+            <TextInput
+              style={styles.inputs}
+              onChangeText={text => this.setState({ confirmEmail: text })}
+              value={confirmEmail}
+              placeholder="Re-enter Email"
+              placeholderTextColor="#00b5ec"
+              keyboardType="email-address"
+              textContentType="emailAddress"
+            />
+          </View>
+          <View style={styles.signupInputs}>
+            <Image style={styles.inputIcon} source={{ uri: passwordIcon }} />
+            <TextInput
+              style={styles.inputs}
+              onChangeText={text => this.setState({ password: text })}
+              value={password}
+              secureTextEntry
+              placeholder="Enter Password"
+              placeholderTextColor="#00b5ec"
+              textContentType="password"
+              underlineColorAndroid="transparent"
+            />
+          </View>
+          <View style={styles.signupInputs}>
+            <TextInput
+              style={styles.inputs}
+              onChangeText={text => this.setState({ confirmPassword: text })}
+              value={confirmPassword}
+              secureTextEntry
+              placeholder="Re-enter Password"
+              placeholderTextColor="#00b5ec"
+              textContentType="password"
+              underlineColorAndroid="transparent"
+            />
+          </View>
+          <TouchableOpacity
+            onPress={this.handleAuth}
+            style={[styles.buttonContainer, styles.button]}
+          >
+            <Text style={styles.signupText}>Hello Me Again</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Login')}
+            style={[styles.buttonContainer, styles.button]}
+          >
+            <Text style={styles.signupText}>Back To Login</Text>
+          </TouchableOpacity>
+          {err && <Text style={styles.error}>Ooops</Text>}
+        </View>
       </>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  backgroundImg: {
-    width: '100%',
-    height: '100%'
-  },
   container: {
     flex: 1,
     justifyContent: 'center',

@@ -6,12 +6,10 @@ import {
   Text,
   StyleSheet,
   Image,
-  AsyncStorage,
-  ImageBackground
+  AsyncStorage
 } from 'react-native';
 import * as api from '../api';
 // import PropTypes from 'prop-types';
-import background from '../res/jf-background.jpg';
 
 class Login extends Component {
   state = {
@@ -28,7 +26,7 @@ class Login extends Component {
         .signin(email, password)
         .then(uid => api.getUserDetails(uid))
         .then(currentPlayer => AsyncStorage.setItem('currentPlayer', JSON.stringify(currentPlayer)))
-        .then(() => navigation.navigate('InitialiseAR'))
+        .then(() => navigation.navigate('StartScreen'))
         .catch(() => {
           this.setState({
             err: true,
@@ -45,59 +43,50 @@ class Login extends Component {
     const passwordIcon = 'https://png.icons8.com/key-2/ultraviolet/50/3498db';
 
     return (
-      <ImageBackground source={background} style={styles.backgroundImg}>
-        <View style={styles.container}>
-          <View style={styles.loginInputs}>
-            <Image style={styles.inputIcon} source={{ uri: emailIcon }} />
-            <TextInput
-              style={styles.inputs}
-              keyboardType="email-address"
-              textContentType="emailAddress"
-              underlineColorAndroid="transparent"
-              onChangeText={text => this.setState({ email: text })}
-              value={email}
-              placeholder="Enter Email"
-              placeholderTextColor="#00b5ec"
-            />
-          </View>
-          <View style={styles.loginInputs}>
-            <Image style={styles.inputIcon} source={{ uri: passwordIcon }} />
-            <TextInput
-              style={styles.inputs}
-              textContentType="password"
-              underlineColorAndroid="transparent"
-              onChangeText={text => this.setState({ password: text })}
-              value={password}
-              secureTextEntry
-              placeholder="Enter Password"
-              placeholderTextColor="#00b5ec"
-            />
-          </View>
-          <TouchableOpacity
-            onPress={this.handleAuth}
-            style={[styles.buttonContainer, styles.button]}
-          >
-            <Text style={styles.loginText}>Login</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Signup')}
-            style={[styles.buttonContainer, styles.button]}
-          >
-            <Text style={styles.loginText}>Sign up</Text>
-          </TouchableOpacity>
-          {err && <Text style={styles.error}>Error</Text>}
-          {/* </ImageBackground> */}
+      <View style={styles.container}>
+        <View style={styles.loginInputs}>
+          <Image style={styles.inputIcon} source={{ uri: emailIcon }} />
+          <TextInput
+            style={styles.inputs}
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            underlineColorAndroid="transparent"
+            onChangeText={text => this.setState({ email: text })}
+            value={email}
+            placeholder="Enter Email"
+            placeholderTextColor="#00b5ec"
+          />
         </View>
-      </ImageBackground>
+        <View style={styles.loginInputs}>
+          <Image style={styles.inputIcon} source={{ uri: passwordIcon }} />
+          <TextInput
+            style={styles.inputs}
+            textContentType="password"
+            underlineColorAndroid="transparent"
+            onChangeText={text => this.setState({ password: text })}
+            value={password}
+            secureTextEntry
+            placeholder="Enter Password"
+            placeholderTextColor="#00b5ec"
+          />
+        </View>
+        <TouchableOpacity onPress={this.handleAuth} style={[styles.buttonContainer, styles.button]}>
+          <Text style={styles.loginText}>Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Signup')}
+          style={[styles.buttonContainer, styles.button]}
+        >
+          <Text style={styles.loginText}>Sign up</Text>
+        </TouchableOpacity>
+        {err && <Text style={styles.error}>Error</Text>}
+        {/* </ImageBackground> */}
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  backgroundImg: {
-    width: '100%',
-    height: '100%'
-  },
   container: {
     flex: 1,
     justifyContent: 'center',
