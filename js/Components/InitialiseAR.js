@@ -14,16 +14,10 @@ class InitialiseAR extends Component {
     lives: 3,
     gameStarted: false,
     playerWon: false,
-    position: [0.1, 1, -0.2],
+    staticPosition: [0.1, 0, -0.2],
+    dynamicPosition: [0.2, 1, -0.4],
     score: 0
   };
-
-  componentDidMount() {
-    setInterval(() => {
-      const timesBy = Math.round(Math.random()) ? 0.5 : -0.5;
-      this.setState({ position: [Math.random() * timesBy, 1, Math.random() * -0.9] });
-    }, 3000);
-  }
 
   componentDidUpdate() {
     const { playerWon, lives } = this.state;
@@ -37,8 +31,14 @@ class InitialiseAR extends Component {
     }
   }
 
+  generateRandomPosition = (y) => {
+    const timesByX = Math.round(Math.random()) ? 0.4 : -0.4;
+    const timesByZ = Math.round(Math.random()) ? 0.4 : -0.4;
+    return [Math.random() * timesByX, y, Math.random() * timesByZ];
+  }
+
   updateScore = () => {
-    this.setState({ score: this.state.score + 10 });
+    this.setState(({ score }) => ({ score: score + 10 }));
   };
 
   reduceLife = () => {
@@ -47,6 +47,12 @@ class InitialiseAR extends Component {
 
   startGame = () => {
     this.setState({ gameStarted: true });
+    setInterval(() => {
+      this.setState({ staticPosition: this.generateRandomPosition(0), dynamicPosition: this.generateRandomPosition(3) });
+    }, 10000);
+    // setInterval(() => {
+    //   this.setState({ dynamicPosition: this.generateRandomPosition(3) });
+    // }, 5000);
   };
 
   resetGame = () => {
@@ -61,7 +67,7 @@ class InitialiseAR extends Component {
 
   getARNavigator = () => {
     const {
-      apiKey, lives, gameStarted, playerWon, position, score
+      apiKey, lives, gameStarted, playerWon, staticPosition, score, dynamicPosition
     } = this.state;
     return (
       <>
@@ -77,7 +83,8 @@ class InitialiseAR extends Component {
               updateScore: this.updateScore,
               playerWins: this.playerWins,
               playerWon,
-              position
+              staticPosition,
+              dynamicPosition
             }}
             initialScene={{ scene: InitialARScene }}
           />
