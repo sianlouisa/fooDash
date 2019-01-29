@@ -1,7 +1,10 @@
 import Leaderboard from 'react-native-leaderboard';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  View, Text, StyleSheet, ImageBackground
+} from 'react-native';
 import React, { Component } from 'react';
 import * as api from '../api';
+import background from '../res/jf-background.jpg';
 
 class LeaderBoard extends Component {
   state = {
@@ -26,47 +29,66 @@ class LeaderBoard extends Component {
     const score = getParam('score', '0');
     return (
       <>
-        <View colors={['#1da2c6', '#1695b7']} style={styles.container}>
-          <Text style={styles.header}>Leaderboard</Text>
-          <View style={styles.something}>
-            <Text style={styles.textLeft}>Name</Text>
-            <Text style={styles.textRight}>Score</Text>
+        <ImageBackground source={background} style={styles.backgroundImg}>
+          <View colors={['#1da2c6', '#1695b7']} style={styles.container}>
+            <Text style={styles.header}>Leaderboard</Text>
+            <View style={styles.something}>
+              <Text style={styles.textLeft}>Name</Text>
+              <Text style={styles.textRight}>Score</Text>
+            </View>
           </View>
-        </View>
-        <Leaderboard data={this.sortData()} sortBy="highScore" labelBy="userName" />
+          <Leaderboard
+            data={this.sortData()}
+            sortBy="highScore"
+            labelBy="userName"
+            containerStyle={styles.leaderboardContainer}
+          />
+        </ImageBackground>
       </>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  header: { fontSize: 25, color: 'white' },
+  leaderboardContainer: {
+    width: '100%',
+    textAlign: 'center',
+    margin: 'auto',
+    padding: '10%',
+    paddingTop: 0
+  },
+  backgroundImg: {
+    width: '100%',
+    height: '100%'
+  },
+  header: { fontSize: 25, color: 'black' },
   textLeft: {
-    color: 'white',
+    color: 'black',
     fontSize: 25,
     flex: 1,
     textAlign: 'right',
-    marginRight: 40
+    marginRight: 80
   },
   textRight: {
-    color: 'white',
+    color: 'black',
     fontSize: 25,
     flex: 1,
     textAlign: 'left',
-    marginLeft: 50
+    marginLeft: 80
   },
   container: {
-    backgroundColor: '#119abf',
     padding: 15,
     paddingTop: 35,
-    alignItems: 'center'
+    alignItems: 'center',
+    height: '20%'
   },
   something: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
-    marginTop: 20
+    marginTop: 20,
+    opacity: 0.5
   }
 });
 
