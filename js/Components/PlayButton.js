@@ -1,26 +1,18 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
-import {
-  View, TouchableOpacity, Text
-} from 'react-native';
+import { TouchableOpacity, Text } from 'react-native';
 
 class PlayButton extends Component {
-  state = {}
+  state = {};
 
   render() {
-    const { buttonText, navigateToPlay } = this.props;
+    const { navigateToPlay, buttonStyles } = this.props;
     return (
-      <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
-        <TouchableOpacity onPress={() => navigateToPlay()}>
-          <Text>{buttonText}</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={() => navigateToPlay()}>
+        <Text style={buttonStyles.toPlay}>Play Again</Text>
+      </TouchableOpacity>
     );
   }
 }
-
-PlayButton.propTypes = {
-
-};
 
 export default PlayButton;

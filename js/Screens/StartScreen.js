@@ -3,22 +3,20 @@ import React, { Component } from 'react';
 import PlayButton from '../Components/PlayButton';
 
 class StartScreen extends Component {
-  state = {}
+  state = {};
 
   navigateToPlay = () => {
-    const { navigation: { navigate } } = this.props;
+    const {
+      navigation: { navigate }
+    } = this.props;
     navigate('InitialiseAR');
-  }
+  };
 
   render() {
-    return (
-      <PlayButton buttonText="Play" navigateToPlay={this.navigateToPlay} />
-    );
+    return <PlayButton buttonText="Play" navigateToPlay={this.navigateToPlay} />;
   }
 }
 
-StartScreen.propTypes = {
-
-};
+StartScreen.propTypes = {};
 
 export default StartScreen;
