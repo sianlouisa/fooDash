@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
 import {
-  ActivityIndicator,
-  AsyncStorage,
-  StatusBar,
-  View,
+  ActivityIndicator, AsyncStorage, StatusBar, View
 } from 'react-native';
 
 class AuthLoadingScreen extends Component {
@@ -13,10 +10,12 @@ class AuthLoadingScreen extends Component {
   }
 
   checkAuth = async () => {
-    const { navigation: { navigate } } = this.props;
+    const {
+      navigation: { navigate }
+    } = this.props;
     const currentPlayer = await AsyncStorage.getItem('currentPlayer');
-    navigate(currentPlayer ? 'InitialiseAR' : 'Login');
-  }
+    navigate(currentPlayer ? 'StartScreen' : 'Login');
+  };
 
   render() {
     return (
@@ -28,8 +27,6 @@ class AuthLoadingScreen extends Component {
   }
 }
 
-AuthLoadingScreen.propTypes = {
-
-};
+AuthLoadingScreen.propTypes = {};
 
 export default AuthLoadingScreen;

@@ -9,27 +9,6 @@ import StartButton from '../Components/StartButton';
 class StartScreen extends Component {
   state = {};
 
-  navigateToPlay = () => {
-    const {
-      navigation: { navigate }
-    } = this.props;
-    navigate('InitialiseAR');
-  };
-
-  navigateToInstructions = () => {
-    const {
-      navigation: { navigate }
-    } = this.props;
-    navigate('Instructions');
-  };
-
-  navigateToLeaderboard = () => {
-    const {
-      navigation: { navigate }
-    } = this.props;
-    navigate('Leaderboard');
-  };
-
   logout = async () => {
     const {
       navigation: { navigate }
@@ -39,15 +18,21 @@ class StartScreen extends Component {
   };
 
   render() {
+    const {
+      navigation: { navigate }
+    } = this.props;
     return (
       <>
         <View style={styles.container}>
-          <StartButton navigateToPlay={this.navigateToPlay} buttonStyle={styles} />
+          <StartButton navigateToPlay={() => navigate('InitialiseAR')} buttonStyle={styles} />
           <InstructionsBtn
-            navigateToInstructions={this.navigateToInstructions}
+            navigateToInstructions={() => navigate('Instructions')}
             buttonStyle={styles}
           />
-          <LeaderboardBtn navigateToLeaderboard={this.navigateToLeaderboard} buttonStyle={styles} />
+          <LeaderboardBtn
+            navigateToLeaderboard={() => navigate('Leaderboard')}
+            buttonStyle={styles}
+          />
           <LogoutBtn logout={this.logout} buttonStyle={styles} />
         </View>
       </>
