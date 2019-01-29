@@ -18,6 +18,18 @@ import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
 import specular from './res/res/emoji_smile/emoji_smile_specular.png';
 
+const physicsBody = {
+  type: 'Dynamic',
+  mass: 20,
+  enabled: true,
+  useGravity: true,
+  restitution: 0.35,
+  friction: 0.75,
+  shape: {
+    type: 'Sphere',
+    params: [0.1]
+  }
+};
 
 export default class ARView extends Component {
   state = {
@@ -25,8 +37,7 @@ export default class ARView extends Component {
     initialized: false,
     planeCenter: [0, 0, 0],
     pushCounter: 0,
-    updatedPosition: 0,
-
+    updatedPosition: 0
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -44,10 +55,12 @@ export default class ARView extends Component {
     }
   };
 
-  // Once the user has selected the plane set state to the dimensions and position
-  // using anchor (this function is sometimes refered to as onAnchorFound on the docs)
   onPlaneSelected = (anchor) => {
-    const { arSceneNavigator: { viroAppProps: { startGame } } } = this.props;
+    const {
+      arSceneNavigator: {
+        viroAppProps: { startGame }
+      }
+    } = this.props;
     // const anchoredPosition = [
     //   anchor.position[0] + anchor.center[0],
     //   anchor.position[1] + anchor.center[1],
@@ -61,7 +74,11 @@ export default class ARView extends Component {
   };
 
   deadSpace = (collidedTag) => {
-    const { arSceneNavigator: { viroAppProps: { reduceLife, lives } } } = this.props;
+    const {
+      arSceneNavigator: {
+        viroAppProps: { reduceLife, lives }
+      }
+    } = this.props;
     if (collidedTag === 'player') {
       reduceLife();
     }
@@ -72,7 +89,13 @@ export default class ARView extends Component {
 
   getScene = () => {
     const { planeCenter } = this.state;
-    const { arSceneNavigator: { viroAppProps: { lives, playerWins, playerWon, position } } } = this.props;
+    const {
+      arSceneNavigator: {
+        viroAppProps: {
+          lives, playerWins, playerWon, position
+        }
+      }
+    } = this.props;
 
     return (
       <>
@@ -125,66 +148,38 @@ export default class ARView extends Component {
   };
 
   collectToken = (collidedTag) => {
-    const { arSceneNavigator: { viroAppProps: { updateScore } } } = this.props;
+    const {
+      arSceneNavigator: {
+        viroAppProps: { updateScore }
+      }
+    } = this.props;
+    const { updatedPosition } = this.state;
     if (collidedTag === 'player') {
       const positions = [[0, 1, -0.2], [-0.2, 1, -0.2]];
       updateScore();
-      this.setState({ updatedPosition: this.state.updatedPosition + 1 }, () => {
-        this.tokenRef.setNativeProps({ position: positions[this.state.updatedPosition] });
+      this.setState({ updatedPosition: updatedPosition + 1 }, () => {
+        this.tokenRef.setNativeProps({ position: positions[updatedPosition] });
       });
     }
-  }
-
-  // When getScene is loaded the emoji will be loaded via this function
-  generatePlayer = () => {
-    const physicsBody = {
-      type: 'Dynamic',
-      mass: 20,
-      enabled: true,
-      useGravity: true,
-      restitution: 0.35,
-      friction: 0.75,
-      shape: {
-        type: 'Sphere',
-        params: [0.1]
-      }
-    };
-    return (
-      <Viro3DObject
-        position={[0, 0.2, 0]}
-        scale={[0.1, 0.1, 0.1]}
-        source={smile}
-        resources={[diffuse, normal, specular]}
-        type="VRX"
-        renderingOrder={0}
-        physicsBody={physicsBody}
-        ref={obj => (this.playerRef = obj)}
-        onClick={this.pushPlayer()}
-        viroTag="player"
-      />
-    );
   };
 
-  // When emoji hits dead zone or goal it resets
+  generatePlayer = () => (
+    <Viro3DObject
+      position={[0, 0.2, 0]}
+      scale={[0.1, 0.1, 0.1]}
+      source={smile}
+      resources={[diffuse, normal, specular]}
+      type="VRX"
+      renderingOrder={0}
+      physicsBody={physicsBody}
+      ref={obj => (this.playerRef = obj)}
+      onClick={this.pushPlayer()}
+      viroTag="player"
+    />
+  );
+
   resetPlayer = () => {
-    const physicsBody = {
-      type: 'Dynamic',
-      mass: 20,
-      enabled: true,
-      useGravity: true,
-      restitution: 0.35,
-      friction: 0.75,
-      shape: {
-        type: 'Sphere',
-        params: [0.1]
-      }
-    };
-    // Had to set physicsBody to null before resetting to initial props,
-    // probably a much better way to do this!
     TimerMixin.setTimeout(() => {
-      // passing 'ref={obj => (this.playerRef = obj)}'
-      // to the emoji means that it can be accessed on this anywhere else
-      // setNativeProps is React Native function
       this.playerRef.setNativeProps({ physicsBody: null });
       this.playerRef.setNativeProps({ position: [0, 0.1, 0] });
       TimerMixin.setTimeout(() => {
@@ -197,7 +192,6 @@ export default class ARView extends Component {
     this.setState(state => ({ pushCounter: state.pushCounter + 1 }));
   };
 
-  // Function for onClick event of emoji to move around
   pushPlayer = () => (clickedPos, force) => {
     this.playerRef.getTransformAsync().then((transform) => {
       const pushImpulse = [0, force, 0];
@@ -207,58 +201,52 @@ export default class ARView extends Component {
     });
   };
 
-  generateObstacles = (position) => {
-    return (
-      <ViroBox
-        scale={[0.1, 0.1, 0.1]}
-        materials={['obstacle']}
-        physicsBody={{
-          type: 'Dynamic',
-          mass: 25,
-          enabled: true,
-          useGravity: true,
-          restitution: 0,
-          friction: 0.75
-        }}
-        position={position}
-        ref={obstacle => (this.obstacleRef = obstacle)}
+  generateObstacles = position => (
+    <ViroBox
+      scale={[0.1, 0.1, 0.1]}
+      materials={['obstacle']}
+      physicsBody={{
+        type: 'Dynamic',
+        mass: 25,
+        enabled: true,
+        useGravity: true,
+        restitution: 0,
+        friction: 0.75
+      }}
+      position={position}
+      ref={obstacle => (this.obstacleRef = obstacle)}
       // onCollision={this.resetPlayer}
-        viroTag="obstacle"
-      />
-    );
-  };
+      viroTag="obstacle"
+    />
+  );
 
-  generateTokens = () => {
-    return (
-      <ViroBox
-        scale={[0.1, 0.1, 0.1]}
-        materials={['token']}
-        physicsBody={{
-          type: 'Dynamic',
-          mass: 25,
-          enabled: true,
-          useGravity: true,
-          restitution: 0.35,
-          friction: 0.75
-        }}
-        position={[0, 1, -0.2]}
-        ref={token => (this.tokenRef = token)}
-        onCollision={this.collectToken}
-        viroTag="token"
-      />
-    );
-  };
+  generateTokens = () => (
+    <ViroBox
+      scale={[0.1, 0.1, 0.1]}
+      materials={['token']}
+      physicsBody={{
+        type: 'Dynamic',
+        mass: 25,
+        enabled: true,
+        useGravity: true,
+        restitution: 0.35,
+        friction: 0.75
+      }}
+      position={[0, 1, -0.2]}
+      ref={token => (this.tokenRef = token)}
+      onCollision={this.collectToken}
+      viroTag="token"
+    />
+  );
 
-  getText = (text, pos) => {
-    return (
-      <ViroText
-        text={text}
-        scale={[0.5, 0.5, 0.5]}
-        position={pos}
-        style={styles.helloWorldTextStyle}
-      />
-    );
-  };
+  getText = (text, pos) => (
+    <ViroText
+      text={text}
+      scale={[0.5, 0.5, 0.5]}
+      position={pos}
+      style={styles.helloWorldTextStyle}
+    />
+  );
 
   render() {
     const { isTracking, initialized } = this.state;
@@ -302,10 +290,12 @@ ViroMaterials.createMaterials({
   token: {
     diffuseColor: 'rgb(165, 47, 202)'
   },
+  obstacle: {
+    diffuseColor: 'rgb(0, 0, 255)'
+  },
   tokenCollision: {
     diffuseColor: 'rgb(255, 0, 0)'
   }
 });
-
 
 module.exports = ARView;
