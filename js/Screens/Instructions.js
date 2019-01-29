@@ -8,25 +8,16 @@ const Instructions = (props) => {
   const { navigation } = props;
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>
-        How to Play:
-      </Text>
+      <Text style={styles.headerText}>How to Play:</Text>
       <View style={styles.container}>
         <Text style={styles.text}>
-          Find a flat surface to play on.
-          Point the camera towards it until a grey box appears.
-          (Tip: Move the camera around slowly to help the game find a suitable surface.)
-          Tap the grey box to select your game space.
+          Find a flat surface to play on. Point the camera towards it until a grey box appears.
+          (Tip: Move the camera around slowly to help the game find a suitable surface.) Tap the
+          grey box to select your game space.
         </Text>
-        <Text style={styles.text}>
-          Tap the ball in the direction you want to go.
-        </Text>
-        <Text style={styles.text}>
-          Collect as many gems as you can and then get to the goal!
-        </Text>
-        <Text style={styles.text}>
-          Be sure to avoid falling obstacles and don't fall off!
-        </Text>
+        <Text style={styles.text}>Tap the ball in the direction you want to go.</Text>
+        <Text style={styles.text}>Collect as many gems as you can and then get to the goal!</Text>
+        <Text style={styles.text}>Be sure to avoid falling obstacles and don't fall off!</Text>
       </View>
       <TouchableOpacity
         style={[styles.buttonContainer, styles.button]}
@@ -38,7 +29,6 @@ const Instructions = (props) => {
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -48,15 +38,15 @@ const styles = StyleSheet.create({
     padding: 10
   },
   text: {
-    fontFamily: 'UnreadableSans',
+    fontFamily: 'Arial',
     color: '#FFFFFF',
     fontSize: 20,
-    textAlign: 'center',
+    textAlign: 'center'
   },
   headerText: {
-    fontFamily: 'UnreadableSans',
+    fontFamily: 'Arial',
     color: '#FFFFFF',
-    fontSize: 50,
+    fontSize: 50
   },
   buttonContainer: {
     height: 45,
@@ -66,12 +56,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: 250,
     borderRadius: 30,
-    backgroundColor: '#00b5ec',
+    backgroundColor: '#00b5ec'
   },
   buttonText: {
-    fontFamily: 'UnreadableSands',
+    fontFamily: 'Arial',
     fontSize: 30,
-    color: '#000000',
+    color: '#000000'
   }
 });
 

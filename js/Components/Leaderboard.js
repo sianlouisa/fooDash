@@ -1,7 +1,12 @@
 import Leaderboard from 'react-native-leaderboard';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  View, Text, StyleSheet, ImageBackground
+} from 'react-native';
 import React, { Component } from 'react';
 import * as api from '../api';
+import background from '../res/jf-background.jpg';
+import PlayButton from './PlayButton';
+import ToMenuBtn from './ToMenuBtn';
 
 class LeaderBoard extends Component {
   state = {
@@ -16,57 +21,118 @@ class LeaderBoard extends Component {
     });
   }
 
+  navigateToPlay = () => {
+    const { navigation } = this.props;
+    navigation.navigate('InitialiseAR');
+  };
+
+  navigateToMenu = () => {
+    const { navigation } = this.props;
+    navigation.navigate('StartScreen');
+  };
+
   sortData = () => {
     const { snapshot } = this.state;
     return snapshot.map(doc => ({ userName: doc.data().playerName, highScore: doc.data().score }));
   };
 
   render() {
-    const { getParam } = this.props;
-    const score = getParam('score', '0');
+    // const score = getParam('score', '0');
     return (
       <>
-        <View colors={['#1da2c6', '#1695b7']} style={styles.container}>
-          <Text style={styles.header}>Leaderboard</Text>
-          <View style={styles.something}>
-            <Text style={styles.textLeft}>Name</Text>
-            <Text style={styles.textRight}>Score</Text>
+        <ImageBackground source={background} style={styles.backgroundImg}>
+          <View colors={['#1da2c6', '#1695b7']} style={styles.container}>
+            <Text style={styles.header}>Leaderboard</Text>
+            <View style={styles.subHeader}>
+              <Text style={styles.name}>Name</Text>
+              <Text style={styles.score}>Score</Text>
+            </View>
+            <Leaderboard
+              data={this.sortData()}
+              sortBy="highScore"
+              labelBy="userName"
+              containerStyle={styles.leaderboardContainer}
+            />
+            <View style={styles.buttonContainer}>
+              <PlayButton
+                buttonText="Play Again"
+                navigateToPlay={this.navigateToPlay}
+                buttonStyles={buttonStyles}
+              />
+              <ToMenuBtn
+                buttonText="Main Menu"
+                navigateToMenu={this.navigateToMenu}
+                buttonStyles={buttonStyles}
+              />
+            </View>
           </View>
-        </View>
-        <Leaderboard data={this.sortData()} sortBy="highScore" labelBy="userName" />
+        </ImageBackground>
       </>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  header: { fontSize: 25, color: 'white' },
-  textLeft: {
-    color: 'white',
-    fontSize: 25,
-    flex: 1,
+const buttonStyles = StyleSheet.create({
+  toMenu: {
     textAlign: 'right',
-    marginRight: 40
+    fontSize: 24,
+    marginLeft: 70,
+    borderWidth: 1,
+    borderColor: '#000000'
   },
-  textRight: {
-    color: 'white',
-    fontSize: 25,
-    flex: 1,
+  toPlay: {
     textAlign: 'left',
-    marginLeft: 50
+    fontSize: 24,
+    marginRight: 70,
+    borderWidth: 1,
+    borderColor: '#000000'
+  }
+});
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignContent: 'center'
   },
   container: {
-    backgroundColor: '#119abf',
     padding: 15,
     paddingTop: 35,
-    alignItems: 'center'
+    alignItems: 'center',
+    height: '100%'
   },
-  something: {
+  leaderboardContainer: {
+    width: '100%',
+    textAlign: 'center',
+    margin: 'auto',
+    padding: '10%',
+    paddingTop: 0
+  },
+  backgroundImg: {
+    width: '100%',
+    height: '100%'
+  },
+  header: { fontSize: 25, color: 'black' },
+  subHeader: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
     marginTop: 20
+  },
+  name: {
+    color: 'black',
+    fontSize: 25,
+    flex: 1,
+    textAlign: 'right',
+    marginRight: 80
+  },
+  score: {
+    color: 'black',
+    fontSize: 25,
+    flex: 1,
+    textAlign: 'left',
+    marginLeft: 80
   }
 });
 
