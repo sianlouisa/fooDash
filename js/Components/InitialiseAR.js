@@ -38,7 +38,7 @@ class InitialiseAR extends Component {
   }
 
   updateScore = () => {
-    this.setState({ score: this.state.score + 10 });
+    this.setState(({ score }) => ({ score: score + 10 }));
   };
 
   reduceLife = () => {

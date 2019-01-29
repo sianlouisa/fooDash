@@ -12,7 +12,7 @@ import {
 } from 'react-viro';
 import TimerMixin from 'react-timer-mixin';
 import { StyleSheet } from 'react-native';
-import _ from 'lodash';
+// import _ from 'lodash';
 import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
@@ -103,7 +103,7 @@ export default class ARView extends Component {
     const {
       arSceneNavigator: {
         viroAppProps: {
-          lives, playerWins, playerWon, dynamicPosition, staticPosition
+          lives, playerWins, playerWon, staticPosition
         }
       }
     } = this.props;
