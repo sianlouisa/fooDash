@@ -8,23 +8,23 @@ const Instructions = (props) => {
   const { navigation } = props;
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>How to Play:</Text>
-      <View style={styles.container}>
-        <Text style={styles.text}>
-          Find a flat surface to play on. Point the camera towards it until a grey box appears.
-          (Tip: Move the camera around slowly to help the game find a suitable surface.) Tap the
-          grey box to select your game space.
-        </Text>
-        <Text style={styles.text}>Tap the ball in the direction you want to go.</Text>
-        <Text style={styles.text}>Collect as many gems as you can and then get to the goal!</Text>
-        <Text style={styles.text}>Be sure to avoid falling obstacles and don't fall off!</Text>
+      <Text style={styles.headerText}>How to play FoodDash!</Text>
+      <Text style={styles.text}>
+        You'll need a flat surface to play on and space to move around. Once you start, point your
+        camera and wait for a grey surface to appear. Clicking this will begin the game play! The
+        objective of the game is to collect as many items as possible whilst avoiding the falling
+        obstacles. You can navigate your player by tapping it in the direction you want to go. Keep
+        an eye on your lives as you'll lose this if you fall off the surface or if a falling
+        obstacle hits you! Enjoy!
+      </Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('InitialiseAR')}>
+          <Text style={styles.buttonText}>Ready to play?</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('StartScreen')}>
+          <Text style={styles.buttonText}>Back to menu</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={[styles.buttonContainer, styles.button]}
-        onPress={() => navigation.navigate('InitialiseAR')}
-      >
-        <Text style={styles.buttonText}>LET'S GO!</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -34,34 +34,29 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#111111',
     padding: 10
   },
   text: {
-    fontFamily: 'Arial',
-    color: '#FFFFFF',
-    fontSize: 20,
-    textAlign: 'center'
+    textAlign: 'center',
+    width: '85%'
   },
   headerText: {
-    fontFamily: 'Arial',
-    color: '#FFFFFF',
-    fontSize: 50
+    fontSize: 50,
+    textAlign: 'center'
   },
-  buttonContainer: {
+  buttonContainer: {},
+  button: {
     height: 45,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
-    width: 250,
+    marginBottom: 10,
+    width: 175,
     borderRadius: 30,
     backgroundColor: '#00b5ec'
   },
   buttonText: {
-    fontFamily: 'Arial',
-    fontSize: 30,
-    color: '#000000'
+    color: '#FFFFFF'
   }
 });
 
