@@ -1,20 +1,13 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
-import { ViroButton } from 'react-viro';
-import playIcon from '../res/assets/icon_play.png';
+import { TouchableOpacity, Text } from 'react-native';
 
-const StartButton = () => (
-  <ViroButton
-    source={playIcon}
-    position={[0, 0, -5]}
-    height={1}
-    width={1}
-    onClick={() => { }}
-  />
-);
-
-StartButton.propTypes = {
-
+const StartButton = (props) => {
+  const { navigateToPlay, buttonStyle } = props;
+  return (
+    <TouchableOpacity onPress={navigateToPlay} style={buttonStyle.buttonContainer}>
+      <Text style={buttonStyle.text}>Play</Text>
+    </TouchableOpacity>
+  );
 };
 
 export default StartButton;

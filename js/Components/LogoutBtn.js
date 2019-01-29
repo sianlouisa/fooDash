@@ -1,29 +1,13 @@
-import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
-import {
-  TouchableOpacity, Text, AsyncStorage
-} from 'react-native';
+import React from 'react';
+import { TouchableOpacity, Text } from 'react-native';
 
-class LogoutBtn extends Component {
-  logout = async () => {
-    const { navigation: { navigate } } = this.props;
-    await AsyncStorage.clear();
-    navigate('AuthLoadingScreen');
-  }
-
-  render() {
-    return (
-      <TouchableOpacity
-        onPress={this.logout}
-      >
-        <Text>Logout lkjhgfnbxdgnuyiop;/l.,mnbvfxdhrtyukilm,nbcvxfdhtyuklm,nbvcdhtuyiokljmnbvdfghtyuiojklmnbvcfxdgty</Text>
-      </TouchableOpacity>
-    );
-  }
-}
-
-LogoutBtn.propTypes = {
-
+const LogoutBtn = (props) => {
+  const { logout, buttonStyle } = props;
+  return (
+    <TouchableOpacity onPress={logout} style={buttonStyle.buttonContainer}>
+      <Text style={buttonStyle.text}>Logout</Text>
+    </TouchableOpacity>
+  );
 };
 
 export default LogoutBtn;
