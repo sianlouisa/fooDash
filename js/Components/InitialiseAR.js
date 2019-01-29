@@ -15,30 +15,31 @@ class InitialiseAR extends Component {
     gameStarted: false,
     playerWon: false,
     position: [0.1, 1, -0.2],
-    score: 0,
-  };
-
-  updateScore = () => {
-    this.setState({ score: this.state.score + 10 });
+    score: 0
   };
 
   componentDidMount() {
     setInterval(() => {
-      let timesBy = Math.round(Math.random()) ? 0.5 : -0.5;
-      console.warn(timesBy)
-      this.setState({ position: [Math.random() * timesBy, 1, Math.random() * -0.9] })
-    }, 3000)
+      const timesBy = Math.round(Math.random()) ? 0.5 : -0.5;
+      this.setState({ position: [Math.random() * timesBy, 1, Math.random() * -0.9] });
+    }, 3000);
   }
 
   componentDidUpdate() {
     const { playerWon, lives } = this.state;
     if (playerWon || !lives) {
       setTimeout(() => {
-        const { navigation: { navigate } } = this.props;
+        const {
+          navigation: { navigate }
+        } = this.props;
         navigate('PlayAgain');
       }, 2000);
     }
   }
+
+  updateScore = () => {
+    this.setState({ score: this.state.score + 10 });
+  };
 
   reduceLife = () => {
     this.setState(state => ({ lives: state.lives - 1 }));
@@ -56,12 +57,11 @@ class InitialiseAR extends Component {
     if (collidedTag === 'player') {
       this.setState({ playerWon: true });
     }
-  }
-
+  };
 
   getARNavigator = () => {
     const {
-      apiKey, lives, gameStarted, playerWon, position
+      apiKey, lives, gameStarted, playerWon, position, score
     } = this.state;
     return (
       <>
@@ -89,7 +89,7 @@ class InitialiseAR extends Component {
                 </TouchableHighlight>
 
                 <TouchableHighlight style={localStyles.buttons}>
-                  <Text style={localStyles.buttonText}>{`Score: ${score}`} </Text>
+                  <Text style={localStyles.buttonText}>{`Score: ${score}`}</Text>
                 </TouchableHighlight>
 
                 <TouchableHighlight style={localStyles.buttons} onClick={this.resetGame}>
