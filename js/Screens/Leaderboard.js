@@ -1,5 +1,7 @@
 import Leaderboard from 'react-native-leaderboard';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+  View, Text, StyleSheet, ActivityIndicator
+} from 'react-native';
 import React, { Component } from 'react';
 import * as api from '../api';
 import PlayAgainBtn from '../Components/PlayAgainBtn';
@@ -35,34 +37,39 @@ class LeaderBoard extends Component {
 
   render() {
     // const score = getParam('score', '0');
+    const { snapshot } = this.state;
     return (
-      <>
-        <View colors={['#1da2c6', '#1695b7']} style={leaderboardStyles.container}>
-          <Text style={leaderboardStyles.header}>Leaderboard</Text>
-          <View style={leaderboardStyles.nameScoreContainer}>
-            <Text style={leaderboardStyles.name}>Name</Text>
-            <Text style={leaderboardStyles.score}>Score</Text>
-          </View>
-          <Leaderboard
-            data={this.sortData()}
-            sortBy="highScore"
-            labelBy="userName"
-            containerStyle={leaderboardStyles.leaderboardContainer}
-          />
-          <View style={buttonStyles.main}>
-            <PlayAgainBtn
-              buttonText="Play Again"
-              navigateToPlay={this.navigateToPlay}
-              buttonStyles={buttonStyles}
+      <View style={leaderboardStyles.container}>
+        {snapshot.length === 0 ? (
+          <ActivityIndicator size="large" color="#00b5ec" style={{ marginTop: 250 }} />
+        ) : (
+          <>
+            <Text style={leaderboardStyles.header}>Leaderboard</Text>
+            <View style={leaderboardStyles.nameScoreContainer}>
+              <Text style={leaderboardStyles.name}>Name</Text>
+              <Text style={leaderboardStyles.score}>Score</Text>
+            </View>
+            <Leaderboard
+              data={this.sortData()}
+              sortBy="highScore"
+              labelBy="userName"
+              containerStyle={leaderboardStyles.leaderboardContainer}
             />
-            <ToMenuBtn
-              buttonText="Main Menu"
-              navigateToMenu={this.navigateToMenu}
-              buttonStyles={buttonStyles}
-            />
-          </View>
-        </View>
-      </>
+            <View style={buttonStyles.main}>
+              <PlayAgainBtn
+                buttonText="Play Again"
+                navigateToPlay={this.navigateToPlay}
+                buttonStyles={buttonStyles}
+              />
+              <ToMenuBtn
+                buttonText="Main Menu"
+                navigateToMenu={this.navigateToMenu}
+                buttonStyles={buttonStyles}
+              />
+            </View>
+          </>
+        )}
+      </View>
     );
   }
 }
