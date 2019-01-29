@@ -20,7 +20,7 @@ class AuthLoadingScreen extends Component {
   render() {
     return (
       <View>
-        <ActivityIndicator />
+        <ActivityIndicator size="large" color="#00b5ec" style={{ marginTop: 250 }} />
         <StatusBar barStyle="default" />
       </View>
     );
