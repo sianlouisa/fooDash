@@ -12,7 +12,7 @@ import {
 } from 'react-viro';
 import TimerMixin from 'react-timer-mixin';
 import { StyleSheet } from 'react-native';
-// import _ from 'lodash';
+import _ from 'lodash';
 import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
@@ -87,12 +87,23 @@ export default class ARView extends Component {
     }
   };
 
+  handleObstacleCollision = (collidedTag) => {
+    const {
+      arSceneNavigator: {
+        viroAppProps: { reduceLife }
+      }
+    } = this.props;
+    if (collidedTag === 'player') {
+      reduceLife();
+    }
+  }
+
   getScene = () => {
     const { planeCenter } = this.state;
     const {
       arSceneNavigator: {
         viroAppProps: {
-          lives, playerWins, playerWon, position
+          lives, playerWins, playerWon, dynamicPosition, staticPosition
         }
       }
     } = this.props;
@@ -136,7 +147,8 @@ export default class ARView extends Component {
             position={[0, 0, -0.4]}
           />
           {this.generatePlayer(planeCenter)}
-          {this.generateObstacles(position)}
+          {this.generateStaticObstacles(staticPosition)}
+          {/* {this.generateDynamicObstacles(dynamicPosition)} */}
           {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
           {/* {_.times(10, () => this.generatetokens())} */}
@@ -201,7 +213,24 @@ export default class ARView extends Component {
     });
   };
 
-  generateObstacles = position => (
+  generateStaticObstacles = position => (
+    <ViroBox
+      scale={[0.1, 0.1, 0.1]}
+      materials={['obstacle']}
+      physicsBody={{
+        type: 'Static',
+        mass: 0,
+        enabled: true,
+        // useGravity: true,
+      }}
+      position={position}
+      ref={obstacle => (this.obstacleRef = obstacle)}
+      onCollision={this.handleObstacleCollision}
+      viroTag="obstacle"
+    />
+  )
+
+  generateDynamicObstacles = position => (
     <ViroBox
       scale={[0.1, 0.1, 0.1]}
       materials={['obstacle']}
@@ -210,7 +239,7 @@ export default class ARView extends Component {
         mass: 25,
         enabled: true,
         useGravity: true,
-        restitution: 0,
+        restitution: 0.35,
         friction: 0.75
       }}
       position={position}
@@ -218,7 +247,7 @@ export default class ARView extends Component {
       // onCollision={this.resetPlayer}
       viroTag="obstacle"
     />
-  );
+  )
 
   generateTokens = () => (
     <ViroBox
