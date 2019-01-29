@@ -17,7 +17,7 @@ import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
 import specular from './res/res/emoji_smile/emoji_smile_specular.png';
-import { updateScore } from './api';
+
 
 export default class ARView extends Component {
   state = {
@@ -124,16 +124,14 @@ export default class ARView extends Component {
     );
   };
 
-collectToken = (collidedTag) => {
-
-    const { updateScore } = this.props.arSceneNavigator.viroAppProps;
+  collectToken = (collidedTag) => {
+    const { arSceneNavigator: { viroAppProps: { updateScore } } } = this.props;
     if (collidedTag === 'player') {
-      const positions = [[0, 1, -0.2], [-0.2, 1, -0.2]]
+      const positions = [[0, 1, -0.2], [-0.2, 1, -0.2]];
       updateScore();
       this.setState({ updatedPosition: this.state.updatedPosition + 1 }, () => {
         this.tokenRef.setNativeProps({ position: positions[this.state.updatedPosition] });
-      })
-
+      });
     }
   }
 
@@ -209,53 +207,58 @@ collectToken = (collidedTag) => {
     });
   };
 
-  generateObstacles = (position) => (
-    <ViroBox
-      scale={[0.1, 0.1, 0.1]}
-      materials={['obstacle']}
-      physicsBody={{
-        type: 'Dynamic',
-        mass: 25,
-        enabled: true,
-        useGravity: true,
-        restitution: 0,
-        friction: 0.75
-      }}
-      position={position}
-      ref={obstacle => (this.obstacleRef = obstacle)}
+  generateObstacles = (position) => {
+    return (
+      <ViroBox
+        scale={[0.1, 0.1, 0.1]}
+        materials={['obstacle']}
+        physicsBody={{
+          type: 'Dynamic',
+          mass: 25,
+          enabled: true,
+          useGravity: true,
+          restitution: 0,
+          friction: 0.75
+        }}
+        position={position}
+        ref={obstacle => (this.obstacleRef = obstacle)}
       // onCollision={this.resetPlayer}
-      viroTag="obstacle"
-    />
-  );
-
-  generateTokens = () => {
-
-    return <ViroBox
-      scale={[0.1, 0.1, 0.1]}
-      materials={['token']}
-      physicsBody={{
-        type: 'Dynamic',
-        mass: 25,
-        enabled: true,
-        useGravity: true,
-        restitution: 0.35,
-        friction: 0.75
-      }}
-      position={[0, 1, -0.2]}
-      ref={token => (this.tokenRef = token)}
-      onCollision={this.collectToken}
-      viroTag="token"
-    />
+        viroTag="obstacle"
+      />
+    );
   };
 
-  getText = (text, pos) => (
-    <ViroText
-      text={text}
-      scale={[0.5, 0.5, 0.5]}
-      position={pos}
-      style={styles.helloWorldTextStyle}
-    />
-  );
+  generateTokens = () => {
+    return (
+      <ViroBox
+        scale={[0.1, 0.1, 0.1]}
+        materials={['token']}
+        physicsBody={{
+          type: 'Dynamic',
+          mass: 25,
+          enabled: true,
+          useGravity: true,
+          restitution: 0.35,
+          friction: 0.75
+        }}
+        position={[0, 1, -0.2]}
+        ref={token => (this.tokenRef = token)}
+        onCollision={this.collectToken}
+        viroTag="token"
+      />
+    );
+  };
+
+  getText = (text, pos) => {
+    return (
+      <ViroText
+        text={text}
+        scale={[0.5, 0.5, 0.5]}
+        position={pos}
+        style={styles.helloWorldTextStyle}
+      />
+    );
+  };
 
   render() {
     const { isTracking, initialized } = this.state;
@@ -270,7 +273,6 @@ collectToken = (collidedTag) => {
           {isTracking
             ? this.getScene()
             : this.getText(initialized ? 'Initializing' : 'No Tracking', [0, 0, -0.1])}
-
         </ViroARScene>
       </>
     );
