@@ -8,7 +8,6 @@ import {
   StyleSheet,
   Image,
   AsyncStorage,
-  ImageBackground
 } from 'react-native';
 import * as api from '../api';
 
