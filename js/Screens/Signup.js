@@ -37,7 +37,7 @@ class Signup extends Component {
       api
         .signup(email, password)
         .then(uid => api.addUser(uid, username))
-        .then(uid => AsyncStorage('currentPlayer', JSON.stringify({ uid, username, score: 0 })))
+        .then(uid => AsyncStorage.setItem('currentPlayer', JSON.stringify({ uid, username, score: 0 })))
         .then(() => navigation.navigate('StartScreen'))
         .catch(() => {
           this.setState({

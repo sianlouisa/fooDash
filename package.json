@@ -10,6 +10,7 @@
     "lint:fix": "node ./node_modules/eslint/bin/eslint.js ./ --fix"
   },
   "dependencies": {
+    "@firebase/app": "^0.3.8",
     "@firebase/firestore": "^1.0.1",
     "firebase": "^5.8.0",
     "lodash": "^4.17.11",

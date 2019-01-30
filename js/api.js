@@ -1,14 +1,10 @@
-import { Platform } from 'react-native';
-import * as firebaseiOS from 'firebase';
-import firebase from 'firebase/app';
 import { firebaseConfig } from '../config';
 import '@firebase/firestore';
+import firebase from './firebaseConnection';
 
-if (Platform.OS === 'ios') {
-  firebaseiOS.initializeApp(firebaseConfig);
-} else { firebase.initializeApp(firebaseConfig); }
+firebase.initializeApp(firebaseConfig);
 
-const db = Platform.OS === 'ios' ? firebaseiOS.firestore() : firebase.firestore();
+const db = firebase.firestore();
 
 export const signup = async (email, password) => {
   const { user } = await firebase.auth().createUserWithEmailAndPassword(email, password);
