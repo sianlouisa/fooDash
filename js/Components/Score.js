@@ -7,6 +7,10 @@ import * as api from '../api';
 class Score extends Component {
   componentDidMount() {
     this.updateScore();
+    const { navigate } = this.props;
+    setTimeout(() => {
+      navigate('Leaderboard');
+    }, 3500);
   }
 
   updateScore = async () => {
