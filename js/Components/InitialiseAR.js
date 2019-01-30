@@ -94,7 +94,7 @@ class InitialiseAR extends Component {
                   <Text style={localStyles.buttonText}>{`Lives: ${lives}`}</Text>
                 </TouchableHighlight>
 
-                <TouchableHighlight style={localStyles.buttons}>
+                <TouchableHighlight style={localStyles.buttonsScore}>
                   <Text style={localStyles.buttonText}>{`Score: ${score}`}</Text>
                 </TouchableHighlight>
 
@@ -127,6 +127,7 @@ const localStyles = StyleSheet.create({
   },
   topMenu: {
     width: '100%',
+    padding: 5,
     position: 'absolute',
     top: 0,
     flexDirection: 'row',
@@ -146,12 +147,26 @@ const localStyles = StyleSheet.create({
     fontSize: 20
   },
   buttons: {
-    height: 80,
-    width: 150,
-    paddingTop: 20,
-    paddingBottom: 20,
-    marginTop: 10,
-    marginBottom: 10,
+    height: 40,
+    width: 85,
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 5,
+    backgroundColor: 'rgba(123,123,231,.4)',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(123,087,231,.4)'
+  },
+  buttonsScore: {
+    height: 40,
+    width: 100,
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 5,
     backgroundColor: 'rgba(123,123,231,.4)',
     borderRadius: 10,
     borderWidth: 1,
