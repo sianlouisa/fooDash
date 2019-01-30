@@ -72,8 +72,7 @@ export const pepper = (pos, collision, ref) => (
     resources={[pepperMtl, pepperTex]}
     type="OBJ"
     ref={ref}
-    onCollision={collision}
-    viroTag="greenbean"
+    viroTag="pepper"
     physicsBody={{
       type: 'Dynamic',
       mass: 25,
@@ -94,8 +93,7 @@ export const pear = (pos, collision, ref) => (
     resources={[pearMtl, pearTex]}
     type="OBJ"
     ref={ref}
-    onCollision={collision}
-    viroTag="greenbean"
+    viroTag="pear"
     physicsBody={{
       type: 'Dynamic',
       mass: 25,
