@@ -169,8 +169,9 @@ export default class ARView extends Component {
       }
     } = this.props;
     if (collidedTag === 'player' || collidedTag === 'deadSpace') {
-      const newPosition = generateRandomPosition(1);
-      this.setState({ tokenPosition: newPosition });
+      const newPosition = generateRandomPosition(0);
+      // this.setState({ tokenPosition: newPosition });
+      this.tokenRef.setNativeProps({ position: newPosition });
     }
     if (collidedTag === 'player') {
       updateScore();
