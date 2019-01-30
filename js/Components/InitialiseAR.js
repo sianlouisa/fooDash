@@ -4,6 +4,7 @@ import {
   StyleSheet, Text, View, StatusBar, TouchableHighlight
 } from 'react-native';
 import { VIRO_API_KEY } from '../../config';
+import { generateRandomPosition } from '../utils/generateRandomPosition';
 // import PropTypes from 'prop-types';
 
 const InitialARScene = require('../ARView');
@@ -26,15 +27,9 @@ class InitialiseAR extends Component {
         const {
           navigation: { navigate }
         } = this.props;
-        navigate('PlayAgain');
+        navigate('Leaderboard');
       }, 2000);
     }
-  }
-
-  generateRandomPosition = (y) => {
-    const timesByX = Math.round(Math.random()) ? 0.4 : -0.4;
-    const timesByZ = Math.round(Math.random()) ? 0.4 : -0.4;
-    return [Math.random() * timesByX, y, Math.random() * timesByZ];
   }
 
   updateScore = () => {
@@ -49,7 +44,7 @@ class InitialiseAR extends Component {
     this.setState({ gameStarted: true });
     setInterval(() => {
       this.setState({
-        staticPosition: this.generateRandomPosition(0)
+        staticPosition: generateRandomPosition(0)
       });
     }, 5000);
   };
@@ -94,7 +89,7 @@ class InitialiseAR extends Component {
                   <Text style={localStyles.buttonText}>{`Lives: ${lives}`}</Text>
                 </TouchableHighlight>
 
-                <TouchableHighlight style={localStyles.buttons}>
+                <TouchableHighlight style={localStyles.buttonsScore}>
                   <Text style={localStyles.buttonText}>{`Score: ${score}`}</Text>
                 </TouchableHighlight>
 
@@ -127,6 +122,7 @@ const localStyles = StyleSheet.create({
   },
   topMenu: {
     width: '100%',
+    padding: 5,
     position: 'absolute',
     top: 0,
     flexDirection: 'row',
@@ -146,12 +142,26 @@ const localStyles = StyleSheet.create({
     fontSize: 20
   },
   buttons: {
-    height: 80,
-    width: 150,
-    paddingTop: 20,
-    paddingBottom: 20,
-    marginTop: 10,
-    marginBottom: 10,
+    height: 40,
+    width: 85,
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 5,
+    backgroundColor: 'rgba(123,123,231,.4)',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(123,087,231,.4)'
+  },
+  buttonsScore: {
+    height: 40,
+    width: 100,
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 5,
     backgroundColor: 'rgba(123,123,231,.4)',
     borderRadius: 10,
     borderWidth: 1,
