@@ -117,8 +117,8 @@ export default class ARView extends Component {
         >
           {/* Renders the playing surface */}
           <ViroQuad
-            position={planeCenter}
-            scale={[2, 2, 2]}
+            // position={planeCenter}
+            scale={[1, 1, 1]}
             rotation={[-90, 0, 0]}
             physicsBody={{ type: 'Static' }}
             materials="ground"
