@@ -15,6 +15,7 @@ class Score extends Component {
     const { score: highestScore, uid } = JSON.parse(currentPlayer);
     if (currentScore > highestScore) api.updateScore(uid, currentScore);
   }
+
   render() {
     const { score, navigate } = this.props;
     setTimeout(() => {
@@ -33,7 +34,6 @@ class Score extends Component {
       </>
     );
   }
-
 }
 
 const styles = StyleSheet.create({
