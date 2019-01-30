@@ -13,8 +13,8 @@ const InitialARScene = require('../ARView');
 class InitialiseAR extends Component {
   state = {
     apiKey: VIRO_API_KEY,
-    lives: 3,
     gameStarted: false,
+    lives: 3,
     playerWon: false,
     dynamicPosition: [0.2, 3, -0.4],
     score: 0,
@@ -76,7 +76,7 @@ class InitialiseAR extends Component {
               updateScore: this.updateScore,
               playerWins: this.playerWins,
               playerWon,
-              dynamicPosition
+              score
             }}
             initialScene={{ scene: InitialARScene }}
           />
