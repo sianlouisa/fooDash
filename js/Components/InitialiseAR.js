@@ -5,7 +5,9 @@ import {
 } from 'react-native';
 import { VIRO_API_KEY } from '../../config';
 import { generateRandomPosition } from '../utils/generateRandomPosition';
-// import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';s
+import Score from './Score';
+import ArLoad from './ArLoad';
 
 const InitialARScene = require('../ARView');
 
@@ -17,18 +19,16 @@ class InitialiseAR extends Component {
     playerWon: false,
     staticPosition: [0.1, 0, -0.2],
     dynamicPosition: [0.2, 3, -0.4],
-    score: 0
+    score: 0,
+    isLoading: true
   };
 
-  componentDidUpdate() {
-    const { playerWon, lives } = this.state;
-    if (playerWon || !lives) {
+  componentDidUpdate(prevState) {
+    const { gameStarted } = this.state;
+    if (prevState.gameStarted !== gameStarted) {
       setTimeout(() => {
-        const {
-          navigation: { navigate }
-        } = this.props;
-        navigate('Leaderboard');
-      }, 2000);
+        this.setState({ isLoading: false });
+      }, 4000);
     }
   }
 
@@ -37,7 +37,10 @@ class InitialiseAR extends Component {
   };
 
   reduceLife = () => {
-    this.setState(state => ({ lives: state.lives - 1 }));
+    this.setState((state) => {
+      const lives = state.lives ? state.lives - 1 : 0;
+      return { lives };
+    });
   };
 
   startGame = () => {
@@ -50,11 +53,12 @@ class InitialiseAR extends Component {
   };
 
   resetGame = () => {
-    this.setState({ lives: 3 });
+    this.setState({ lives: 3, score: 0 });
   };
 
   playerWins = (collidedTag) => {
-    if (collidedTag === 'player') {
+    const { lives } = this.state;
+    if (collidedTag === 'player' && !lives) {
       this.setState({ playerWon: true });
     }
   };
@@ -63,12 +67,14 @@ class InitialiseAR extends Component {
     const {
       apiKey,
       lives,
-      gameStarted,
       playerWon,
       staticPosition,
       score,
-      dynamicPosition
+      dynamicPosition,
+      isLoading,
+      gameStarted
     } = this.state;
+    const { navigation: { navigate } } = this.props;
     return (
       <>
         <View style={localStyles.flex}>
@@ -88,23 +94,27 @@ class InitialiseAR extends Component {
             }}
             initialScene={{ scene: InitialARScene }}
           />
-          {gameStarted && (
-            <>
-              <View style={localStyles.topMenu}>
-                <TouchableHighlight style={localStyles.buttons}>
-                  <Text style={localStyles.buttonText}>{`Lives: ${lives}`}</Text>
-                </TouchableHighlight>
+          {lives && !playerWon
+            ? (
+              <>
+                <View style={localStyles.topMenu}>
+                  <TouchableHighlight style={localStyles.buttons}>
+                    <Text style={localStyles.buttonText}>{`Lives: ${lives}`}</Text>
+                  </TouchableHighlight>
 
-                <TouchableHighlight style={localStyles.buttonsScore}>
-                  <Text style={localStyles.buttonText}>{`Score: ${score}`}</Text>
-                </TouchableHighlight>
+                  <TouchableHighlight style={localStyles.buttonsScore}>
+                    <Text style={localStyles.buttonText}>{`Score: ${score}`}</Text>
+                  </TouchableHighlight>
 
-                <TouchableHighlight style={localStyles.buttons} onClick={this.resetGame}>
-                  <Text style={localStyles.buttonText}>Reset</Text>
-                </TouchableHighlight>
-              </View>
-            </>
-          )}
+                  <TouchableHighlight style={localStyles.buttons} onPress={this.resetGame}>
+                    <Text style={localStyles.buttonText}>Reset</Text>
+                  </TouchableHighlight>
+                </View>
+              </>
+            )
+            : <Score navigate={navigate} score={score} />
+          }
+          {isLoading && gameStarted && <ArLoad />}
         </View>
       </>
     );
@@ -114,6 +124,7 @@ class InitialiseAR extends Component {
     return this.getARNavigator();
   }
 }
+
 
 const localStyles = StyleSheet.create({
   viroContainer: {

@@ -100,6 +100,7 @@ export default class ARView extends Component {
 
   getScene = () => {
     const {
+
       planeCenter,
       donutPosition,
       cupcakePosition,
@@ -107,14 +108,14 @@ export default class ARView extends Component {
       applePosition,
       pizzaPosition,
       pepperPosition,
-      pearPosition
+      pearPosition,
+      isLoading
     } = this.state;
     const {
       arSceneNavigator: {
         viroAppProps: { lives, playerWins, playerWon }
       }
     } = this.props;
-
     return (
       <>
         <ViroAmbientLight color="#ffffff" />
@@ -125,8 +126,8 @@ export default class ARView extends Component {
         >
           {/* Renders the playing surface */}
           <ViroQuad
-            position={planeCenter}
-            scale={[2, 2, 2]}
+            // position={planeCenter}
+            scale={[1, 1, 1]}
             rotation={[-90, 0, 0]}
             physicsBody={{ type: 'Static' }}
             materials="ground"
@@ -136,8 +137,8 @@ export default class ARView extends Component {
           <ViroQuad
             key="deadSpace"
             onCollision={this.deadSpace}
-            height={100}
-            width={100}
+            height={200}
+            width={200}
             rotation={[-90, 0, 0]}
             position={[0, -1, 0]}
             materials={['transparent']}
@@ -158,6 +159,7 @@ export default class ARView extends Component {
           {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
           {/* Tokens */}
+
           {object.cupcake(cupcakePosition, token => (this.cupcake = token))}
           {object.donut(donutPosition, token => (this.donut = token))}
           {object.pizza(pizzaPosition, token => (this.pizza = token))}
@@ -175,7 +177,7 @@ export default class ARView extends Component {
     const {
       arSceneNavigator: {
         viroAppProps: { updateScore, reduceLife }
-      }
+      },
     } = this.props;
     if (collidedTag === 'cupcake') {
       updateScore();
@@ -192,6 +194,7 @@ export default class ARView extends Component {
       const newPosition = generateRandomPosition(0.1);
       this.setState({ pizzaPosition: newPosition });
     }
+
     if (collidedTag === 'pepper') {
       reduceLife();
       const newPosition = generateRandomPosition(0.1);
@@ -260,6 +263,7 @@ export default class ARView extends Component {
 
   render() {
     const { isTracking, initialized } = this.state;
+
     return (
       <>
         <ViroARScene
