@@ -4,6 +4,7 @@ import {
   StyleSheet, Text, View, StatusBar, TouchableHighlight
 } from 'react-native';
 import { VIRO_API_KEY } from '../../config';
+import { generateRandomPosition } from '../utils/generateRandomPosition';
 // import PropTypes from 'prop-types';
 import Score from './Score';
 
@@ -20,10 +21,6 @@ class InitialiseAR extends Component {
     score: 0
   };
 
-  generateRandomPosition = (y) => {
-    const timesByX = Math.round(Math.random()) ? 0.4 : -0.4;
-    const timesByZ = Math.round(Math.random()) ? 0.4 : -0.4;
-    return [Math.random() * timesByX, y, Math.random() * timesByZ];
   }
 
   updateScore = () => {
@@ -41,7 +38,7 @@ class InitialiseAR extends Component {
     this.setState({ gameStarted: true });
     setInterval(() => {
       this.setState({
-        staticPosition: this.generateRandomPosition(0)
+        staticPosition: generateRandomPosition(0)
       });
     }, 5000);
   };
@@ -59,7 +56,13 @@ class InitialiseAR extends Component {
 
   getARNavigator = () => {
     const {
-      apiKey, lives, playerWon, staticPosition, score, dynamicPosition
+      apiKey,
+      lives,
+      gameStarted,
+      playerWon,
+      staticPosition,
+      score,
+      dynamicPosition
     } = this.state;
     const { navigation: { navigate } } = this.props;
     return (

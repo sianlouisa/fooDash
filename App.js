@@ -27,7 +27,7 @@ const SwitchNav = createSwitchNavigator(
     AuthLoadingScreen
   },
   {
-    initialRouteName: 'AuthLoadingScreen',
+    initialRouteName: 'AuthLoadingScreen'
   }
 );
 
