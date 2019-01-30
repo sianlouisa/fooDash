@@ -5,6 +5,16 @@ import {
 import * as api from '../api';
 
 class Score extends Component {
+  componentDidMount() {
+    this.updateScore();
+  }
+
+  updateScore = async () => {
+    const { score: currentScore } = this.props;
+    const currentPlayer = await AsyncStorage.getItem('currentPlayer');
+    const { score: highestScore, uid } = JSON.parse(currentPlayer);
+    if (currentScore > highestScore) api.updateScore(uid, currentScore);
+  }
   render() {
     const { score, navigate } = this.props;
     setTimeout(() => {
@@ -24,16 +34,6 @@ class Score extends Component {
     );
   }
 
-  componentDidMount() {
-    this.updateScore();
-  }
-
-  updateScore = async () => {
-    const { score: currentScore } = this.props;
-    const currentPlayer = await AsyncStorage.getItem('currentPlayer');
-    const { score: highestScore, uid } = JSON.parse(currentPlayer);
-    if (currentScore > highestScore) api.updateScore(uid, currentScore);
-  }
 }
 
 const styles = StyleSheet.create({
