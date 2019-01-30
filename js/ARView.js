@@ -37,7 +37,6 @@ export default class ARView extends Component {
     isTracking: false,
     initialized: false,
     planeCenter: [0, 0, 0],
-    isLoading: true,
     cupcakePosition: [0, 0.1, -0.2],
     donutPosition: [0.2, 0.1, 0]
   };
@@ -95,11 +94,13 @@ export default class ARView extends Component {
   };
 
   getScene = () => {
-    const { planeCenter, donutPosition, cupcakePosition, isLoading } = this.state;
+    const {
+      planeCenter, donutPosition, cupcakePosition
+    } = this.state;
     const {
       arSceneNavigator: {
         viroAppProps: {
-          lives, playerWins, playerWon, staticPosition, dynamicPosition
+          lives, playerWins, playerWon, dynamicPosition
         }
       }
     } = this.props;
@@ -107,7 +108,6 @@ export default class ARView extends Component {
 
     return (
       <>
-        {isLoading && this.getText('Loading', [0, 0, -0.2])}
         <ViroAmbientLight color="#ffffff" />
         <ViroARPlaneSelector
           onPlaneSelected={this.onPlaneSelected}
@@ -150,8 +150,8 @@ export default class ARView extends Component {
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
           {/* Tokens */}
           {object.cupcake(
-        cupcakePosition,
-             this.handleTokenCollision,
+            cupcakePosition,
+            this.handleTokenCollision,
             token => (this.cupcake = token)
           )}
           {object.donut(donutPosition, token => (this.donut = token))}
@@ -165,14 +165,14 @@ export default class ARView extends Component {
           {object.pear(
             dynamicPosition,
             this.handleObstacleCollision,
-            obstacle => (this.lemon = obstacle))}
+            obstacle => (this.lemon = obstacle)
+          )}
         </ViroARPlaneSelector>
       </>
     );
   };
 
   handlePlayerCollision = (collidedTag) => {
-    console.warn(collidedTag);
     const {
       arSceneNavigator: {
         viroAppProps: { updateScore }
