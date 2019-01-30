@@ -154,9 +154,21 @@ export default class ARView extends Component {
           {/* {this.generateDynamicObstacle([-0.4, 1, 0])} */}
           {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
-          {object.cupcake(tokenPosition, this.handleTokenCollision, token => (this.cupcake = token))}
-          {object.donut(tokenPosition, this.handleTokenCollision, token => (this.donut = token))}
-          {/* {this.generateTokens(tokenPosition)} */}
+
+          {/* Tokens */}
+          {object.cupcake(
+            tokenPosition,
+            this.handleTokenCollision,
+            token1 => (this.cupcake = token1)
+          )}
+          {object.donut(tokenPosition, this.handleTokenCollision, token2 => (this.donut = token2))}
+
+          {/* Obstalces */}
+          {object.greenBean(
+            staticPosition,
+            this.handleObstacleCollision,
+            obstacle1 => (this.greenbean = obstacle1)
+          )}
         </ViroARPlaneSelector>
       </>
     );

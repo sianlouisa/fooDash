@@ -61,7 +61,13 @@ class InitialiseAR extends Component {
 
   getARNavigator = () => {
     const {
-      apiKey, lives, gameStarted, playerWon, staticPosition, score, dynamicPosition
+      apiKey,
+      lives,
+      gameStarted,
+      playerWon,
+      staticPosition,
+      score,
+      dynamicPosition
     } = this.state;
     return (
       <>
