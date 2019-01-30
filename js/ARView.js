@@ -5,7 +5,6 @@ import {
   ViroMaterials,
   Viro3DObject,
   ViroQuad,
-  ViroBox,
   ViroText,
   ViroConstants,
   ViroARPlaneSelector
@@ -17,7 +16,7 @@ import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
 import specular from './res/res/emoji_smile/emoji_smile_specular.png';
 import { generateRandomPosition } from './utils/generateRandomPosition';
-import * as object from './3DObjects';
+import * as object from './utils/3DObjects';
 
 const physicsBody = {
   type: 'Dynamic',
@@ -100,7 +99,6 @@ export default class ARView extends Component {
 
   getScene = () => {
     const {
-
       planeCenter,
       donutPosition,
       cupcakePosition,
@@ -113,9 +111,7 @@ export default class ARView extends Component {
     } = this.state;
     const {
       arSceneNavigator: {
-        viroAppProps: {
-          lives, playerWon
-        }
+        viroAppProps: { lives, playerWon }
       }
     } = this.props;
     return (
@@ -169,7 +165,7 @@ export default class ARView extends Component {
     const {
       arSceneNavigator: {
         viroAppProps: { updateScore, reduceLife }
-      },
+      }
     } = this.props;
     if (collidedTag === 'cupcake') {
       updateScore();
