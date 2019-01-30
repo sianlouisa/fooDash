@@ -4,6 +4,7 @@ import {
   StyleSheet, Text, View, StatusBar, TouchableHighlight
 } from 'react-native';
 import { VIRO_API_KEY } from '../../config';
+import { generateRandomPosition } from '../utils/generateRandomPosition';
 // import PropTypes from 'prop-types';
 
 const InitialARScene = require('../ARView');
@@ -31,12 +32,6 @@ class InitialiseAR extends Component {
     }
   }
 
-  generateRandomPosition = (y) => {
-    const timesByX = Math.round(Math.random()) ? 0.4 : -0.4;
-    const timesByZ = Math.round(Math.random()) ? 0.4 : -0.4;
-    return [Math.random() * timesByX, y, Math.random() * timesByZ];
-  }
-
   updateScore = () => {
     this.setState(({ score }) => ({ score: score + 10 }));
   };
@@ -49,7 +44,7 @@ class InitialiseAR extends Component {
     this.setState({ gameStarted: true });
     setInterval(() => {
       this.setState({
-        staticPosition: this.generateRandomPosition(0)
+        staticPosition: generateRandomPosition(0)
       });
     }, 5000);
   };

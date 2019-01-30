@@ -17,6 +17,7 @@ import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
 import specular from './res/res/emoji_smile/emoji_smile_specular.png';
+import { generateRandomPosition } from './utils/generateRandomPosition';
 
 const physicsBody = {
   type: 'Dynamic',
@@ -36,7 +37,7 @@ export default class ARView extends Component {
     isTracking: false,
     initialized: false,
     planeCenter: [0, 0, 0],
-    updatedPosition: 0
+    tokenPosition: [0, 1, -0.2],
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -97,7 +98,7 @@ export default class ARView extends Component {
   }
 
   getScene = () => {
-    const { planeCenter } = this.state;
+    const { planeCenter, tokenPosition } = this.state;
     const {
       arSceneNavigator: {
         viroAppProps: {
@@ -122,7 +123,6 @@ export default class ARView extends Component {
             physicsBody={{ type: 'Static' }}
             materials="ground"
             renderingOrder={-1}
-            viroTag="deadSpace"
           />
           {/* Renders the area that respawns character if falls off surface */}
           <ViroQuad
@@ -134,6 +134,7 @@ export default class ARView extends Component {
             position={[0, -1, 0]}
             materials={['transparent']}
             physicsBody={{ type: 'Static' }}
+            viroTag="deadSpace"
           />
           {/* Renders the area the player must reach to win  */}
           <ViroBox
@@ -152,34 +153,22 @@ export default class ARView extends Component {
           {this.generateDynamicObstacle([-0.4, 1, 0])}
           {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
-          {this.generateTokens()}
+          {this.generateTokens(tokenPosition)}
         </ViroARPlaneSelector>
       </>
     );
   };
 
-  generateRandomPosition = (y) => {
-    const timesByX = Math.round(Math.random()) ? 0.4 : -0.4;
-    const timesByZ = Math.round(Math.random()) ? 0.4 : -0.4;
-    return [Math.random() * timesByX, y, Math.random() * timesByZ];
-  }
-
-  collectToken = (collidedTag) => {
+  handleTokenCollision = (collidedTag) => {
     const {
       arSceneNavigator: {
         viroAppProps: { updateScore }
       }
     } = this.props;
 
-    // const { updatedPosition } = this.state;
-
     if (collidedTag === 'player' || collidedTag === 'deadSpace') {
-      const newPosition = this.generateRandomPosition(1);
-      this.tokenRef.setNativeProps({ position: newPosition });
-
-      // this.setState({ updatedPosition: newPosition }, () => {
-      //   this.tokenRef.setNativeProps({ position: positions[updatedPosition] });
-      // });
+      const newPosition = generateRandomPosition(1);
+      this.setState({ tokenPosition: newPosition });
     }
     if (collidedTag === 'player') {
       updateScore();
@@ -256,7 +245,7 @@ export default class ARView extends Component {
     />
   )
 
-  generateTokens = () => (
+  generateTokens = position => (
     <ViroBox
       scale={[0.1, 0.1, 0.1]}
       materials={['token']}
@@ -268,9 +257,9 @@ export default class ARView extends Component {
         restitution: 0.35,
         friction: 0.75
       }}
-      position={[0, 1, -0.2]}
+      position={position}
       ref={token => (this.tokenRef = token)}
-      onCollision={this.collectToken}
+      onCollision={this.handleTokenCollision}
       viroTag="token"
     />
   );
@@ -296,7 +285,8 @@ export default class ARView extends Component {
         >
           {isTracking
             ? this.getScene()
-            : this.getText(initialized ? 'Initializing' : 'No Tracking', [0, 0, -0.1])}
+            : this.getText(initialized ? 'Initializing' : 'No Tracking', [0, 0, -0.1])
+          }
         </ViroARScene>
       </>
     );
