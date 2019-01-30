@@ -159,15 +159,15 @@ export default class ARView extends Component {
           {object.cupcake(
             tokenPosition,
             this.handleTokenCollision,
-            token1 => (this.cupcake = token1)
+            token => (this.cupcake = token)
           )}
-          {object.donut(tokenPosition, this.handleTokenCollision, token2 => (this.donut = token2))}
+          {object.donut(tokenPosition, this.handleTokenCollision, token => (this.donut = token))}
 
           {/* Obstalces */}
           {object.greenBean(
             staticPosition,
             this.handleObstacleCollision,
-            obstacle1 => (this.greenbean = obstacle1)
+            obstacle => (this.greenbean = obstacle)
           )}
         </ViroARPlaneSelector>
       </>

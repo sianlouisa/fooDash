@@ -30,7 +30,7 @@ export const cupcake = (pos, collision, ref) => (
     viroTag="token"
     physicsBody={{
       type: 'Dynamic',
-      mass: 25,
+      mass: 1,
       enabled: true,
       useGravity: true,
       restitution: 0.35,
