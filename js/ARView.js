@@ -37,7 +37,6 @@ export default class ARView extends Component {
     isTracking: false,
     initialized: false,
     planeCenter: [0, 0, 0],
-    isLoading: true,
     cupcakePosition: [0, 0.1, -0.2],
     donutPosition: [0.2, 0.1, 0],
     pearPosition: [0, 0.1, 0.3],
@@ -109,7 +108,6 @@ export default class ARView extends Component {
     } = this.props;
     return (
       <>
-        {isLoading && this.getText('Loading', [0, 0, -0.2])}
         <ViroAmbientLight color="#ffffff" />
         <ViroARPlaneSelector
           onPlaneSelected={this.onPlaneSelected}

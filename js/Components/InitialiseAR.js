@@ -5,8 +5,9 @@ import {
 } from 'react-native';
 import { VIRO_API_KEY } from '../../config';
 import { generateRandomPosition } from '../utils/generateRandomPosition';
-// import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';s
 import Score from './Score';
+import ArLoad from './ArLoad';
 
 const InitialARScene = require('../ARView');
 
@@ -17,8 +18,18 @@ class InitialiseAR extends Component {
     playerWon: false,
     staticPosition: [0.1, 0, -0.2],
     dynamicPosition: [0.2, 3, -0.4],
-    score: 0
+    score: 0,
+    isLoading: true
   };
+
+  componentDidUpdate(prevState) {
+    const { gameStarted } = this.state;
+    if (prevState.gameStarted !== gameStarted) {
+      setTimeout(() => {
+        this.setState({ isLoading: false });
+      }, 4000);
+    }
+  }
 
   updateScore = () => {
     this.setState(({ score }) => ({ score: score + 10 }));
@@ -57,7 +68,9 @@ class InitialiseAR extends Component {
       playerWon,
       staticPosition,
       score,
-      dynamicPosition
+      dynamicPosition,
+      isLoading,
+      gameStarted
     } = this.state;
     const { navigation: { navigate } } = this.props;
     return (
@@ -100,6 +113,7 @@ class InitialiseAR extends Component {
             )
             : <Score navigate={navigate} score={score} />
           }
+          {isLoading && gameStarted && <ArLoad />}
         </View>
       </>
     );
@@ -109,6 +123,7 @@ class InitialiseAR extends Component {
     return this.getARNavigator();
   }
 }
+
 
 const localStyles = StyleSheet.create({
   viroContainer: {
