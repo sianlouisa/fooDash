@@ -98,6 +98,7 @@ class Signup extends Component {
               placeholder="Enter Username"
               placeholderTextColor="#00b5ec"
               textContentType="username"
+              autoCapitalize="none"
             />
           </View>
           <View style={styles.signupInputs}>
@@ -111,6 +112,7 @@ class Signup extends Component {
               keyboardType="email-address"
               textContentType="emailAddress"
               underlineColorAndroid="transparent"
+              autoCapitalize="none"
             />
           </View>
           <View style={styles.signupInputs}>
@@ -122,6 +124,7 @@ class Signup extends Component {
               placeholderTextColor="#00b5ec"
               keyboardType="email-address"
               textContentType="emailAddress"
+              autoCapitalize="none"
             />
           </View>
           <View style={styles.signupInputs}>
@@ -135,6 +138,7 @@ class Signup extends Component {
               placeholderTextColor="#00b5ec"
               textContentType="password"
               underlineColorAndroid="transparent"
+              autoCapitalize="none"
             />
           </View>
           <View style={styles.signupInputs}>
@@ -147,6 +151,7 @@ class Signup extends Component {
               placeholderTextColor="#00b5ec"
               textContentType="password"
               underlineColorAndroid="transparent"
+              autoCapitalize="none"
             />
           </View>
           <TouchableOpacity

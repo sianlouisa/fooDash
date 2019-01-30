@@ -29,7 +29,7 @@ class Score extends Component {
       <>
         <View style={styles.container}>
           <Text style={styles.headerText}>
-            Game Over!
+            GAME OVER
           </Text>
           <Text style={styles.text}>
             {`You scored: ${score}`}
@@ -42,18 +42,24 @@ class Score extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    padding: 10
+    width: '100%',
+    padding: 10,
+    position: 'absolute',
+    top: 200,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   headerText: {
     fontSize: 50,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'white'
   },
   text: {
+    fontSize: 30,
     textAlign: 'center',
-    width: '85%'
+    width: '85%',
+    color: 'white'
   },
 });
 

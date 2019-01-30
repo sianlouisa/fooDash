@@ -55,6 +55,7 @@ class Login extends Component {
             value={email}
             placeholder="Enter Email"
             placeholderTextColor="#00b5ec"
+            autoCapitalize="none"
           />
         </View>
         <View style={styles.loginInputs}>
@@ -68,6 +69,7 @@ class Login extends Component {
             secureTextEntry
             placeholder="Enter Password"
             placeholderTextColor="#00b5ec"
+            autoCapitalize="none"
           />
         </View>
         <TouchableOpacity onPress={this.handleAuth} style={[styles.buttonContainer, styles.button]}>
