@@ -37,6 +37,7 @@ export default class ARView extends Component {
     isTracking: false,
     initialized: false,
     planeCenter: [0, 0, 0],
+    isLoading: true,
     cupcakePosition: [0, 0.1, -0.2],
     donutPosition: [0.2, 0.1, 0],
     pearPosition: [0, 0.1, 0.2],
@@ -97,7 +98,7 @@ export default class ARView extends Component {
 
   getScene = () => {
     const {
-      planeCenter, donutPosition, cupcakePosition, pearPosition, pepperPosition
+      planeCenter, donutPosition, cupcakePosition, pearPosition, pepperPosition, isLoading
     } = this.state;
     const {
       arSceneNavigator: {
@@ -107,8 +108,10 @@ export default class ARView extends Component {
       }
     } = this.props;
 
+
     return (
       <>
+        {isLoading && this.getText('Loading', [0, 0, -0.2])}
         <ViroAmbientLight color="#ffffff" />
         <ViroARPlaneSelector
           onPlaneSelected={this.onPlaneSelected}
@@ -149,7 +152,6 @@ export default class ARView extends Component {
           {this.generatePlayer(planeCenter)}
           {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
-
           {/* Tokens */}
           {object.cupcake(
             cupcakePosition,
@@ -302,6 +304,7 @@ export default class ARView extends Component {
 
   render() {
     const { isTracking, initialized } = this.state;
+
     return (
       <>
         <ViroARScene
