@@ -155,8 +155,8 @@ export default class ARView extends Component {
           {/* {this.generateDynamicObstacle([-0.4, 1, 0])} */}
           {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
-          {object.cupcake(tokenPosition, this.handleTokenCollision, token => (this.tokenRef = token))}
-          {/* {this.generateTokens(tokenPosition)} */}
+          {/* {object.cupcake(tokenPosition, this.handleTokenCollision, token => (this.tokenRef = token))} */}
+          {this.generateTokens(tokenPosition)}
         </ViroARPlaneSelector>
       </>
     );
@@ -170,7 +170,8 @@ export default class ARView extends Component {
     } = this.props;
     if (collidedTag === 'player' || collidedTag === 'deadSpace') {
       const newPosition = generateRandomPosition(1);
-      this.setState({ tokenPosition: newPosition });
+      this.setState({ tokenPosition: [0, 0.5, -0.4] });
+      // this.tokenRef.setNativeProps({ position: newPosition });
     }
     if (collidedTag === 'player') {
       updateScore();
