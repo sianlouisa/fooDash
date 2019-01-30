@@ -122,8 +122,9 @@ export default class ARView extends Component {
             physicsBody={{ type: 'Static' }}
             materials="ground"
             renderingOrder={-1}
+            viroTag="deadSpace"
           />
-          {/* Renders the area that respawns character if falls of surface */}
+          {/* Renders the area that respawns character if falls off surface */}
           <ViroQuad
             key="deadSpace"
             onCollision={this.deadSpace}
@@ -157,19 +158,31 @@ export default class ARView extends Component {
     );
   };
 
+  generateRandomPosition = (y) => {
+    const timesByX = Math.round(Math.random()) ? 0.4 : -0.4;
+    const timesByZ = Math.round(Math.random()) ? 0.4 : -0.4;
+    return [Math.random() * timesByX, y, Math.random() * timesByZ];
+  }
+
   collectToken = (collidedTag) => {
     const {
       arSceneNavigator: {
         viroAppProps: { updateScore }
       }
     } = this.props;
-    const { updatedPosition } = this.state;
+
+    // const { updatedPosition } = this.state;
+
+    if (collidedTag === 'player' || collidedTag === 'deadSpace') {
+      const newPosition = this.generateRandomPosition(1);
+      this.tokenRef.setNativeProps({ position: newPosition });
+
+      // this.setState({ updatedPosition: newPosition }, () => {
+      //   this.tokenRef.setNativeProps({ position: positions[updatedPosition] });
+      // });
+    }
     if (collidedTag === 'player') {
-      const positions = [[0, 1, -0.2], [-0.2, 1, -0.2]];
       updateScore();
-      this.setState({ updatedPosition: updatedPosition + 1 }, () => {
-        this.tokenRef.setNativeProps({ position: positions[updatedPosition] });
-      });
     }
   };
 
@@ -215,7 +228,7 @@ export default class ARView extends Component {
         type: 'Static',
         mass: 0,
         enabled: true,
-        // useGravity: true,
+        // useGravity: true
       }}
       position={position}
       ref={obstacle => (this.obstacleRef = obstacle)}
