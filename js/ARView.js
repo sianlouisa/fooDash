@@ -20,7 +20,6 @@ import specular from './res/res/emoji_smile/emoji_smile_specular.png';
 import { generateRandomPosition } from './utils/generateRandomPosition';
 import * as object from './3DObjects';
 
-
 const physicsBody = {
   type: 'Dynamic',
   mass: 20,
@@ -39,7 +38,7 @@ export default class ARView extends Component {
     isTracking: false,
     initialized: false,
     planeCenter: [0, 0, 0],
-    tokenPosition: [0, 0.5, -0.2]
+    tokenPosition: [0, 0.1, -0.2]
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -120,7 +119,7 @@ export default class ARView extends Component {
           {/* Renders the playing surface */}
           <ViroQuad
             position={planeCenter}
-            scale={[1, 1, 1]}
+            scale={[2, 2, 2]}
             rotation={[-90, 0, 0]}
             physicsBody={{ type: 'Static' }}
             materials="ground"
@@ -155,7 +154,8 @@ export default class ARView extends Component {
           {/* {this.generateDynamicObstacle([-0.4, 1, 0])} */}
           {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
-          {object.cupcake(tokenPosition, this.handleTokenCollision, token => (this.tokenRef = token))}
+          {object.cupcake(tokenPosition, this.handleTokenCollision, token => (this.cupcake = token))}
+          {object.donut(tokenPosition, this.handleTokenCollision, token => (this.donut = token))}
           {/* {this.generateTokens(tokenPosition)} */}
         </ViroARPlaneSelector>
       </>
@@ -163,15 +163,17 @@ export default class ARView extends Component {
   };
 
   handleTokenCollision = (collidedTag) => {
+    console.warn(collidedTag);
     const {
       arSceneNavigator: {
         viroAppProps: { updateScore }
       }
     } = this.props;
     if (collidedTag === 'player' || collidedTag === 'deadSpace') {
-      const newPosition = generateRandomPosition(0);
-      // this.setState({ tokenPosition: newPosition });
-      this.tokenRef.setNativeProps({ position: newPosition });
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ tokenPosition: newPosition });
+      // this.cupcake.setNativeProps({ position: newPosition });
+      // this.donut.setNativeProps({ position: newPosition });
     }
     if (collidedTag === 'player') {
       updateScore();
