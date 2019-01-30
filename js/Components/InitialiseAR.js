@@ -27,7 +27,7 @@ class InitialiseAR extends Component {
         const {
           navigation: { navigate }
         } = this.props;
-        navigate('PlayAgain');
+        navigate('Leaderboard');
       }, 2000);
     }
   }
