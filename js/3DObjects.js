@@ -30,11 +30,10 @@ export const cupcake = (pos, collision, ref) => (
     resources={[cupcakeMtl, cupcakeBasket, cupcakeCream, cupcakeFilling]}
     type="OBJ"
     ref={ref}
-    onCollision={collision}
-    viroTag="token"
+    viroTag="cupcake"
     physicsBody={{
       type: 'Dynamic',
-      mass: 25,
+      mass: 1,
       enabled: true,
       useGravity: true,
       restitution: 0.35,
@@ -52,7 +51,6 @@ export const donut = (pos, collision, ref) => (
     resources={[donutMtl, donutDiffuse, donutInverted, donutDisplace]}
     type="OBJ"
     ref={ref}
-    onCollision={collision}
     viroTag="donut"
     physicsBody={{
       type: 'Dynamic',
