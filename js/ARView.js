@@ -39,8 +39,8 @@ export default class ARView extends Component {
     planeCenter: [0, 0, 0],
     cupcakePosition: [0, 0.1, -0.2],
     donutPosition: [0.2, 0.1, 0],
-    pearPosition: [0, 0.1, 0.2],
-    pepperPosition: [-0.2, 0.1, 0],
+    pearPosition: [0, 0.1, 0.3],
+    pepperPosition: [-0.3, 0.1, 0],
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -128,8 +128,8 @@ export default class ARView extends Component {
           <ViroQuad
             key="deadSpace"
             onCollision={this.deadSpace}
-            height={100}
-            width={100}
+            height={200}
+            width={200}
             rotation={[-90, 0, 0]}
             position={[0, -1, 0]}
             materials={['transparent']}

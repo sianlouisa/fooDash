@@ -45,7 +45,7 @@ export const cupcake = (pos, collision, ref) => (
 export const donut = (pos, collision, ref) => (
   <Viro3DObject
     position={pos}
-    scale={[0.01, 0.01, 0.01]}
+    scale={[0.008, 0.008, 0.008]}
     rotation={[0, 0, 0]}
     source={donutObj}
     resources={[donutMtl, donutDiffuse, donutInverted, donutDisplace]}
@@ -66,7 +66,7 @@ export const donut = (pos, collision, ref) => (
 export const pepper = (pos, collision, ref) => (
   <Viro3DObject
     position={pos}
-    scale={[0.0007, 0.0007, 0.0007]}
+    scale={[0.0005, 0.0005, 0.0005]}
     rotation={[90, 90, 180]}
     source={pepperObj}
     resources={[pepperMtl, pepperTex]}
@@ -87,7 +87,7 @@ export const pepper = (pos, collision, ref) => (
 export const pear = (pos, collision, ref) => (
   <Viro3DObject
     position={pos}
-    scale={[0.01, 0.01, 0.01]}
+    scale={[0.008, 0.008, 0.008]}
     rotation={[90, 90, 180]}
     source={pearObj}
     resources={[pearMtl, pearTex]}
