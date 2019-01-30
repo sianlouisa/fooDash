@@ -1,0 +1,18 @@
+# Created with Anim8or 0.97d beta
+# Object "Donut3":
+
+newmtl Frosting
+Ka 1 1 1
+Kd 1 1 1
+Ks 1 1 1
+d 1.0
+Ns 752.6
+
+newmtl Donut
+Ka 0.894 0.62 0.341
+Kd 0.894 0.62 0.341
+Ks 1 1 1
+d 1.0
+Ns 752.6
+map_Kd Bread (Diffuse).bmp
+
