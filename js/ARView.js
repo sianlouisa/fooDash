@@ -39,7 +39,9 @@ export default class ARView extends Component {
     planeCenter: [0, 0, 0],
     isLoading: true,
     cupcakePosition: [0, 0.1, -0.2],
-    donutPosition: [0.2, 0.1, 0]
+    donutPosition: [0.2, 0.1, 0],
+    pearPosition: [0, 0.1, 0.2],
+    pepperPosition: [-0.2, 0.1, 0],
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -95,11 +97,13 @@ export default class ARView extends Component {
   };
 
   getScene = () => {
-    const { planeCenter, donutPosition, cupcakePosition, isLoading } = this.state;
+    const {
+      planeCenter, donutPosition, cupcakePosition, pearPosition, pepperPosition, isLoading
+    } = this.state;
     const {
       arSceneNavigator: {
         viroAppProps: {
-          lives, playerWins, playerWon, staticPosition, dynamicPosition
+          lives, playerWins, playerWon
         }
       }
     } = this.props;
@@ -150,33 +154,33 @@ export default class ARView extends Component {
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
           {/* Tokens */}
           {object.cupcake(
-        cupcakePosition,
-             this.handleTokenCollision,
+            cupcakePosition,
             token => (this.cupcake = token)
           )}
-          {object.donut(donutPosition, token => (this.donut = token))}
+          {object.donut(
+            donutPosition,
+            token => (this.donut = token)
+          )}
 
           {/* Obstalces */}
           {object.pepper(
-            dynamicPosition,
-            this.handleObstacleCollision,
+            pepperPosition,
             obstacle => (this.pepper = obstacle)
           )}
           {object.pear(
-            dynamicPosition,
-            this.handleObstacleCollision,
-            obstacle => (this.lemon = obstacle))}
+            pearPosition,
+            obstacle => (this.pear = obstacle)
+          )}
         </ViroARPlaneSelector>
       </>
     );
   };
 
   handlePlayerCollision = (collidedTag) => {
-    console.warn(collidedTag);
     const {
       arSceneNavigator: {
-        viroAppProps: { updateScore }
-      }
+        viroAppProps: { updateScore, reduceLife }
+      },
     } = this.props;
     if (collidedTag === 'cupcake') {
       updateScore();
@@ -187,6 +191,16 @@ export default class ARView extends Component {
       updateScore();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ donutPosition: newPosition });
+    }
+    if (collidedTag === 'pepper') {
+      reduceLife();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ pepperPosition: newPosition });
+    }
+    if (collidedTag === 'pear') {
+      reduceLife();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ pearPosition: newPosition });
     }
   };
 
