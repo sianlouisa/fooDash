@@ -36,7 +36,8 @@ export default class ARView extends Component {
     isTracking: false,
     initialized: false,
     planeCenter: [0, 0, 0],
-    updatedPosition: 0
+    updatedPosition: 0,
+    isLoading: true,
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -97,7 +98,7 @@ export default class ARView extends Component {
   }
 
   getScene = () => {
-    const { planeCenter } = this.state;
+    const { planeCenter, isLoading } = this.state;
     const {
       arSceneNavigator: {
         viroAppProps: {
@@ -106,8 +107,10 @@ export default class ARView extends Component {
       }
     } = this.props;
 
+
     return (
       <>
+        {isLoading && this.getText('Loading', [0, 0, -0.2])}
         <ViroAmbientLight color="#ffffff" />
         <ViroARPlaneSelector
           onPlaneSelected={this.onPlaneSelected}
@@ -153,6 +156,7 @@ export default class ARView extends Component {
           {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
           {this.generateTokens()}
+
         </ViroARPlaneSelector>
       </>
     );
@@ -286,6 +290,7 @@ export default class ARView extends Component {
 
   render() {
     const { isTracking, initialized } = this.state;
+
     return (
       <>
         <ViroARScene

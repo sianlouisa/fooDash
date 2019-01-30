@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { VIRO_API_KEY } from '../../config';
 // import PropTypes from 'prop-types';
+import Score from './Score';
 
 const InitialARScene = require('../ARView');
 
@@ -19,18 +20,6 @@ class InitialiseAR extends Component {
     score: 0
   };
 
-  componentDidUpdate() {
-    const { playerWon, lives } = this.state;
-    if (playerWon || !lives) {
-      setTimeout(() => {
-        const {
-          navigation: { navigate }
-        } = this.props;
-        navigate('PlayAgain');
-      }, 2000);
-    }
-  }
-
   generateRandomPosition = (y) => {
     const timesByX = Math.round(Math.random()) ? 0.4 : -0.4;
     const timesByZ = Math.round(Math.random()) ? 0.4 : -0.4;
@@ -42,7 +31,10 @@ class InitialiseAR extends Component {
   };
 
   reduceLife = () => {
-    this.setState(state => ({ lives: state.lives - 1 }));
+    this.setState((state) => {
+      const lives = state.lives ? state.lives - 1 : 0;
+      return { lives };
+    });
   };
 
   startGame = () => {
@@ -55,19 +47,21 @@ class InitialiseAR extends Component {
   };
 
   resetGame = () => {
-    this.setState({ lives: 3 });
+    this.setState({ lives: 3, score: 0 });
   };
 
   playerWins = (collidedTag) => {
-    if (collidedTag === 'player') {
+    const { lives } = this.state;
+    if (collidedTag === 'player' && !lives) {
       this.setState({ playerWon: true });
     }
   };
 
   getARNavigator = () => {
     const {
-      apiKey, lives, gameStarted, playerWon, staticPosition, score, dynamicPosition
+      apiKey, lives, playerWon, staticPosition, score, dynamicPosition
     } = this.state;
+    const { navigation: { navigate } } = this.props;
     return (
       <>
         <View style={localStyles.flex}>
@@ -87,23 +81,26 @@ class InitialiseAR extends Component {
             }}
             initialScene={{ scene: InitialARScene }}
           />
-          {gameStarted && (
-            <>
-              <View style={localStyles.topMenu}>
-                <TouchableHighlight style={localStyles.buttons}>
-                  <Text style={localStyles.buttonText}>{`Lives: ${lives}`}</Text>
-                </TouchableHighlight>
+          {lives && !playerWon
+            ? (
+              <>
+                <View style={localStyles.topMenu}>
+                  <TouchableHighlight style={localStyles.buttons}>
+                    <Text style={localStyles.buttonText}>{`Lives: ${lives}`}</Text>
+                  </TouchableHighlight>
 
-                <TouchableHighlight style={localStyles.buttonsScore}>
-                  <Text style={localStyles.buttonText}>{`Score: ${score}`}</Text>
-                </TouchableHighlight>
+                  <TouchableHighlight style={localStyles.buttonsScore}>
+                    <Text style={localStyles.buttonText}>{`Score: ${score}`}</Text>
+                  </TouchableHighlight>
 
-                <TouchableHighlight style={localStyles.buttons} onClick={this.resetGame}>
-                  <Text style={localStyles.buttonText}>Reset</Text>
-                </TouchableHighlight>
-              </View>
-            </>
-          )}
+                  <TouchableHighlight style={localStyles.buttons} onPress={this.resetGame}>
+                    <Text style={localStyles.buttonText}>Reset</Text>
+                  </TouchableHighlight>
+                </View>
+              </>
+            )
+            : <Score navigate={navigate} score={score} />
+          }
         </View>
       </>
     );
