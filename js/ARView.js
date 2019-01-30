@@ -38,7 +38,9 @@ export default class ARView extends Component {
     initialized: false,
     planeCenter: [0, 0, 0],
     cupcakePosition: [0, 0.1, -0.2],
-    donutPosition: [0.2, 0.1, 0]
+    donutPosition: [0.2, 0.1, 0],
+    pearPosition: [0, 0.1, 0.3],
+    pepperPosition: [-0.3, 0.1, 0],
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -95,12 +97,12 @@ export default class ARView extends Component {
 
   getScene = () => {
     const {
-      planeCenter, donutPosition, cupcakePosition
+      planeCenter, donutPosition, cupcakePosition, pearPosition, pepperPosition, isLoading
     } = this.state;
     const {
       arSceneNavigator: {
         viroAppProps: {
-          lives, playerWins, playerWon, dynamicPosition
+          lives, playerWins, playerWon
         }
       }
     } = this.props;
@@ -116,8 +118,8 @@ export default class ARView extends Component {
         >
           {/* Renders the playing surface */}
           <ViroQuad
-            position={planeCenter}
-            scale={[2, 2, 2]}
+            // position={planeCenter}
+            scale={[1, 1, 1]}
             rotation={[-90, 0, 0]}
             physicsBody={{ type: 'Static' }}
             materials="ground"
@@ -127,8 +129,8 @@ export default class ARView extends Component {
           <ViroQuad
             key="deadSpace"
             onCollision={this.deadSpace}
-            height={100}
-            width={100}
+            height={200}
+            width={200}
             rotation={[-90, 0, 0]}
             position={[0, -1, 0]}
             materials={['transparent']}
@@ -151,21 +153,21 @@ export default class ARView extends Component {
           {/* Tokens */}
           {object.cupcake(
             cupcakePosition,
-            this.handleTokenCollision,
             token => (this.cupcake = token)
           )}
-          {object.donut(donutPosition, token => (this.donut = token))}
+          {object.donut(
+            donutPosition,
+            token => (this.donut = token)
+          )}
 
           {/* Obstalces */}
           {object.pepper(
-            dynamicPosition,
-            this.handleObstacleCollision,
+            pepperPosition,
             obstacle => (this.pepper = obstacle)
           )}
           {object.pear(
-            dynamicPosition,
-            this.handleObstacleCollision,
-            obstacle => (this.lemon = obstacle)
+            pearPosition,
+            obstacle => (this.pear = obstacle)
           )}
         </ViroARPlaneSelector>
       </>
@@ -175,8 +177,8 @@ export default class ARView extends Component {
   handlePlayerCollision = (collidedTag) => {
     const {
       arSceneNavigator: {
-        viroAppProps: { updateScore }
-      }
+        viroAppProps: { updateScore, reduceLife }
+      },
     } = this.props;
     if (collidedTag === 'cupcake') {
       updateScore();
@@ -187,6 +189,16 @@ export default class ARView extends Component {
       updateScore();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ donutPosition: newPosition });
+    }
+    if (collidedTag === 'pepper') {
+      reduceLife();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ pepperPosition: newPosition });
+    }
+    if (collidedTag === 'pear') {
+      reduceLife();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ pearPosition: newPosition });
     }
   };
 
