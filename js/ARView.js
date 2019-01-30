@@ -12,7 +12,6 @@ import {
 } from 'react-viro';
 import TimerMixin from 'react-timer-mixin';
 import { StyleSheet } from 'react-native';
-// import _ from 'lodash';
 import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
@@ -38,7 +37,8 @@ export default class ARView extends Component {
     isTracking: false,
     initialized: false,
     planeCenter: [0, 0, 0],
-    tokenPosition: [0, 0.1, -0.2]
+    cupcakePosition: [0, 0.1, -0.2],
+    donutPosition: [0.2, 0.1, 0]
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -62,11 +62,6 @@ export default class ARView extends Component {
         viroAppProps: { startGame }
       }
     } = this.props;
-    // const anchoredPosition = [
-    //   anchor.position[0] + anchor.center[0],
-    //   anchor.position[1] + anchor.center[1],
-    //   anchor.position[2] + anchor.center[2]
-    // ];
     this.setState({
       planeCenter: anchor.center
     });
@@ -99,7 +94,7 @@ export default class ARView extends Component {
   };
 
   getScene = () => {
-    const { planeCenter, tokenPosition } = this.state;
+    const { planeCenter, donutPosition, cupcakePosition } = this.state;
     const {
       arSceneNavigator: {
         viroAppProps: {
@@ -148,25 +143,19 @@ export default class ARView extends Component {
             position={[0, 0, -0.4]}
           />
           {this.generatePlayer(planeCenter)}
-          {/* {this.generateStaticObstacles(staticPosition)} */}
-          {/* {this.generateDynamicObstacle([0, 1, 0.4])} */}
-          {/* {this.generateDynamicObstacle([0, 1, 0.2])} */}
-          {/* {this.generateDynamicObstacle([-0.4, 1, 0])} */}
           {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
 
           {/* Tokens */}
           {object.cupcake(
-            tokenPosition,
-            this.handleTokenCollision,
+            cupcakePosition,
             token => (this.cupcake = token)
           )}
-          {object.donut(tokenPosition, this.handleTokenCollision, token => (this.donut = token))}
+          {object.donut(donutPosition, token => (this.donut = token))}
 
           {/* Obstalces */}
           {object.greenBean(
             staticPosition,
-            this.handleObstacleCollision,
             obstacle => (this.greenbean = obstacle)
           )}
         </ViroARPlaneSelector>
@@ -174,21 +163,22 @@ export default class ARView extends Component {
     );
   };
 
-  handleTokenCollision = (collidedTag) => {
+  handlePlayerCollision = (collidedTag) => {
     console.warn(collidedTag);
     const {
       arSceneNavigator: {
         viroAppProps: { updateScore }
       }
     } = this.props;
-    if (collidedTag === 'player' || collidedTag === 'deadSpace') {
-      const newPosition = generateRandomPosition(0.1);
-      this.setState({ tokenPosition: newPosition });
-      // this.cupcake.setNativeProps({ position: newPosition });
-      // this.donut.setNativeProps({ position: newPosition });
-    }
-    if (collidedTag === 'player') {
+    if (collidedTag === 'cupcake') {
       updateScore();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ cupcakePosition: newPosition });
+    }
+    if (collidedTag === 'donut') {
+      updateScore();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ donutPosition: newPosition });
     }
   };
 
@@ -203,6 +193,7 @@ export default class ARView extends Component {
       physicsBody={physicsBody}
       ref={obj => (this.playerRef = obj)}
       onClick={this.pushPlayer()}
+      onCollision={this.handlePlayerCollision}
       viroTag="player"
     />
   );
@@ -276,7 +267,6 @@ export default class ARView extends Component {
       }}
       position={position}
       ref={token => (this.tokenRef = token)}
-      onCollision={this.handleTokenCollision}
       viroTag="token"
     />
   );
