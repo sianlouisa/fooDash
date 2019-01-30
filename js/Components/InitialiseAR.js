@@ -15,7 +15,6 @@ class InitialiseAR extends Component {
   state = {
     apiKey: VIRO_API_KEY,
     lives: 3,
-    gameStarted: false,
     playerWon: false,
     staticPosition: [0.1, 0, -0.2],
     dynamicPosition: [0.2, 3, -0.4],
@@ -44,7 +43,6 @@ class InitialiseAR extends Component {
   };
 
   startGame = () => {
-    this.setState({ gameStarted: true });
     setInterval(() => {
       this.setState({
         staticPosition: generateRandomPosition(0)
@@ -90,7 +88,8 @@ class InitialiseAR extends Component {
               playerWins: this.playerWins,
               playerWon,
               staticPosition,
-              dynamicPosition
+              dynamicPosition,
+              score
             }}
             initialScene={{ scene: InitialARScene }}
           />

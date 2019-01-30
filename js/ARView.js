@@ -102,12 +102,10 @@ export default class ARView extends Component {
     const {
       arSceneNavigator: {
         viroAppProps: {
-          lives, playerWins, playerWon
+          lives, playerWon
         }
       }
     } = this.props;
-
-
     return (
       <>
         <ViroAmbientLight color="#ffffff" />
@@ -136,16 +134,6 @@ export default class ARView extends Component {
             materials={['transparent']}
             physicsBody={{ type: 'Static' }}
             viroTag="deadSpace"
-          />
-          {/* Renders the area the player must reach to win  */}
-          <ViroBox
-            key="goal"
-            onCollision={playerWins}
-            height={0.05}
-            width={0.05}
-            scale={[1, 2, 0.1]}
-            physicsBody={{ type: 'Kinematic' }}
-            position={[0, 0, -0.4]}
           />
           {this.generatePlayer(planeCenter)}
           {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
@@ -302,7 +290,6 @@ export default class ARView extends Component {
 
   render() {
     const { isTracking, initialized } = this.state;
-
     return (
       <>
         <ViroARScene
