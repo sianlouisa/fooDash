@@ -39,8 +39,11 @@ export default class ARView extends Component {
     planeCenter: [0, 0, 0],
     cupcakePosition: [0, 0.1, -0.2],
     donutPosition: [0.2, 0.1, 0],
-    pearPosition: [0, 0.1, 0.3],
-    pepperPosition: [-0.3, 0.1, 0],
+    carrotPosition: [0.2, 0.1, -0.2],
+    applePosition: [-0.2, 0.1, 0],
+    pepperPosition: [0.4, 0.1, 0],
+    pearPosition: [-0.4, 0.1, 0],
+    pizzaPosition: [0.4, 0.1, -0.4]
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -97,7 +100,16 @@ export default class ARView extends Component {
 
   getScene = () => {
     const {
-      planeCenter, donutPosition, cupcakePosition, pearPosition, pepperPosition, isLoading
+
+      planeCenter,
+      donutPosition,
+      cupcakePosition,
+      carrotPosition,
+      applePosition,
+      pizzaPosition,
+      pepperPosition,
+      pearPosition,
+      isLoading
     } = this.state;
     const {
       arSceneNavigator: {
@@ -139,24 +151,15 @@ export default class ARView extends Component {
           {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
           {playerWon && this.getText('Winner', [0, 0, -0.5])}
           {/* Tokens */}
-          {object.cupcake(
-            cupcakePosition,
-            token => (this.cupcake = token)
-          )}
-          {object.donut(
-            donutPosition,
-            token => (this.donut = token)
-          )}
 
+          {object.cupcake(cupcakePosition, token => (this.cupcake = token))}
+          {object.donut(donutPosition, token => (this.donut = token))}
+          {object.pizza(pizzaPosition, token => (this.pizza = token))}
           {/* Obstalces */}
-          {object.pepper(
-            pepperPosition,
-            obstacle => (this.pepper = obstacle)
-          )}
-          {object.pear(
-            pearPosition,
-            obstacle => (this.pear = obstacle)
-          )}
+          {object.pepper(pepperPosition, obstacle => (this.pepper = obstacle))}
+          {object.pear(pearPosition, obstacle => (this.pear = obstacle))}
+          {object.carrot(carrotPosition, obstacle => (this.carrot = obstacle))}
+          {object.apple(applePosition, obstacle => (this.apple = obstacle))}
         </ViroARPlaneSelector>
       </>
     );
@@ -178,6 +181,12 @@ export default class ARView extends Component {
       const newPosition = generateRandomPosition(0.1);
       this.setState({ donutPosition: newPosition });
     }
+    if (collidedTag === 'pizza') {
+      updateScore();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ pizzaPosition: newPosition });
+    }
+
     if (collidedTag === 'pepper') {
       reduceLife();
       const newPosition = generateRandomPosition(0.1);
@@ -187,6 +196,16 @@ export default class ARView extends Component {
       reduceLife();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ pearPosition: newPosition });
+    }
+    if (collidedTag === 'carrot') {
+      reduceLife();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ carrotPosition: newPosition });
+    }
+    if (collidedTag === 'apple') {
+      reduceLife();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ applePosition: newPosition });
     }
   };
 
@@ -224,60 +243,6 @@ export default class ARView extends Component {
       this.playerRef.applyImpulse(pushImpulse, pushPosition);
     });
   };
-
-  generateStaticObstacles = position => (
-    <ViroBox
-      scale={[0.1, 0.1, 0.1]}
-      materials={['obstacle']}
-      physicsBody={{
-        type: 'Static',
-        mass: 0,
-        enabled: true
-        // useGravity: true
-      }}
-      position={position}
-      ref={obstacle => (this.obstacleRef = obstacle)}
-      onCollision={this.handleObstacleCollision}
-      viroTag="obstacle"
-    />
-  );
-
-  generateDynamicObstacle = position => (
-    <ViroBox
-      scale={[0.1, 0.1, 0.1]}
-      materials={['fallingObstacle']}
-      physicsBody={{
-        type: 'Dynamic',
-        mass: 25,
-        enabled: true,
-        useGravity: true,
-        restitution: 0.35,
-        friction: 0.75
-      }}
-      position={position}
-      ref={obstacle => (this.obstacleRef = obstacle)}
-      onCollision={this.handleObstacleCollision}
-      viroTag="obstacle"
-    />
-  );
-
-  generateTokens = position => (
-    <ViroBox
-      scale={[0.1, 0.1, 0.1]}
-      materials={['token']}
-      physicsBody={{
-        type: 'Dynamic',
-        mass: 25,
-        enabled: true,
-        useGravity: true,
-        restitution: 0.35,
-        friction: 0.75
-      }}
-      position={position}
-      ref={token => (this.tokenRef = token)}
-      viroTag="token"
-    />
-  );
 
   getText = (text, pos) => (
     <ViroText
