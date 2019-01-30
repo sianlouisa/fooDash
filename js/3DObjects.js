@@ -13,9 +13,13 @@ import donutDiffuse from './res/assets/donut/Bread (Diffuse).bmp';
 import donutInverted from './res/assets/donut/Bread (Displacement) (Inverted).bmp';
 import donutDisplace from './res/assets/donut/Bread (Displacement).bmp';
 
-import greenBeanObj from './res/assets/greenbean/10182_Greenbeans.obj';
-import greenBeanMtl from './res/assets/greenbean/10182_Greenbeans.mtl';
-import greenBeanTex from './res/assets/greenbean/GreenBeansC.JPG';
+import pearObj from './res/assets/pear/10197_Pear.obj';
+import pearMtl from './res/assets/pear/10197_Pear.mtl';
+import pearTex from './res/assets/pear/Pears.JPG';
+
+import pepperObj from './res/assets/pepper/10165_BellPepper_v01_L3.obj';
+import pepperMtl from './res/assets/pepper/10165_BellPepper_v01_L3.mtl';
+import pepperTex from './res/assets/pepper/GreenPepper_v01.jpg';
 
 export const cupcake = (pos, collision, ref) => (
   <Viro3DObject
@@ -59,21 +63,46 @@ export const donut = (pos, collision, ref) => (
   />
 );
 
-export const greenBean = (pos, collision, ref) => (
+export const pepper = (pos, collision, ref) => (
   <Viro3DObject
     position={pos}
-    scale={[0.02, 0.02, 0.02]}
-    rotation={[0, 0, 0]}
-    source={greenBeanObj}
-    resources={[greenBeanMtl, greenBeanTex]}
+    scale={[0.0007, 0.0007, 0.0007]}
+    rotation={[90, 90, 180]}
+    source={pepperObj}
+    resources={[pepperMtl, pepperTex]}
     type="OBJ"
     ref={ref}
     onCollision={collision}
     viroTag="greenbean"
     physicsBody={{
-      type: 'Static',
-      mass: 0,
-      enabled: true
+      type: 'Dynamic',
+      mass: 25,
+      enabled: true,
+      useGravity: true,
+      restitution: 0.35,
+      friction: 0.75
+    }}
+  />
+);
+
+export const pear = (pos, collision, ref) => (
+  <Viro3DObject
+    position={pos}
+    scale={[0.01, 0.01, 0.01]}
+    rotation={[90, 90, 180]}
+    source={pearObj}
+    resources={[pearMtl, pearTex]}
+    type="OBJ"
+    ref={ref}
+    onCollision={collision}
+    viroTag="greenbean"
+    physicsBody={{
+      type: 'Dynamic',
+      mass: 25,
+      enabled: true,
+      useGravity: true,
+      restitution: 0.35,
+      friction: 0.75
     }}
   />
 );

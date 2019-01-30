@@ -98,7 +98,7 @@ export default class ARView extends Component {
     const {
       arSceneNavigator: {
         viroAppProps: {
-          lives, playerWins, playerWon, staticPosition
+          lives, playerWins, playerWon, staticPosition, dynamicPosition
         }
       }
     } = this.props;
@@ -148,16 +148,22 @@ export default class ARView extends Component {
 
           {/* Tokens */}
           {object.cupcake(
-            cupcakePosition,
+        cupcakePosition,
+             this.handleTokenCollision,
             token => (this.cupcake = token)
           )}
           {object.donut(donutPosition, token => (this.donut = token))}
 
           {/* Obstalces */}
-          {object.greenBean(
-            staticPosition,
-            obstacle => (this.greenbean = obstacle)
+          {object.pepper(
+            dynamicPosition,
+            this.handleObstacleCollision,
+            obstacle => (this.pepper = obstacle)
           )}
+          {object.pear(
+            dynamicPosition,
+            this.handleObstacleCollision,
+            obstacle => (this.lemon = obstacle))}
         </ViroARPlaneSelector>
       </>
     );
