@@ -4,7 +4,6 @@ import {
   StyleSheet, Text, View, StatusBar, TouchableHighlight
 } from 'react-native';
 import { VIRO_API_KEY } from '../../config';
-import { generateRandomPosition } from '../utils/generateRandomPosition';
 // import PropTypes from 'prop-types';s
 import Score from './Score';
 import ArLoad from './ArLoad';
@@ -17,20 +16,10 @@ class InitialiseAR extends Component {
     gameStarted: false,
     lives: 3,
     playerWon: false,
-    staticPosition: [0.1, 0, -0.2],
     dynamicPosition: [0.2, 3, -0.4],
     score: 0,
     isLoading: true
   };
-
-  componentDidUpdate(prevState) {
-    const { gameStarted } = this.state;
-    if (prevState.gameStarted !== gameStarted) {
-      setTimeout(() => {
-        this.setState({ isLoading: false });
-      }, 4000);
-    }
-  }
 
   updateScore = () => {
     this.setState(({ score }) => ({ score: score + 10 }));
@@ -44,11 +33,11 @@ class InitialiseAR extends Component {
   };
 
   startGame = () => {
-    setInterval(() => {
-      this.setState({
-        staticPosition: generateRandomPosition(0)
-      });
-    }, 5000);
+    this.setState({ gameStarted: true }, () => {
+      setTimeout(() => {
+        this.setState({ isLoading: false });
+      }, 4000);
+    });
   };
 
   resetGame = () => {
@@ -67,7 +56,6 @@ class InitialiseAR extends Component {
       apiKey,
       lives,
       playerWon,
-      staticPosition,
       score,
       dynamicPosition,
       isLoading,
@@ -88,8 +76,6 @@ class InitialiseAR extends Component {
               updateScore: this.updateScore,
               playerWins: this.playerWins,
               playerWon,
-              staticPosition,
-              dynamicPosition,
               score
             }}
             initialScene={{ scene: InitialARScene }}
