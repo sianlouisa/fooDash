@@ -7,6 +7,7 @@ import { VIRO_API_KEY } from '../../config';
 // import PropTypes from 'prop-types';s
 import Score from './Score';
 import ArLoad from './ArLoad';
+import PickPlane from './PickPlane';
 
 const InitialARScene = require('../ARView');
 
@@ -98,6 +99,7 @@ class InitialiseAR extends Component {
             )
             : <Score navigate={navigate} score={score} />
           }
+          {!gameStarted && <PickPlane />}
           {isLoading && gameStarted && <ArLoad />}
         </View>
       </>
