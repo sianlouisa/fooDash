@@ -29,16 +29,14 @@ class Score extends Component {
       navigate('Leaderboard');
     }, 3500);
     return (
-      <>
-        <View style={styles.container}>
-          <Text style={styles.headerText}>
+      <View style={styles.container}>
+        <Text style={styles.headerText}>
             GAME OVER
-          </Text>
-          <Text style={styles.text}>
-            {`You scored: ${score}`}
-          </Text>
-        </View>
-      </>
+        </Text>
+        <Text style={styles.text}>
+          {`You scored: ${score}`}
+        </Text>
+      </View>
     );
   }
 }

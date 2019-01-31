@@ -34,6 +34,15 @@ import appleObj from '../res/assets/apple/10162_Apple_v01_l3.obj';
 import appleMtl from '../res/assets/apple/10162_Apple_v01_l3.mtl';
 import appleTex from '../res/assets/apple/Apple.jpg';
 
+import candyObj from '../res/assets/candycane/candyCane.obj';
+import candyMtl from '../res/assets/candycane/candyCane.mtl';
+import candyDiffuse from '../res/assets/candycane/candy_cane_diffuse.jpg';
+import candyBump from '../res/assets/candycane/candy_cane_bump.jpg';
+
+import rabbitObj from '../res/assets/chocrabbit/12953_ChocolateRabbit_v1.obj';
+import rabbitMtl from '../res/assets/chocrabbit/12953_ChocolateRabbit_v1.mtl';
+import rabbitTex from '../res/assets/chocrabbit/chocolate_rabbitDiffuseMap.jpg';
+
 const physicsBody = {
   type: 'Dynamic',
   mass: 25,
@@ -43,10 +52,38 @@ const physicsBody = {
   friction: 0.75
 };
 
+export const rabbit = (pos, ref) => (
+  <Viro3DObject
+    position={pos}
+    scale={[0.008, 0.008, 0.008]}
+    rotation={[90, 90, 180]}
+    source={rabbitObj}
+    resources={[rabbitMtl, rabbitTex]}
+    type="OBJ"
+    ref={ref}
+    viroTag="rabbit"
+    physicsBody={physicsBody}
+  />
+);
+
+export const candyCane = (pos, ref) => (
+  <Viro3DObject
+    position={pos}
+    scale={[0.007, 0.007, 0.007]}
+    rotation={[0, 0, 0]}
+    source={candyObj}
+    resources={[candyMtl, candyDiffuse, candyBump]}
+    type="OBJ"
+    ref={ref}
+    viroTag="candycane"
+    physicsBody={physicsBody}
+  />
+);
+
 export const pizza = (pos, ref) => (
   <Viro3DObject
     position={pos}
-    scale={[0.02, 0.02, 0.02]}
+    scale={[0.008, 0.008, 0.008]}
     rotation={[90, 90, 180]}
     source={pizzaObj}
     resources={[pizzaMtl, pizzaDiffuse, pizzaPlate]}
@@ -60,7 +97,7 @@ export const pizza = (pos, ref) => (
 export const cupcake = (pos, ref) => (
   <Viro3DObject
     position={pos}
-    scale={[0.01, 0.01, 0.01]}
+    scale={[0.007, 0.007, 0.007]}
     rotation={[90, 90, 180]}
     source={cupcakeObj}
     resources={[cupcakeMtl, cupcakeBasket, cupcakeCream, cupcakeFilling]}
@@ -74,7 +111,7 @@ export const cupcake = (pos, ref) => (
 export const donut = (pos, ref) => (
   <Viro3DObject
     position={pos}
-    scale={[0.008, 0.008, 0.008]}
+    scale={[0.006, 0.006, 0.006]}
     rotation={[0, 0, 0]}
     source={donutObj}
     resources={[donutMtl, donutDiffuse, donutInverted, donutDisplace]}
@@ -88,7 +125,7 @@ export const donut = (pos, ref) => (
 export const pepper = (pos, ref) => (
   <Viro3DObject
     position={pos}
-    scale={[0.0005, 0.0005, 0.0005]}
+    scale={[0.0004, 0.0004, 0.0004]}
     rotation={[90, 90, 180]}
     source={pepperObj}
     resources={[pepperMtl, pepperTex]}
@@ -102,7 +139,7 @@ export const pepper = (pos, ref) => (
 export const pear = (pos, ref) => (
   <Viro3DObject
     position={pos}
-    scale={[0.008, 0.008, 0.008]}
+    scale={[0.006, 0.006, 0.006]}
     rotation={[90, 90, 180]}
     source={pearObj}
     resources={[pearMtl, pearTex]}
@@ -116,8 +153,8 @@ export const pear = (pos, ref) => (
 export const carrot = (pos, ref) => (
   <Viro3DObject
     position={pos}
-    scale={[0.0008, 0.0008, 0.0008]}
-    rotation={[90, 90, 180]}
+    scale={[0.0007, 0.0007, 0.0007]}
+    rotation={[0, 0, 0]}
     source={carrotObj}
     resources={[carrotMtl, carrotTex]}
     type="OBJ"
@@ -130,7 +167,7 @@ export const carrot = (pos, ref) => (
 export const apple = (pos, ref) => (
   <Viro3DObject
     position={pos}
-    scale={[0.0005, 0.0005, 0.0005]}
+    scale={[0.00037, 0.00037, 0.00037]}
     rotation={[90, 90, 180]}
     source={appleObj}
     resources={[appleMtl, appleTex]}

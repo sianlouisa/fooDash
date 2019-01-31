@@ -10,7 +10,6 @@ import {
   ScrollView
 } from 'react-native';
 import * as api from '../api';
-// import PropTypes from 'prop-types';
 
 class Login extends Component {
   state = {
@@ -114,12 +113,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     opacity: 0.8
   },
-  // loginIcon: {
-  //   width: 30,
-  //   height: 30,
-  //   marginLeft: 15,
-  //   justifyContent: 'center'
-  // },
   inputs: {
     height: 45,
     marginLeft: 16,
