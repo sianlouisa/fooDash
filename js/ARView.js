@@ -107,7 +107,6 @@ export default class ARView extends Component {
       pizzaPosition,
       pepperPosition,
       pearPosition,
-      isLoading
     } = this.state;
     const {
       arSceneNavigator: {
