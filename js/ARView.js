@@ -15,6 +15,7 @@ import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
 import specular from './res/res/emoji_smile/emoji_smile_specular.png';
+import tableCloth from './res/assets/tableCloth.jpg';
 import { generateRandomPosition } from './utils/generateRandomPosition';
 import * as object from './utils/3DObjects';
 
@@ -101,8 +102,7 @@ export default class ARView extends Component {
       pepperPosition,
       pearPosition,
       candyCanePosition,
-      rabbitPosition,
-      isLoading
+      rabbitPosition
     } = this.state;
     return (
       <>
@@ -117,7 +117,7 @@ export default class ARView extends Component {
             scale={[1, 1, 1]}
             rotation={[-90, 0, 0]}
             physicsBody={{ type: 'Static' }}
-            materials="ground"
+            materials={['gameSurface']}
             renderingOrder={-1}
           />
           {/* Renders the area that respawns character if falls off surface */}
@@ -132,14 +132,12 @@ export default class ARView extends Component {
             viroTag="deadSpace"
           />
           {this.generatePlayer(planeCenter)}
-          {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
-          {playerWon && this.getText('Winner', [0, 0, -0.5])}
           {/* Tokens */}
           {object.donut(donutPosition, token => (this.donut = token))}
           {object.pizza(pizzaPosition, token => (this.pizza = token))}
           {object.rabbit(rabbitPosition, token => this.rabbit = token)}
           {object.candyCane(candyCanePosition, token => this.candycane = token)}
-          {/* Obstalces */}
+          {/* Obstacles */}
           {object.pepper(pepperPosition, obstacle => (this.pepper = obstacle))}
           {object.pear(pearPosition, obstacle => (this.pear = obstacle))}
           {object.carrot(carrotPosition, obstacle => (this.carrot = obstacle))}
@@ -264,9 +262,9 @@ ViroMaterials.createMaterials({
   transparent: {
     diffuseColor: 'rgba(0,0,0,0)'
   },
-  ground: {
-    diffuseColor: '#007CB6E6'
-  },
+  gameSurface: {
+    diffuseTexture: tableCloth
+  }
 });
 
 const styles = StyleSheet.create({
