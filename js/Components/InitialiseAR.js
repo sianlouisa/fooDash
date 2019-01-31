@@ -16,7 +16,8 @@ class InitialiseAR extends Component {
     gameStarted: false,
     lives: 3,
     score: 0,
-    isLoading: true
+    isLoading: true,
+    endGame: false
   };
 
   updateScore = () => {
@@ -38,8 +39,8 @@ class InitialiseAR extends Component {
     });
   };
 
-  resetGame = () => {
-    this.setState({ lives: 3, score: 0 });
+  handleEndGame = () => {
+    this.setState({ endGame: true })
   };
 
   getARNavigator = () => {
@@ -48,7 +49,8 @@ class InitialiseAR extends Component {
       lives,
       score,
       isLoading,
-      gameStarted
+      gameStarted,
+      endGame
     } = this.state;
     const { navigation: { navigate } } = this.props;
     return (
@@ -66,7 +68,7 @@ class InitialiseAR extends Component {
           }}
           initialScene={{ scene: InitialARScene }}
         />
-        {lives
+        {lives && !endGame
           ? (
             <>
               <View style={localStyles.topMenu}>
@@ -78,14 +80,14 @@ class InitialiseAR extends Component {
                   <Text style={localStyles.buttonText}>{`Score: ${score}`}</Text>
                 </TouchableHighlight>
 
-                <TouchableHighlight style={localStyles.buttons} onPress={this.resetGame}>
-                  <Text style={localStyles.buttonText}>Reset</Text>
+                <TouchableHighlight style={localStyles.buttons} onPress={this.handleEndGame}>
+                  <Text style={localStyles.buttonText}>End game</Text>
                 </TouchableHighlight>
               </View>
             </>
           )
           : <Score navigate={navigate} score={score} />
-          }
+        }
         {!gameStarted && <PickPlane />}
         {isLoading && gameStarted && <ArLoad />}
       </View>
