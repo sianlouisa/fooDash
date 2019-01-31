@@ -17,7 +17,10 @@ class Score extends Component {
     const { score: currentScore } = this.props;
     const currentPlayer = await AsyncStorage.getItem('currentPlayer');
     const { score: highestScore, uid } = JSON.parse(currentPlayer);
-    if (currentScore > highestScore) api.updateScore(uid, currentScore);
+    if (currentScore > highestScore) {
+      await AsyncStorage.mergeItem('currentPlayer', JSON.stringify({ score: currentScore }));
+      api.updateScore(uid, currentScore);
+    }
   }
 
   render() {
