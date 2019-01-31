@@ -35,13 +35,14 @@ export default class ARView extends Component {
   state = {
     isTracking: false,
     planeCenter: [0, 0, 0],
-    cupcakePosition: [0, 0.1, -0.2],
-    donutPosition: [0.2, 0.1, 0],
-    carrotPosition: [0.2, 0.1, -0.2],
-    applePosition: [-0.2, 0.1, 0],
-    pepperPosition: [0.4, 0.1, 0],
-    pearPosition: [-0.4, 0.1, 0],
-    pizzaPosition: [0.4, 0.1, -0.4]
+    carrotPosition: [0, 0.2, 0.2],
+    donutPosition: [0, 0.2, 0.4],
+    applePosition: [-0.2, 0.2, 0],
+    pizzaPosition: [-0.2, 0.2, -0.4],
+    pepperPosition: [-0.4, 0.2, -0.2],
+    candyCanePosition: [0.2, 0.2, -0.2],
+    pearPosition: [0.4, 0.2, 0],
+    rabbitPosition: [0.4, 0.2, 0.4],
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -94,12 +95,14 @@ export default class ARView extends Component {
     const {
       planeCenter,
       donutPosition,
-      cupcakePosition,
       carrotPosition,
       applePosition,
       pizzaPosition,
       pepperPosition,
       pearPosition,
+      candyCanePosition,
+      rabbitPosition,
+      isLoading
     } = this.state;
     return (
       <>
@@ -130,13 +133,14 @@ export default class ARView extends Component {
             viroTag="deadSpace"
           />
           {this.generatePlayer(planeCenter)}
-
+          {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
+          {playerWon && this.getText('Winner', [0, 0, -0.5])}
           {/* Tokens */}
-          {object.cupcake(cupcakePosition, token => (this.cupcake = token))}
           {object.donut(donutPosition, token => (this.donut = token))}
           {object.pizza(pizzaPosition, token => (this.pizza = token))}
-
-          {/* Obstacles */}
+          {object.rabbit(rabbitPosition, token => this.rabbit = token)}
+          {object.candyCane(candyCanePosition, token => this.candycane = token)}
+          {/* Obstalces */}
           {object.pepper(pepperPosition, obstacle => (this.pepper = obstacle))}
           {object.pear(pearPosition, obstacle => (this.pear = obstacle))}
           {object.carrot(carrotPosition, obstacle => (this.carrot = obstacle))}
@@ -152,10 +156,16 @@ export default class ARView extends Component {
         viroAppProps: { updateScore, reduceLife }
       }
     } = this.props;
-    if (collidedTag === 'cupcake') {
+    // Tokens
+    if (collidedTag === 'rabbit') {
       updateScore();
       const newPosition = generateRandomPosition(0.1);
-      this.setState({ cupcakePosition: newPosition });
+      this.setState({ rabbitPosition: newPosition });
+    }
+    if (collidedTag === 'candycane') {
+      updateScore();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ candyCanePosition: newPosition });
     }
     if (collidedTag === 'donut') {
       updateScore();
@@ -167,7 +177,7 @@ export default class ARView extends Component {
       const newPosition = generateRandomPosition(0.1);
       this.setState({ pizzaPosition: newPosition });
     }
-
+    // Obstacles
     if (collidedTag === 'pepper') {
       reduceLife();
       const newPosition = generateRandomPosition(0.1);
