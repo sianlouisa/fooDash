@@ -34,7 +34,6 @@ const playerPhysicsBody = {
 export default class ARView extends Component {
   state = {
     isTracking: false,
-    initialized: false,
     planeCenter: [0, 0, 0],
     cupcakePosition: [0, 0.1, -0.2],
     donutPosition: [0.2, 0.1, 0],
@@ -50,12 +49,6 @@ export default class ARView extends Component {
     if (state === ViroConstants.TRACKING_NORMAL) {
       this.setState({
         isTracking: true,
-        initialized: true
-      });
-    } else if (state === ViroConstants.TRACKING_NONE) {
-      this.setState({
-        isTracking: false,
-        initialized: false
       });
     }
   };
@@ -108,11 +101,6 @@ export default class ARView extends Component {
       pepperPosition,
       pearPosition,
     } = this.state;
-    const {
-      arSceneNavigator: {
-        viroAppProps: { lives, playerWon }
-      }
-    } = this.props;
     return (
       <>
         <ViroAmbientLight color="#ffffff" />
@@ -249,7 +237,7 @@ export default class ARView extends Component {
   );
 
   render() {
-    const { isTracking, initialized } = this.state;
+    const { isTracking } = this.state;
     return (
       <>
         <ViroARScene
@@ -258,9 +246,7 @@ export default class ARView extends Component {
             gravity: [0, -9.81, 0]
           }}
         >
-          {isTracking
-            ? this.getScene()
-            : this.getText(initialized ? 'Initializing' : 'No Tracking', [0, 0, -0.1])}
+          {isTracking && this.getScene()}
         </ViroARScene>
       </>
     );
