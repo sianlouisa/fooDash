@@ -130,8 +130,6 @@ export default class ARView extends Component {
             viroTag="deadSpace"
           />
           {this.generatePlayer(planeCenter)}
-          {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
-          {playerWon && this.getText('Winner', [0, 0, -0.5])}
 
           {/* Tokens */}
           {object.cupcake(cupcakePosition, token => (this.cupcake = token))}
