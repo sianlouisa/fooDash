@@ -7,6 +7,7 @@ import { VIRO_API_KEY } from '../../config';
 // import PropTypes from 'prop-types';s
 import Score from './Score';
 import ArLoad from './ArLoad';
+import PickPlane from './PickPlane';
 
 const InitialARScene = require('../ARView');
 
@@ -15,7 +16,6 @@ class InitialiseAR extends Component {
     apiKey: VIRO_API_KEY,
     gameStarted: false,
     lives: 3,
-    playerWon: false,
     score: 0,
     isLoading: true
   };
@@ -43,18 +43,10 @@ class InitialiseAR extends Component {
     this.setState({ lives: 3, score: 0 });
   };
 
-  playerWins = (collidedTag) => {
-    const { lives } = this.state;
-    if (collidedTag === 'player' && !lives) {
-      this.setState({ playerWon: true });
-    }
-  };
-
   getARNavigator = () => {
     const {
       apiKey,
       lives,
-      playerWon,
       score,
       isLoading,
       gameStarted
@@ -72,13 +64,11 @@ class InitialiseAR extends Component {
               reduceLife: this.reduceLife,
               gameOver: this.gameOver,
               updateScore: this.updateScore,
-              playerWins: this.playerWins,
-              playerWon,
               score
             }}
             initialScene={{ scene: InitialARScene }}
           />
-          {lives && !playerWon
+          {lives
             ? (
               <>
                 <View style={localStyles.topMenu}>
@@ -98,6 +88,7 @@ class InitialiseAR extends Component {
             )
             : <Score navigate={navigate} score={score} />
           }
+          {!gameStarted && <PickPlane />}
           {isLoading && gameStarted && <ArLoad />}
         </View>
       </>
