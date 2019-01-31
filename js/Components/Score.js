@@ -17,7 +17,10 @@ class Score extends Component {
     const { score: currentScore } = this.props;
     const currentPlayer = await AsyncStorage.getItem('currentPlayer');
     const { score: highestScore, uid } = JSON.parse(currentPlayer);
-    if (currentScore > highestScore) api.updateScore(uid, currentScore);
+    if (currentScore > highestScore) {
+      await AsyncStorage.mergeItem('currentPlayer', JSON.stringify({ score: currentScore }));
+      api.updateScore(uid, currentScore);
+    }
   }
 
   render() {
@@ -26,34 +29,38 @@ class Score extends Component {
       navigate('Leaderboard');
     }, 3500);
     return (
-      <>
-        <View style={styles.container}>
-          <Text style={styles.headerText}>
-            Game Over!
-          </Text>
-          <Text style={styles.text}>
-            {`You scored: ${score}`}
-          </Text>
-        </View>
-      </>
+      <View style={styles.container}>
+        <Text style={styles.headerText}>
+            GAME OVER
+        </Text>
+        <Text style={styles.text}>
+          {`You scored: ${score}`}
+        </Text>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    padding: 10
+    width: '100%',
+    padding: 10,
+    position: 'absolute',
+    top: 200,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   headerText: {
     fontSize: 50,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'white'
   },
   text: {
+    fontSize: 30,
     textAlign: 'center',
-    width: '85%'
+    width: '85%',
+    color: 'white'
   },
 });
 

@@ -18,7 +18,7 @@ import specular from './res/res/emoji_smile/emoji_smile_specular.png';
 import { generateRandomPosition } from './utils/generateRandomPosition';
 import * as object from './utils/3DObjects';
 
-const physicsBody = {
+const playerPhysicsBody = {
   type: 'Dynamic',
   mass: 20,
   enabled: true,
@@ -34,7 +34,6 @@ const physicsBody = {
 export default class ARView extends Component {
   state = {
     isTracking: false,
-    initialized: false,
     planeCenter: [0, 0, 0],
     carrotPosition: [0, 0.2, 0.2],
     donutPosition: [0, 0.2, 0.4],
@@ -51,12 +50,6 @@ export default class ARView extends Component {
     if (state === ViroConstants.TRACKING_NORMAL) {
       this.setState({
         isTracking: true,
-        initialized: true
-      });
-    } else if (state === ViroConstants.TRACKING_NONE) {
-      this.setState({
-        isTracking: false,
-        initialized: false
       });
     }
   };
@@ -73,7 +66,7 @@ export default class ARView extends Component {
     startGame();
   };
 
-  deadSpace = (collidedTag) => {
+  handleDeadSpaceCollision = (collidedTag) => {
     const {
       arSceneNavigator: {
         viroAppProps: { reduceLife, lives }
@@ -111,11 +104,6 @@ export default class ARView extends Component {
       rabbitPosition,
       isLoading
     } = this.state;
-    const {
-      arSceneNavigator: {
-        viroAppProps: { lives, playerWon }
-      }
-    } = this.props;
     return (
       <>
         <ViroAmbientLight color="#ffffff" />
@@ -126,7 +114,6 @@ export default class ARView extends Component {
         >
           {/* Renders the playing surface */}
           <ViroQuad
-            // position={planeCenter}
             scale={[1, 1, 1]}
             rotation={[-90, 0, 0]}
             physicsBody={{ type: 'Static' }}
@@ -136,7 +123,7 @@ export default class ARView extends Component {
           {/* Renders the area that respawns character if falls off surface */}
           <ViroQuad
             key="deadSpace"
-            onCollision={this.deadSpace}
+            onCollision={this.handleDeadSpaceCollision}
             height={200}
             width={200}
             rotation={[-90, 0, 0]}
@@ -221,7 +208,7 @@ export default class ARView extends Component {
       resources={[diffuse, normal, specular]}
       type="VRX"
       renderingOrder={0}
-      physicsBody={physicsBody}
+      physicsBody={playerPhysicsBody}
       ref={obj => (this.playerRef = obj)}
       onClick={this.pushPlayer()}
       onCollision={this.handlePlayerCollision}
@@ -231,10 +218,10 @@ export default class ARView extends Component {
 
   resetPlayer = () => {
     TimerMixin.setTimeout(() => {
-      this.playerRef.setNativeProps({ physicsBody: null });
+      this.playerRef.setNativeProps({ playerPhysicsBody: null });
       this.playerRef.setNativeProps({ position: [0, 0.1, 0] });
       TimerMixin.setTimeout(() => {
-        this.playerRef.setNativeProps({ physicsBody });
+        this.playerRef.setNativeProps({ playerPhysicsBody });
       });
     });
   };
@@ -258,7 +245,7 @@ export default class ARView extends Component {
   );
 
   render() {
-    const { isTracking, initialized } = this.state;
+    const { isTracking } = this.state;
     return (
       <>
         <ViroARScene
@@ -267,14 +254,21 @@ export default class ARView extends Component {
             gravity: [0, -9.81, 0]
           }}
         >
-          {isTracking
-            ? this.getScene()
-            : this.getText(initialized ? 'Initializing' : 'No Tracking', [0, 0, -0.1])}
+          {isTracking && this.getScene()}
         </ViroARScene>
       </>
     );
   }
 }
+
+ViroMaterials.createMaterials({
+  transparent: {
+    diffuseColor: 'rgba(0,0,0,0)'
+  },
+  ground: {
+    diffuseColor: '#007CB6E6'
+  },
+});
 
 const styles = StyleSheet.create({
   helloWorldTextStyle: {
@@ -283,30 +277,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     textAlignVertical: 'center',
     textAlign: 'center'
-  }
-});
-
-ViroMaterials.createMaterials({
-  transparent: {
-    diffuseColor: 'rgba(0,0,0,0)'
-  },
-  spherematerial: {
-    diffuseColor: 'rgb(19,42,143)'
-  },
-  ground: {
-    diffuseColor: '#007CB6E6'
-  },
-  token: {
-    diffuseColor: 'rgb(165, 47, 202)'
-  },
-  obstacle: {
-    diffuseColor: 'rgb(0, 0, 255)'
-  },
-  fallingObstacle: {
-    diffuseColor: 'rgb(255, 0, 0)'
-  },
-  tokenCollision: {
-    diffuseColor: 'rgb(255, 0, 0)'
   }
 });
 

@@ -9,7 +9,6 @@ import {
   AsyncStorage
 } from 'react-native';
 import * as api from '../api';
-// import PropTypes from 'prop-types';
 
 class Login extends Component {
   state = {
@@ -55,6 +54,7 @@ class Login extends Component {
             value={email}
             placeholder="Enter Email"
             placeholderTextColor="#00b5ec"
+            autoCapitalize="none"
           />
         </View>
         <View style={styles.loginInputs}>
@@ -68,6 +68,7 @@ class Login extends Component {
             secureTextEntry
             placeholder="Enter Password"
             placeholderTextColor="#00b5ec"
+            autoCapitalize="none"
           />
         </View>
         <TouchableOpacity onPress={this.handleAuth} style={[styles.buttonContainer, styles.button]}>
@@ -80,7 +81,6 @@ class Login extends Component {
           <Text style={styles.loginText}>Sign up</Text>
         </TouchableOpacity>
         {err && <Text style={styles.error}>Error</Text>}
-        {/* </ImageBackground> */}
       </View>
     );
   }
@@ -92,10 +92,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  // imgBackground: {
-  //   width: '100%',
-  //   height: '100%',
-  // },
   text: {
     fontFamily: 'Arial',
     fontSize: 20
@@ -112,12 +108,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     opacity: 0.8
   },
-  // loginIcon: {
-  //   width: 30,
-  //   height: 30,
-  //   marginLeft: 15,
-  //   justifyContent: 'center'
-  // },
   inputs: {
     height: 45,
     marginLeft: 16,
