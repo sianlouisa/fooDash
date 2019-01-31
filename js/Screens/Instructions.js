@@ -17,7 +17,7 @@ const Instructions = (props) => {
         camera will create a playing surface. Tap this, wait for the food to land and then tap your
         emoji player to make them move.
       </Text>
-      <Image source={obstacles} style={{ width: 300, height: 60 }} />
+      <Image source={obstacles} style={{ width: 300, height: 70 }} />
       <Text style={styles.text}>
         Avoid the healthy food and stay on the suface or you'll lose a life. The more good wholesome
         junk food you eat the more points you get!
