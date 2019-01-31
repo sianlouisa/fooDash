@@ -8,14 +8,16 @@ const Instructions = (props) => {
   const { navigation } = props;
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>How to play FoodDash!</Text>
+      <Text style={styles.headerText}>How to play FooDash!</Text>
       <Text style={styles.text}>
-        You'll need a flat surface to play on and space to move around. Once you start, point your
-        camera and wait for a grey surface to appear. Clicking this will begin the game play! The
-        objective of the game is to collect as many items as possible whilst avoiding the falling
-        obstacles. You can navigate your player by tapping it in the direction you want to go. Keep
-        an eye on your lives as you'll lose this if you fall off the surface or if a falling
-        obstacle hits you! Enjoy!
+        Point your camera at a flat surface.
+        Make sure you have plenty of space to move around!
+        The camera will create a playing surface.
+        Tap this, wait for the food to land and then tap your emoji player to make them move.
+        Avoid the healthy food and stay on the suface or you'll lose a life.
+        The more good wholesome junk food you eat the more points you get!
+        Eat as much as you can until your lives have gone.
+        Enjoy!
       </Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('InitialiseAR')}>
@@ -37,7 +39,7 @@ const styles = StyleSheet.create({
     padding: 10
   },
   text: {
-    textAlign: 'center',
+    textAlign: 'left',
     width: '85%'
   },
   headerText: {

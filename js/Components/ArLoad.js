@@ -21,7 +21,7 @@ class ArLoad extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.headerText}>{`Hey, ${username}!`}</Text>
-        <Text style={styles.text}>When emoji lands, get playing</Text>
+        <Text style={styles.text}>Get ready...the food is landing</Text>
       </View>
     );
   }
@@ -30,18 +30,24 @@ class ArLoad extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    padding: 10
+    width: '100%',
+    padding: 10,
+    position: 'absolute',
+    top: 200,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   headerText: {
-    fontSize: 20,
-    textAlign: 'center'
+    fontSize: 50,
+    textAlign: 'center',
+    color: 'white'
   },
   text: {
+    fontSize: 30,
     textAlign: 'center',
-    width: '85%'
+    width: '85%',
+    color: 'white'
   },
 });
 
