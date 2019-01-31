@@ -35,21 +35,21 @@ export default class ARView extends Component {
   state = {
     isTracking: false,
     planeCenter: [0, 0, 0],
-    carrotPosition: [0, 0.2, 0.2],
-    donutPosition: [0, 0.2, 0.4],
-    applePosition: [-0.2, 0.2, 0],
-    pizzaPosition: [-0.2, 0.2, -0.4],
-    pepperPosition: [-0.4, 0.2, -0.2],
-    candyCanePosition: [0.2, 0.2, -0.2],
-    pearPosition: [0.4, 0.2, 0],
-    rabbitPosition: [0.4, 0.2, 0.4],
+    carrotPosition: [0, 0.05, 0.2],
+    donutPosition: [0, 0.05, 0.4],
+    applePosition: [-0.2, 0.05, 0],
+    pizzaPosition: [-0.2, 0.05, -0.4],
+    pepperPosition: [-0.4, 0.05, -0.2],
+    candyCanePosition: [0.2, 0.05, -0.2],
+    pearPosition: [0.4, 0.05, 0],
+    rabbitPosition: [0.3, 0.05, 0]
   };
 
   // Lets you know if there are any errors with loading the camera
   onInitialized = (state) => {
     if (state === ViroConstants.TRACKING_NORMAL) {
       this.setState({
-        isTracking: true,
+        isTracking: true
       });
     }
   };
@@ -101,8 +101,7 @@ export default class ARView extends Component {
       pepperPosition,
       pearPosition,
       candyCanePosition,
-      rabbitPosition,
-      isLoading
+      rabbitPosition
     } = this.state;
     return (
       <>
@@ -133,13 +132,11 @@ export default class ARView extends Component {
             viroTag="deadSpace"
           />
           {this.generatePlayer(planeCenter)}
-          {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
-          {playerWon && this.getText('Winner', [0, 0, -0.5])}
           {/* Tokens */}
           {object.donut(donutPosition, token => (this.donut = token))}
           {object.pizza(pizzaPosition, token => (this.pizza = token))}
-          {object.rabbit(rabbitPosition, token => this.rabbit = token)}
-          {object.candyCane(candyCanePosition, token => this.candycane = token)}
+          {object.rabbit(rabbitPosition, token => (this.rabbit = token))}
+          {object.candyCane(candyCanePosition, token => (this.candycane = token))}
           {/* Obstalces */}
           {object.pepper(pepperPosition, obstacle => (this.pepper = obstacle))}
           {object.pear(pearPosition, obstacle => (this.pear = obstacle))}
@@ -267,7 +264,7 @@ ViroMaterials.createMaterials({
   },
   ground: {
     diffuseColor: '#007CB6E6'
-  },
+  }
 });
 
 const styles = StyleSheet.create({
