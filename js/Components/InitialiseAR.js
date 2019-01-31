@@ -16,6 +16,7 @@ class InitialiseAR extends Component {
     gameStarted: false,
     lives: 3,
     playerWon: false,
+    dynamicPosition: [0.2, 3, -0.4],
     score: 0,
     isLoading: true
   };
@@ -56,6 +57,7 @@ class InitialiseAR extends Component {
       lives,
       playerWon,
       score,
+      dynamicPosition,
       isLoading,
       gameStarted
     } = this.state;

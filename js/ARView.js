@@ -42,7 +42,8 @@ export default class ARView extends Component {
     applePosition: [-0.2, 0.1, 0],
     pepperPosition: [0.4, 0.1, 0],
     pearPosition: [-0.4, 0.1, 0],
-    pizzaPosition: [0.4, 0.1, -0.4]
+    pizzaPosition: [0.4, 0.1, -0.4],
+    scaleFactor: 0,
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -107,6 +108,7 @@ export default class ARView extends Component {
       pizzaPosition,
       pepperPosition,
       pearPosition,
+      isLoading
     } = this.state;
     const {
       arSceneNavigator: {
@@ -167,16 +169,19 @@ export default class ARView extends Component {
       }
     } = this.props;
     if (collidedTag === 'cupcake') {
+      this.growPlayer()
       updateScore();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ cupcakePosition: newPosition });
     }
     if (collidedTag === 'donut') {
+      this.growPlayer()
       updateScore();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ donutPosition: newPosition });
     }
     if (collidedTag === 'pizza') {
+      this.growPlayer()
       updateScore();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ pizzaPosition: newPosition });
@@ -204,21 +209,30 @@ export default class ARView extends Component {
     }
   };
 
-  generatePlayer = () => (
-    <Viro3DObject
-      position={[0, 0.2, 0]}
-      scale={[0.1, 0.1, 0.1]}
-      source={smile}
-      resources={[diffuse, normal, specular]}
-      type="VRX"
-      renderingOrder={0}
-      physicsBody={physicsBody}
-      ref={obj => (this.playerRef = obj)}
-      onClick={this.pushPlayer()}
-      onCollision={this.handlePlayerCollision}
-      viroTag="player"
-    />
-  );
+  generatePlayer = () => {
+    const { scaleFactor } = this.state;
+    const scale = [0.1, 0.1, 0.1].map(no => no + (0.05 * scaleFactor))
+    return (
+      <Viro3DObject
+        position={[0, 0.2, 0]}
+        scale={scale}
+        source={smile}
+        resources={[diffuse, normal, specular]}
+        type="VRX"
+        renderingOrder={0}
+        physicsBody={physicsBody}
+        ref={obj => (this.playerRef = obj)}
+        onClick={this.pushPlayer()}
+        onCollision={this.handlePlayerCollision}
+        viroTag="player"
+      />
+    );
+  }
+
+  growPlayer = () => {
+    this.setState((state) => ({ scaleFactor: state.scaleFactor + 1 }))
+  }
+
 
   resetPlayer = () => {
     TimerMixin.setTimeout(() => {
