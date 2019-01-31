@@ -158,7 +158,7 @@ class Signup extends Component {
             onPress={this.handleAuth}
             style={[styles.buttonContainer, styles.button]}
           >
-            <Text style={styles.signupText}>Hello Me Again</Text>
+            <Text style={styles.signupText}>Sign Up</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('Login')}
