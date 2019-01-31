@@ -47,7 +47,6 @@ class InitialiseAR extends Component {
       apiKey,
       lives,
       score,
-      dynamicPosition,
       isLoading,
       gameStarted
     } = this.state;
