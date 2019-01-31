@@ -164,13 +164,13 @@ export default class ARView extends Component {
       this.setState({ candyCanePosition: newPosition });
     }
     if (collidedTag === 'donut') {
-      this.growPlayer()
+      this.growPlayer();
       updateScore();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ donutPosition: newPosition });
     }
     if (collidedTag === 'pizza') {
-      this.growPlayer()
+      this.growPlayer();
       updateScore();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ pizzaPosition: newPosition });
@@ -200,7 +200,7 @@ export default class ARView extends Component {
 
   generatePlayer = () => {
     const { scaleFactor } = this.state;
-    const scale = [0.1, 0.1, 0.1].map(no => no + (0.05 * scaleFactor))
+    const scale = [0.1, 0.1, 0.1].map(no => no + (0.05 * scaleFactor));
     return (
       <Viro3DObject
         position={[0, 0.2, 0]}
@@ -209,7 +209,7 @@ export default class ARView extends Component {
         resources={[diffuse, normal, specular]}
         type="VRX"
         renderingOrder={0}
-        physicsBody={physicsBody}
+        physicsBody={playerPhysicsBody}
         ref={obj => (this.playerRef = obj)}
         onClick={this.pushPlayer()}
         onCollision={this.handlePlayerCollision}
@@ -219,7 +219,7 @@ export default class ARView extends Component {
   }
 
   growPlayer = () => {
-    this.setState((state) => ({ scaleFactor: state.scaleFactor + 1 }))
+    this.setState(state => ({ scaleFactor: state.scaleFactor + 1 }));
   }
 
   resetPlayer = () => {
