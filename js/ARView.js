@@ -36,20 +36,22 @@ export default class ARView extends Component {
   state = {
     isTracking: false,
     planeCenter: [0, 0, 0],
-    donutPosition: [0.2, 0.1, 0],
-    carrotPosition: [0.2, 0.1, -0.2],
-    applePosition: [-0.2, 0.1, 0],
-    pepperPosition: [0.4, 0.1, 0],
-    pearPosition: [-0.4, 0.1, 0],
-    pizzaPosition: [0.4, 0.1, -0.4],
-    scaleFactor: 0,
+    donutPosition: [0.3, 0.05, -0.2],
+    applePosition: [0.2, 0.05, -0.4],
+    pizzaPosition: [-0.2, 0.05, -0.1],
+    candyCanePosition: [0.4, 0.05, -0.1],
+    carrotPosition: [-0.3, 0.1, -0.3],
+    pepperPosition: [0.1, 0.05, 0.3],
+    pearPosition: [-0.4, 0.1, 0.4],
+    rabbitPosition: [-0.2, 0.05, 0.2],
+    scaleFactor: 0
   };
 
   // Lets you know if there are any errors with loading the camera
   onInitialized = (state) => {
     if (state === ViroConstants.TRACKING_NORMAL) {
       this.setState({
-        isTracking: true,
+        isTracking: true
       });
     }
   };
@@ -134,9 +136,9 @@ export default class ARView extends Component {
           {/* Tokens */}
           {object.donut(donutPosition, token => (this.donut = token))}
           {object.pizza(pizzaPosition, token => (this.pizza = token))}
-          {object.rabbit(rabbitPosition, token => this.rabbit = token)}
-          {object.candyCane(candyCanePosition, token => this.candycane = token)}
-          {/* Obstacles */}
+          {object.rabbit(rabbitPosition, token => (this.rabbit = token))}
+          {object.candyCane(candyCanePosition, token => (this.candycane = token))}
+          {/* Obstalces */}
           {object.pepper(pepperPosition, obstacle => (this.pepper = obstacle))}
           {object.pear(pearPosition, obstacle => (this.pear = obstacle))}
           {object.carrot(carrotPosition, obstacle => (this.carrot = obstacle))}

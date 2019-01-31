@@ -14,7 +14,11 @@ export default class App extends Component {
   state = {};
 
   render() {
-    return <ImageBackground source={image} style={{ height: '100%', width: '100%' }}><SwitchNavContainer /></ImageBackground>;
+    return (
+      <ImageBackground source={image} style={{ height: '100%', width: '100%' }}>
+        <SwitchNavContainer />
+      </ImageBackground>
+    );
   }
 }
 
@@ -29,7 +33,7 @@ const SwitchNav = createSwitchNavigator(
     AuthLoadingScreen
   },
   {
-    initialRouteName: 'AuthLoadingScreen'
+    initialRouteName: 'Instructions'
   }
 );
 
