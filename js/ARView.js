@@ -124,8 +124,7 @@ export default class ARView extends Component {
           <ViroQuad
             key="deadSpace"
             onCollision={this.handleDeadSpaceCollision}
-            height={200}
-            width={200}
+            scale={[2, 2, 2]}
             rotation={[-90, 0, 0]}
             position={[0, -1, 0]}
             materials={['transparent']}
