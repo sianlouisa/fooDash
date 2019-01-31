@@ -15,6 +15,7 @@ import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
 import specular from './res/res/emoji_smile/emoji_smile_specular.png';
+import tableCloth from './res/assets/tableCloth.jpg';
 import { generateRandomPosition } from './utils/generateRandomPosition';
 import * as object from './utils/3DObjects';
 
@@ -35,14 +36,15 @@ export default class ARView extends Component {
   state = {
     isTracking: false,
     planeCenter: [0, 0, 0],
-    carrotPosition: [0, 0.05, 0.2],
-    donutPosition: [0, 0.05, 0.4],
-    applePosition: [-0.2, 0.05, 0],
-    pizzaPosition: [-0.2, 0.05, -0.4],
-    pepperPosition: [-0.4, 0.05, -0.2],
-    candyCanePosition: [0.2, 0.05, -0.2],
-    pearPosition: [0.4, 0.05, 0],
-    rabbitPosition: [0.3, 0.05, 0]
+    donutPosition: [0.3, 0.05, -0.2],
+    applePosition: [0.2, 0.05, -0.4],
+    pizzaPosition: [-0.2, 0.05, -0.1],
+    candyCanePosition: [0.4, 0.05, -0.1],
+    carrotPosition: [-0.3, 0.1, -0.3],
+    pepperPosition: [0.1, 0.05, 0.3],
+    pearPosition: [-0.4, 0.1, 0.4],
+    rabbitPosition: [-0.2, 0.05, 0.2],
+    scaleFactor: 0
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -116,15 +118,14 @@ export default class ARView extends Component {
             scale={[1, 1, 1]}
             rotation={[-90, 0, 0]}
             physicsBody={{ type: 'Static' }}
-            materials="ground"
+            materials={['gameSurface']}
             renderingOrder={-1}
           />
           {/* Renders the area that respawns character if falls off surface */}
           <ViroQuad
             key="deadSpace"
             onCollision={this.handleDeadSpaceCollision}
-            height={200}
-            width={200}
+            scale={[2, 2, 2]}
             rotation={[-90, 0, 0]}
             position={[0, -1, 0]}
             materials={['transparent']}
@@ -165,11 +166,13 @@ export default class ARView extends Component {
       this.setState({ candyCanePosition: newPosition });
     }
     if (collidedTag === 'donut') {
+      this.growPlayer();
       updateScore();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ donutPosition: newPosition });
     }
     if (collidedTag === 'pizza') {
+      this.growPlayer();
       updateScore();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ pizzaPosition: newPosition });
@@ -197,21 +200,29 @@ export default class ARView extends Component {
     }
   };
 
-  generatePlayer = () => (
-    <Viro3DObject
-      position={[0, 0.2, 0]}
-      scale={[0.1, 0.1, 0.1]}
-      source={smile}
-      resources={[diffuse, normal, specular]}
-      type="VRX"
-      renderingOrder={0}
-      physicsBody={playerPhysicsBody}
-      ref={obj => (this.playerRef = obj)}
-      onClick={this.pushPlayer()}
-      onCollision={this.handlePlayerCollision}
-      viroTag="player"
-    />
-  );
+  generatePlayer = () => {
+    const { scaleFactor } = this.state;
+    const scale = [0.1, 0.1, 0.1].map(no => no + (0.05 * scaleFactor))
+    return (
+      <Viro3DObject
+        position={[0, 0.2, 0]}
+        scale={scale}
+        source={smile}
+        resources={[diffuse, normal, specular]}
+        type="VRX"
+        renderingOrder={0}
+        physicsBody={playerPhysicsBody}
+        ref={obj => (this.playerRef = obj)}
+        onClick={this.pushPlayer()}
+        onCollision={this.handlePlayerCollision}
+        viroTag="player"
+      />
+    );
+  }
+
+  growPlayer = () => {
+    this.setState((state) => ({ scaleFactor: state.scaleFactor + 1 }))
+  }
 
   resetPlayer = () => {
     TimerMixin.setTimeout(() => {
@@ -262,8 +273,8 @@ ViroMaterials.createMaterials({
   transparent: {
     diffuseColor: 'rgba(0,0,0,0)'
   },
-  ground: {
-    diffuseColor: '#007CB6E6'
+  gameSurface: {
+    diffuseTexture: tableCloth
   }
 });
 
