@@ -36,14 +36,13 @@ export default class ARView extends Component {
   state = {
     isTracking: false,
     planeCenter: [0, 0, 0],
-    carrotPosition: [0, 0.2, 0.2],
-    donutPosition: [0, 0.2, 0.4],
-    applePosition: [-0.2, 0.2, 0],
-    pizzaPosition: [-0.2, 0.2, -0.4],
-    pepperPosition: [-0.4, 0.2, -0.2],
-    candyCanePosition: [0.2, 0.2, -0.2],
-    pearPosition: [0.4, 0.2, 0],
-    rabbitPosition: [0.4, 0.2, 0.4],
+    donutPosition: [0.2, 0.1, 0],
+    carrotPosition: [0.2, 0.1, -0.2],
+    applePosition: [-0.2, 0.1, 0],
+    pepperPosition: [0.4, 0.1, 0],
+    pearPosition: [-0.4, 0.1, 0],
+    pizzaPosition: [0.4, 0.1, -0.4],
+    scaleFactor: 0,
   };
 
   // Lets you know if there are any errors with loading the camera
@@ -165,11 +164,13 @@ export default class ARView extends Component {
       this.setState({ candyCanePosition: newPosition });
     }
     if (collidedTag === 'donut') {
+      this.growPlayer()
       updateScore();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ donutPosition: newPosition });
     }
     if (collidedTag === 'pizza') {
+      this.growPlayer()
       updateScore();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ pizzaPosition: newPosition });
@@ -197,21 +198,29 @@ export default class ARView extends Component {
     }
   };
 
-  generatePlayer = () => (
-    <Viro3DObject
-      position={[0, 0.2, 0]}
-      scale={[0.1, 0.1, 0.1]}
-      source={smile}
-      resources={[diffuse, normal, specular]}
-      type="VRX"
-      renderingOrder={0}
-      physicsBody={playerPhysicsBody}
-      ref={obj => (this.playerRef = obj)}
-      onClick={this.pushPlayer()}
-      onCollision={this.handlePlayerCollision}
-      viroTag="player"
-    />
-  );
+  generatePlayer = () => {
+    const { scaleFactor } = this.state;
+    const scale = [0.1, 0.1, 0.1].map(no => no + (0.05 * scaleFactor))
+    return (
+      <Viro3DObject
+        position={[0, 0.2, 0]}
+        scale={scale}
+        source={smile}
+        resources={[diffuse, normal, specular]}
+        type="VRX"
+        renderingOrder={0}
+        physicsBody={physicsBody}
+        ref={obj => (this.playerRef = obj)}
+        onClick={this.pushPlayer()}
+        onCollision={this.handlePlayerCollision}
+        viroTag="player"
+      />
+    );
+  }
+
+  growPlayer = () => {
+    this.setState((state) => ({ scaleFactor: state.scaleFactor + 1 }))
+  }
 
   resetPlayer = () => {
     TimerMixin.setTimeout(() => {
