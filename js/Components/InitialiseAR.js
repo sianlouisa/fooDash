@@ -80,7 +80,7 @@ class InitialiseAR extends Component {
                   <Text style={localStyles.buttonText}>{`Score: ${score}`}</Text>
                 </TouchableHighlight>
 
-                <TouchableHighlight style={localStyles.buttons} onPress={this.handleEndGame}>
+                <TouchableHighlight style={localStyles.buttonsScore} onPress={this.handleEndGame}>
                   <Text style={localStyles.buttonText}>End game</Text>
                 </TouchableHighlight>
               </View>

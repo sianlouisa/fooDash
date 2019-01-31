@@ -179,21 +179,25 @@ export default class ARView extends Component {
     }
     // Obstacles
     if (collidedTag === 'pepper') {
+      this.shrinkPlayer()
       reduceLife();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ pepperPosition: newPosition });
     }
     if (collidedTag === 'pear') {
+      this.shrinkPlayer()
       reduceLife();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ pearPosition: newPosition });
     }
     if (collidedTag === 'carrot') {
+      this.shrinkPlayer()
       reduceLife();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ carrotPosition: newPosition });
     }
     if (collidedTag === 'apple') {
+      this.shrinkPlayer()
       reduceLife();
       const newPosition = generateRandomPosition(0.1);
       this.setState({ applePosition: newPosition });
@@ -202,7 +206,7 @@ export default class ARView extends Component {
 
   generatePlayer = () => {
     const { scaleFactor } = this.state;
-    const scale = [0.1, 0.1, 0.1].map(no => no + (0.05 * scaleFactor));
+    const scale = [0.1, 0.1, 0.1].map(no => no + (0.025 * scaleFactor));
     return (
       <Viro3DObject
         position={[0, 0.2, 0]}
@@ -222,6 +226,10 @@ export default class ARView extends Component {
 
   growPlayer = () => {
     this.setState(state => ({ scaleFactor: state.scaleFactor + 1 }));
+  }
+
+  shrinkPlayer = () => {
+    this.setState(state => ({ scaleFactor: state.scaleFactor - 1 }));
   }
 
   resetPlayer = () => {
