@@ -27,7 +27,6 @@ class ArLoad extends Component {
   }
 }
 
-
 const styles = StyleSheet.create({
   container: {
     width: '100%',
