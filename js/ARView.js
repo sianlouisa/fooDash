@@ -15,10 +15,11 @@ import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
 import specular from './res/res/emoji_smile/emoji_smile_specular.png';
+import tableCloth from './res/assets/tableCloth.jpg';
 import { generateRandomPosition } from './utils/generateRandomPosition';
 import * as object from './utils/3DObjects';
 
-const physicsBody = {
+const playerPhysicsBody = {
   type: 'Dynamic',
   mass: 20,
   enabled: true,
@@ -34,9 +35,7 @@ const physicsBody = {
 export default class ARView extends Component {
   state = {
     isTracking: false,
-    initialized: false,
     planeCenter: [0, 0, 0],
-    cupcakePosition: [0, 0.1, -0.2],
     donutPosition: [0.2, 0.1, 0],
     carrotPosition: [0.2, 0.1, -0.2],
     applePosition: [-0.2, 0.1, 0],
@@ -51,12 +50,6 @@ export default class ARView extends Component {
     if (state === ViroConstants.TRACKING_NORMAL) {
       this.setState({
         isTracking: true,
-        initialized: true
-      });
-    } else if (state === ViroConstants.TRACKING_NONE) {
-      this.setState({
-        isTracking: false,
-        initialized: false
       });
     }
   };
@@ -73,7 +66,7 @@ export default class ARView extends Component {
     startGame();
   };
 
-  deadSpace = (collidedTag) => {
+  handleDeadSpaceCollision = (collidedTag) => {
     const {
       arSceneNavigator: {
         viroAppProps: { reduceLife, lives }
@@ -102,19 +95,14 @@ export default class ARView extends Component {
     const {
       planeCenter,
       donutPosition,
-      cupcakePosition,
       carrotPosition,
       applePosition,
       pizzaPosition,
       pepperPosition,
       pearPosition,
-      isLoading
+      candyCanePosition,
+      rabbitPosition
     } = this.state;
-    const {
-      arSceneNavigator: {
-        viroAppProps: { lives, playerWon }
-      }
-    } = this.props;
     return (
       <>
         <ViroAmbientLight color="#ffffff" />
@@ -125,19 +113,17 @@ export default class ARView extends Component {
         >
           {/* Renders the playing surface */}
           <ViroQuad
-            // position={planeCenter}
             scale={[1, 1, 1]}
             rotation={[-90, 0, 0]}
             physicsBody={{ type: 'Static' }}
-            materials="ground"
+            materials={['gameSurface']}
             renderingOrder={-1}
           />
           {/* Renders the area that respawns character if falls off surface */}
           <ViroQuad
             key="deadSpace"
-            onCollision={this.deadSpace}
-            height={200}
-            width={200}
+            onCollision={this.handleDeadSpaceCollision}
+            scale={[2, 2, 2]}
             rotation={[-90, 0, 0]}
             position={[0, -1, 0]}
             materials={['transparent']}
@@ -145,14 +131,12 @@ export default class ARView extends Component {
             viroTag="deadSpace"
           />
           {this.generatePlayer(planeCenter)}
-          {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
-          {playerWon && this.getText('Winner', [0, 0, -0.5])}
           {/* Tokens */}
-
-          {object.cupcake(cupcakePosition, token => (this.cupcake = token))}
           {object.donut(donutPosition, token => (this.donut = token))}
           {object.pizza(pizzaPosition, token => (this.pizza = token))}
-          {/* Obstalces */}
+          {object.rabbit(rabbitPosition, token => this.rabbit = token)}
+          {object.candyCane(candyCanePosition, token => this.candycane = token)}
+          {/* Obstacles */}
           {object.pepper(pepperPosition, obstacle => (this.pepper = obstacle))}
           {object.pear(pearPosition, obstacle => (this.pear = obstacle))}
           {object.carrot(carrotPosition, obstacle => (this.carrot = obstacle))}
@@ -168,11 +152,16 @@ export default class ARView extends Component {
         viroAppProps: { updateScore, reduceLife }
       }
     } = this.props;
-    if (collidedTag === 'cupcake') {
-      this.growPlayer()
+    // Tokens
+    if (collidedTag === 'rabbit') {
       updateScore();
       const newPosition = generateRandomPosition(0.1);
-      this.setState({ cupcakePosition: newPosition });
+      this.setState({ rabbitPosition: newPosition });
+    }
+    if (collidedTag === 'candycane') {
+      updateScore();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ candyCanePosition: newPosition });
     }
     if (collidedTag === 'donut') {
       this.growPlayer()
@@ -186,7 +175,7 @@ export default class ARView extends Component {
       const newPosition = generateRandomPosition(0.1);
       this.setState({ pizzaPosition: newPosition });
     }
-
+    // Obstacles
     if (collidedTag === 'pepper') {
       reduceLife();
       const newPosition = generateRandomPosition(0.1);
@@ -233,13 +222,12 @@ export default class ARView extends Component {
     this.setState((state) => ({ scaleFactor: state.scaleFactor + 1 }))
   }
 
-
   resetPlayer = () => {
     TimerMixin.setTimeout(() => {
-      this.playerRef.setNativeProps({ physicsBody: null });
+      this.playerRef.setNativeProps({ playerPhysicsBody: null });
       this.playerRef.setNativeProps({ position: [0, 0.1, 0] });
       TimerMixin.setTimeout(() => {
-        this.playerRef.setNativeProps({ physicsBody });
+        this.playerRef.setNativeProps({ playerPhysicsBody });
       });
     });
   };
@@ -263,7 +251,7 @@ export default class ARView extends Component {
   );
 
   render() {
-    const { isTracking, initialized } = this.state;
+    const { isTracking } = this.state;
     return (
       <>
         <ViroARScene
@@ -272,14 +260,21 @@ export default class ARView extends Component {
             gravity: [0, -9.81, 0]
           }}
         >
-          {isTracking
-            ? this.getScene()
-            : this.getText(initialized ? 'Initializing' : 'No Tracking', [0, 0, -0.1])}
+          {isTracking && this.getScene()}
         </ViroARScene>
       </>
     );
   }
 }
+
+ViroMaterials.createMaterials({
+  transparent: {
+    diffuseColor: 'rgba(0,0,0,0)'
+  },
+  gameSurface: {
+    diffuseTexture: tableCloth
+  }
+});
 
 const styles = StyleSheet.create({
   helloWorldTextStyle: {
@@ -288,30 +283,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     textAlignVertical: 'center',
     textAlign: 'center'
-  }
-});
-
-ViroMaterials.createMaterials({
-  transparent: {
-    diffuseColor: 'rgba(0,0,0,0)'
-  },
-  spherematerial: {
-    diffuseColor: 'rgb(19,42,143)'
-  },
-  ground: {
-    diffuseColor: '#007CB6E6'
-  },
-  token: {
-    diffuseColor: 'rgb(165, 47, 202)'
-  },
-  obstacle: {
-    diffuseColor: 'rgb(0, 0, 255)'
-  },
-  fallingObstacle: {
-    diffuseColor: 'rgb(255, 0, 0)'
-  },
-  tokenCollision: {
-    diffuseColor: 'rgb(255, 0, 0)'
   }
 });
 
