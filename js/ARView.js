@@ -18,7 +18,7 @@ import specular from './res/res/emoji_smile/emoji_smile_specular.png';
 import { generateRandomPosition } from './utils/generateRandomPosition';
 import * as object from './utils/3DObjects';
 
-const physicsBody = {
+const playerPhysicsBody = {
   type: 'Dynamic',
   mass: 20,
   enabled: true,
@@ -65,7 +65,7 @@ export default class ARView extends Component {
     startGame();
   };
 
-  deadSpace = (collidedTag) => {
+  handleDeadSpaceCollision = (collidedTag) => {
     const {
       arSceneNavigator: {
         viroAppProps: { reduceLife, lives }
@@ -111,7 +111,6 @@ export default class ARView extends Component {
         >
           {/* Renders the playing surface */}
           <ViroQuad
-            // position={planeCenter}
             scale={[1, 1, 1]}
             rotation={[-90, 0, 0]}
             physicsBody={{ type: 'Static' }}
@@ -121,7 +120,7 @@ export default class ARView extends Component {
           {/* Renders the area that respawns character if falls off surface */}
           <ViroQuad
             key="deadSpace"
-            onCollision={this.deadSpace}
+            onCollision={this.handleDeadSpaceCollision}
             height={200}
             width={200}
             rotation={[-90, 0, 0]}
@@ -131,12 +130,15 @@ export default class ARView extends Component {
             viroTag="deadSpace"
           />
           {this.generatePlayer(planeCenter)}
-          {/* Tokens */}
+          {!lives && this.getText('GAME OVER', [0, 0, -0.5])}
+          {playerWon && this.getText('Winner', [0, 0, -0.5])}
 
+          {/* Tokens */}
           {object.cupcake(cupcakePosition, token => (this.cupcake = token))}
           {object.donut(donutPosition, token => (this.donut = token))}
           {object.pizza(pizzaPosition, token => (this.pizza = token))}
-          {/* Obstalces */}
+
+          {/* Obstacles */}
           {object.pepper(pepperPosition, obstacle => (this.pepper = obstacle))}
           {object.pear(pearPosition, obstacle => (this.pear = obstacle))}
           {object.carrot(carrotPosition, obstacle => (this.carrot = obstacle))}
@@ -198,7 +200,7 @@ export default class ARView extends Component {
       resources={[diffuse, normal, specular]}
       type="VRX"
       renderingOrder={0}
-      physicsBody={physicsBody}
+      physicsBody={playerPhysicsBody}
       ref={obj => (this.playerRef = obj)}
       onClick={this.pushPlayer()}
       onCollision={this.handlePlayerCollision}
@@ -208,10 +210,10 @@ export default class ARView extends Component {
 
   resetPlayer = () => {
     TimerMixin.setTimeout(() => {
-      this.playerRef.setNativeProps({ physicsBody: null });
+      this.playerRef.setNativeProps({ playerPhysicsBody: null });
       this.playerRef.setNativeProps({ position: [0, 0.1, 0] });
       TimerMixin.setTimeout(() => {
-        this.playerRef.setNativeProps({ physicsBody });
+        this.playerRef.setNativeProps({ playerPhysicsBody });
       });
     });
   };
@@ -251,6 +253,15 @@ export default class ARView extends Component {
   }
 }
 
+ViroMaterials.createMaterials({
+  transparent: {
+    diffuseColor: 'rgba(0,0,0,0)'
+  },
+  ground: {
+    diffuseColor: '#007CB6E6'
+  },
+});
+
 const styles = StyleSheet.create({
   helloWorldTextStyle: {
     fontFamily: 'Arial',
@@ -258,30 +269,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     textAlignVertical: 'center',
     textAlign: 'center'
-  }
-});
-
-ViroMaterials.createMaterials({
-  transparent: {
-    diffuseColor: 'rgba(0,0,0,0)'
-  },
-  spherematerial: {
-    diffuseColor: 'rgb(19,42,143)'
-  },
-  ground: {
-    diffuseColor: '#007CB6E6'
-  },
-  token: {
-    diffuseColor: 'rgb(165, 47, 202)'
-  },
-  obstacle: {
-    diffuseColor: 'rgb(0, 0, 255)'
-  },
-  fallingObstacle: {
-    diffuseColor: 'rgb(255, 0, 0)'
-  },
-  tokenCollision: {
-    diffuseColor: 'rgb(255, 0, 0)'
   }
 });
 
