@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Image,
   AsyncStorage,
+  ScrollView
 } from 'react-native';
 import * as api from '../api';
 
@@ -88,87 +89,88 @@ class Signup extends Component {
     const passwordIcon = 'https://png.icons8.com/key-2/ultraviolet/50/3498db';
 
     return (
-      <>
-        <View style={styles.container}>
-          <View style={styles.signupInputs}>
-            <TextInput
-              style={styles.inputs}
-              onChangeText={text => this.setState({ username: text })}
-              value={username}
-              placeholder="Enter Username"
-              placeholderTextColor="#00b5ec"
-              textContentType="username"
-              autoCapitalize="none"
-            />
-          </View>
-          <View style={styles.signupInputs}>
-            <Image style={styles.inputIcon} source={{ uri: emailIcon }} />
-            <TextInput
-              style={styles.inputs}
-              onChangeText={text => this.setState({ email: text })}
-              value={email}
-              placeholder="Enter Email"
-              placeholderTextColor="#00b5ec"
-              keyboardType="email-address"
-              textContentType="emailAddress"
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
-            />
-          </View>
-          <View style={styles.signupInputs}>
-            <TextInput
-              style={styles.inputs}
-              onChangeText={text => this.setState({ confirmEmail: text })}
-              value={confirmEmail}
-              placeholder="Re-enter Email"
-              placeholderTextColor="#00b5ec"
-              keyboardType="email-address"
-              textContentType="emailAddress"
-              autoCapitalize="none"
-            />
-          </View>
-          <View style={styles.signupInputs}>
-            <Image style={styles.inputIcon} source={{ uri: passwordIcon }} />
-            <TextInput
-              style={styles.inputs}
-              onChangeText={text => this.setState({ password: text })}
-              value={password}
-              secureTextEntry
-              placeholder="Enter Password"
-              placeholderTextColor="#00b5ec"
-              textContentType="password"
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
-            />
-          </View>
-          <View style={styles.signupInputs}>
-            <TextInput
-              style={styles.inputs}
-              onChangeText={text => this.setState({ confirmPassword: text })}
-              value={confirmPassword}
-              secureTextEntry
-              placeholder="Re-enter Password"
-              placeholderTextColor="#00b5ec"
-              textContentType="password"
-              underlineColorAndroid="transparent"
-              autoCapitalize="none"
-            />
-          </View>
-          <TouchableOpacity
-            onPress={this.handleAuth}
-            style={[styles.buttonContainer, styles.button]}
-          >
-            <Text style={styles.signupText}>Hello Me Again</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Login')}
-            style={[styles.buttonContainer, styles.button]}
-          >
-            <Text style={styles.signupText}>Back To Login</Text>
-          </TouchableOpacity>
-          {err && <Text style={styles.error}>Ooops</Text>}
+      <ScrollView
+        scrollEnabled={false}
+        contentContainerStyle={styles.container}
+      >
+        <View style={styles.signupInputs}>
+          <TextInput
+            style={styles.inputs}
+            onChangeText={text => this.setState({ username: text })}
+            value={username}
+            placeholder="Enter Username"
+            placeholderTextColor="#00b5ec"
+            textContentType="username"
+            autoCapitalize="none"
+          />
         </View>
-      </>
+        <View style={styles.signupInputs}>
+          <Image style={styles.inputIcon} source={{ uri: emailIcon }} />
+          <TextInput
+            style={styles.inputs}
+            onChangeText={text => this.setState({ email: text })}
+            value={email}
+            placeholder="Enter Email"
+            placeholderTextColor="#00b5ec"
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            underlineColorAndroid="transparent"
+            autoCapitalize="none"
+          />
+        </View>
+        <View style={styles.signupInputs}>
+          <TextInput
+            style={styles.inputs}
+            onChangeText={text => this.setState({ confirmEmail: text })}
+            value={confirmEmail}
+            placeholder="Re-enter Email"
+            placeholderTextColor="#00b5ec"
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            autoCapitalize="none"
+          />
+        </View>
+        <View style={styles.signupInputs}>
+          <Image style={styles.inputIcon} source={{ uri: passwordIcon }} />
+          <TextInput
+            style={styles.inputs}
+            onChangeText={text => this.setState({ password: text })}
+            value={password}
+            secureTextEntry
+            placeholder="Enter Password"
+            placeholderTextColor="#00b5ec"
+            textContentType="password"
+            underlineColorAndroid="transparent"
+            autoCapitalize="none"
+          />
+        </View>
+        <View style={styles.signupInputs}>
+          <TextInput
+            style={styles.inputs}
+            onChangeText={text => this.setState({ confirmPassword: text })}
+            value={confirmPassword}
+            secureTextEntry
+            placeholder="Re-enter Password"
+            placeholderTextColor="#00b5ec"
+            textContentType="password"
+            underlineColorAndroid="transparent"
+            autoCapitalize="none"
+          />
+        </View>
+        <TouchableOpacity
+          onPress={this.handleAuth}
+          style={[styles.buttonContainer, styles.button]}
+        >
+          <Text style={styles.signupText}>Sign up</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Login')}
+          style={[styles.buttonContainer, styles.button]}
+        >
+          <Text style={styles.signupText}>Back To Login</Text>
+        </TouchableOpacity>
+        {err && <Text style={styles.error}>Ooops</Text>}
+      </ScrollView>
     );
   }
 }
@@ -179,10 +181,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  // imgBackground: {
-  //   width: '100%',
-  //   height: '100%',
-  // },
   text: {
     fontFamily: 'Arial',
     fontSize: 20

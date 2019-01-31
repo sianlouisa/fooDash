@@ -6,7 +6,8 @@ import {
   Text,
   StyleSheet,
   Image,
-  AsyncStorage
+  AsyncStorage,
+  ScrollView
 } from 'react-native';
 import * as api from '../api';
 // import PropTypes from 'prop-types';
@@ -37,13 +38,17 @@ class Login extends Component {
   };
 
   render() {
-    const { email, password, err } = this.state;
+    const {
+      email, password, err
+    } = this.state;
     const { navigation } = this.props;
     const emailIcon = 'https://png.icons8.com/message/ultraviolet/50/3498db';
     const passwordIcon = 'https://png.icons8.com/key-2/ultraviolet/50/3498db';
-
     return (
-      <View style={styles.container}>
+      <ScrollView
+        scrollEnabled={false}
+        contentContainerStyle={styles.container}
+      >
         <View style={styles.loginInputs}>
           <Image style={styles.inputIcon} source={{ uri: emailIcon }} />
           <TextInput
@@ -82,8 +87,7 @@ class Login extends Component {
           <Text style={styles.loginText}>Sign up</Text>
         </TouchableOpacity>
         {err && <Text style={styles.error}>Error</Text>}
-        {/* </ImageBackground> */}
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -94,10 +98,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  // imgBackground: {
-  //   width: '100%',
-  //   height: '100%',
-  // },
   text: {
     fontFamily: 'Arial',
     fontSize: 20
