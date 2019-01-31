@@ -4,7 +4,6 @@ import {
   StyleSheet, Text, View, StatusBar, TouchableHighlight
 } from 'react-native';
 import { VIRO_API_KEY } from '../../config';
-// import PropTypes from 'prop-types';s
 import Score from './Score';
 import ArLoad from './ArLoad';
 import PickPlane from './PickPlane';
@@ -53,45 +52,43 @@ class InitialiseAR extends Component {
     } = this.state;
     const { navigation: { navigate } } = this.props;
     return (
-      <>
-        <View style={localStyles.flex}>
-          <StatusBar hidden />
-          <ViroARSceneNavigator
-            apiKey={apiKey}
-            viroAppProps={{
-              lives,
-              startGame: this.startGame,
-              reduceLife: this.reduceLife,
-              gameOver: this.gameOver,
-              updateScore: this.updateScore,
-              score
-            }}
-            initialScene={{ scene: InitialARScene }}
-          />
-          {lives
-            ? (
-              <>
-                <View style={localStyles.topMenu}>
-                  <TouchableHighlight style={localStyles.buttons}>
-                    <Text style={localStyles.buttonText}>{`Lives: ${lives}`}</Text>
-                  </TouchableHighlight>
+      <View style={localStyles.flex}>
+        <StatusBar hidden />
+        <ViroARSceneNavigator
+          apiKey={apiKey}
+          viroAppProps={{
+            lives,
+            startGame: this.startGame,
+            reduceLife: this.reduceLife,
+            gameOver: this.gameOver,
+            updateScore: this.updateScore,
+            score
+          }}
+          initialScene={{ scene: InitialARScene }}
+        />
+        {lives
+          ? (
+            <>
+              <View style={localStyles.topMenu}>
+                <TouchableHighlight style={localStyles.buttons}>
+                  <Text style={localStyles.buttonText}>{`Lives: ${lives}`}</Text>
+                </TouchableHighlight>
 
-                  <TouchableHighlight style={localStyles.buttonsScore}>
-                    <Text style={localStyles.buttonText}>{`Score: ${score}`}</Text>
-                  </TouchableHighlight>
+                <TouchableHighlight style={localStyles.buttonsScore}>
+                  <Text style={localStyles.buttonText}>{`Score: ${score}`}</Text>
+                </TouchableHighlight>
 
-                  <TouchableHighlight style={localStyles.buttons} onPress={this.resetGame}>
-                    <Text style={localStyles.buttonText}>Reset</Text>
-                  </TouchableHighlight>
-                </View>
-              </>
-            )
-            : <Score navigate={navigate} score={score} />
+                <TouchableHighlight style={localStyles.buttons} onPress={this.resetGame}>
+                  <Text style={localStyles.buttonText}>Reset</Text>
+                </TouchableHighlight>
+              </View>
+            </>
+          )
+          : <Score navigate={navigate} score={score} />
           }
-          {!gameStarted && <PickPlane />}
-          {isLoading && gameStarted && <ArLoad />}
-        </View>
-      </>
+        {!gameStarted && <PickPlane />}
+        {isLoading && gameStarted && <ArLoad />}
+      </View>
     );
   };
 
@@ -99,7 +96,6 @@ class InitialiseAR extends Component {
     return this.getARNavigator();
   }
 }
-
 
 const localStyles = StyleSheet.create({
   viroContainer: {
