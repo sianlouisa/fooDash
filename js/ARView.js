@@ -1,91 +1,278 @@
 import React, { Component } from 'react';
 import {
   ViroARScene,
-  ViroConstants,
-  ViroARPlaneSelector,
   ViroAmbientLight,
-  ViroBox,
   ViroMaterials,
-  Viro3DObject
+  Viro3DObject,
+  ViroQuad,
+  ViroText,
+  ViroConstants,
+  ViroARPlaneSelector
 } from 'react-viro';
-
+import TimerMixin from 'react-timer-mixin';
+import { StyleSheet } from 'react-native';
 import smile from './res/res/emoji_smile/emoji_smile.vrx';
 import diffuse from './res/res/emoji_smile/emoji_smile_diffuse.png';
 import normal from './res/res/emoji_smile/emoji_smile_normal.png';
 import specular from './res/res/emoji_smile/emoji_smile_specular.png';
-import planeDiffuse from './res/textures/Metal_grunge_001_COLOR.jpg';
-import planeNormal from './res/textures/Metal_grunge_001_NRM.jpg';
-import planeSpecular from './res/textures/Metal_grunge_001_SPEC.jpg';
+import tableCloth from './res/assets/tableCloth.jpg';
+import { generateRandomPosition } from './utils/generateRandomPosition';
+import * as object from './utils/3DObjects';
+
+const playerPhysicsBody = {
+  type: 'Dynamic',
+  mass: 20,
+  enabled: true,
+  useGravity: true,
+  restitution: 0.35,
+  friction: 0.75,
+  shape: {
+    type: 'Sphere',
+    params: [0.1]
+  }
+};
 
 export default class ARView extends Component {
-  constructor() {
-    super();
-
-    // Set initial state here
-    this.state = {
-      isTracking: false,
-      initialized: false,
-      planeWidth: 0,
-      planeLength: 0,
-      userSelected: false
-    };
-
-    // bind 'this' to functions
-    this.onInitialized = this.onInitialized.bind(this);
-  }
-
-  onPlaneSelected = () => {
-    this.setState({
-      planeWidth: 0.5,
-      planeLength: 0.5,
-      userSelected: true
-    });
+  state = {
+    isTracking: false,
+    planeCenter: [0, 0, 0],
+    donutPosition: [0.3, 0.05, -0.2],
+    applePosition: [0.2, 0.05, -0.4],
+    pizzaPosition: [-0.2, 0.05, -0.1],
+    candyCanePosition: [0.4, 0.05, -0.1],
+    carrotPosition: [-0.3, 0.1, -0.3],
+    pepperPosition: [0.1, 0.05, 0.3],
+    pearPosition: [-0.4, 0.1, 0.4],
+    rabbitPosition: [-0.2, 0.05, 0.2],
+    scaleFactor: 0
   };
 
+  // Lets you know if there are any errors with loading the camera
   onInitialized = (state) => {
     if (state === ViroConstants.TRACKING_NORMAL) {
       this.setState({
-        isTracking: true,
-        initialized: true
-      });
-    } else if (state === ViroConstants.TRACKING_NONE) {
-      this.setState({
-        isTracking: false
+        isTracking: true
       });
     }
   };
 
-  render() {
-    const { userSelected, planeWidth, planeLength } = this.state;
+  onPlaneSelected = (anchor) => {
+    const {
+      arSceneNavigator: {
+        viroAppProps: { startGame }
+      }
+    } = this.props;
+    this.setState({
+      planeCenter: anchor.center
+    });
+    startGame();
+  };
+
+  handleDeadSpaceCollision = (collidedTag) => {
+    const {
+      arSceneNavigator: {
+        viroAppProps: { reduceLife, lives }
+      }
+    } = this.props;
+    if (collidedTag === 'player') {
+      reduceLife();
+    }
+    if (lives !== 1) {
+      this.resetPlayer();
+    }
+  };
+
+  handleObstacleCollision = (collidedTag) => {
+    const {
+      arSceneNavigator: {
+        viroAppProps: { reduceLife }
+      }
+    } = this.props;
+    if (collidedTag === 'player') {
+      reduceLife();
+    }
+  };
+
+  getScene = () => {
+    const {
+      planeCenter,
+      donutPosition,
+      carrotPosition,
+      applePosition,
+      pizzaPosition,
+      pepperPosition,
+      pearPosition,
+      candyCanePosition,
+      rabbitPosition
+    } = this.state;
     return (
-      <ViroARScene onTrackingUpdated={this.onInitialized}>
-        <ViroARPlaneSelector onPlaneSelected={this.onPlaneSelected}>
-          <ViroAmbientLight color="#ffffff" />
-          {userSelected && (
-            <Viro3DObject
-              source={smile}
-              resources={[diffuse, normal, specular]}
-              position={[0, 0.3, -0.2]}
-              scale={[0.1, 0.1, 0.1]}
-              type="VRX"
-              physicsBody={{
-                type: 'Dynamic',
-                mass: 0.01,
-                force: { value: [0, 0, 0.001] }
-              }}
-              // dragType="FixedToPlane"
-              // onDrag={() => {}}
-            />
-          )}
-          <ViroBox
-            materials={['metal']}
-            physicsBody={{ type: 'Static', restitution: 1, friction: 0.3 }}
-            width={planeWidth}
-            length={planeLength}
-            scale={[1, 0.02, 1]}
+      <>
+        <ViroAmbientLight color="#ffffff" />
+        <ViroARPlaneSelector
+          onPlaneSelected={this.onPlaneSelected}
+          ref={component => (this.arPlaneRef = component)}
+          maxPlanes={3}
+        >
+          {/* Renders the playing surface */}
+          <ViroQuad
+            scale={[1, 1, 1]}
+            rotation={[-90, 0, 0]}
+            physicsBody={{ type: 'Static' }}
+            materials={['gameSurface']}
+            renderingOrder={-1}
           />
+          {/* Renders the area that respawns character if falls off surface */}
+          <ViroQuad
+            key="deadSpace"
+            onCollision={this.handleDeadSpaceCollision}
+            scale={[2, 2, 2]}
+            rotation={[-90, 0, 0]}
+            position={[0, -1, 0]}
+            materials={['transparent']}
+            physicsBody={{ type: 'Static' }}
+            viroTag="deadSpace"
+          />
+          {this.generatePlayer(planeCenter)}
+          {/* Tokens */}
+          {object.donut(donutPosition, token => (this.donut = token))}
+          {object.pizza(pizzaPosition, token => (this.pizza = token))}
+          {object.rabbit(rabbitPosition, token => (this.rabbit = token))}
+          {object.candyCane(candyCanePosition, token => (this.candycane = token))}
+          {/* Obstalces */}
+          {object.pepper(pepperPosition, obstacle => (this.pepper = obstacle))}
+          {object.pear(pearPosition, obstacle => (this.pear = obstacle))}
+          {object.carrot(carrotPosition, obstacle => (this.carrot = obstacle))}
+          {object.apple(applePosition, obstacle => (this.apple = obstacle))}
         </ViroARPlaneSelector>
-      </ViroARScene>
+      </>
+    );
+  };
+
+  handlePlayerCollision = (collidedTag) => {
+    const {
+      arSceneNavigator: {
+        viroAppProps: { updateScore, reduceLife }
+      }
+    } = this.props;
+    // Tokens
+    if (collidedTag === 'rabbit') {
+      updateScore();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ rabbitPosition: newPosition });
+    }
+    if (collidedTag === 'candycane') {
+      updateScore();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ candyCanePosition: newPosition });
+    }
+    if (collidedTag === 'donut') {
+      this.growPlayer();
+      updateScore();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ donutPosition: newPosition });
+    }
+    if (collidedTag === 'pizza') {
+      this.growPlayer();
+      updateScore();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ pizzaPosition: newPosition });
+    }
+    // Obstacles
+    if (collidedTag === 'pepper') {
+      this.shrinkPlayer()
+      reduceLife();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ pepperPosition: newPosition });
+    }
+    if (collidedTag === 'pear') {
+      this.shrinkPlayer()
+      reduceLife();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ pearPosition: newPosition });
+    }
+    if (collidedTag === 'carrot') {
+      this.shrinkPlayer()
+      reduceLife();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ carrotPosition: newPosition });
+    }
+    if (collidedTag === 'apple') {
+      this.shrinkPlayer()
+      reduceLife();
+      const newPosition = generateRandomPosition(0.1);
+      this.setState({ applePosition: newPosition });
+    }
+  };
+
+  generatePlayer = () => {
+    const { scaleFactor } = this.state;
+    const scale = [0.1, 0.1, 0.1].map(no => no + (0.025 * scaleFactor));
+    return (
+      <Viro3DObject
+        position={[0, 0.2, 0]}
+        scale={scale}
+        source={smile}
+        resources={[diffuse, normal, specular]}
+        type="VRX"
+        renderingOrder={0}
+        physicsBody={playerPhysicsBody}
+        ref={obj => (this.playerRef = obj)}
+        onClick={this.pushPlayer()}
+        onCollision={this.handlePlayerCollision}
+        viroTag="player"
+      />
+    );
+  }
+
+  growPlayer = () => {
+    this.setState(state => ({ scaleFactor: state.scaleFactor + 1 }));
+  }
+
+  shrinkPlayer = () => {
+    this.setState(state => ({ scaleFactor: state.scaleFactor - 1 }));
+  }
+
+  resetPlayer = () => {
+    TimerMixin.setTimeout(() => {
+      this.playerRef.setNativeProps({ playerPhysicsBody: null });
+      this.playerRef.setNativeProps({ position: [0, 0.1, 0] });
+      TimerMixin.setTimeout(() => {
+        this.playerRef.setNativeProps({ playerPhysicsBody });
+      });
+    });
+  };
+
+  pushPlayer = () => (clickedPos, force) => {
+    this.playerRef.getTransformAsync().then((transform) => {
+      const pushImpulse = [0, force, 0];
+      const pos = transform.position;
+      const pushPosition = [clickedPos[0] - pos[0], clickedPos[1] - pos[1], clickedPos[2] - pos[2]];
+      this.playerRef.applyImpulse(pushImpulse, pushPosition);
+    });
+  };
+
+  getText = (text, pos) => (
+    <ViroText
+      text={text}
+      scale={[0.5, 0.5, 0.5]}
+      position={pos}
+      style={styles.helloWorldTextStyle}
+    />
+  );
+
+  render() {
+    const { isTracking } = this.state;
+    return (
+      <>
+        <ViroARScene
+          onTrackingUpdated={this.onInitialized}
+          physicsWorld={{
+            gravity: [0, -9.81, 0]
+          }}
+        >
+          {isTracking && this.getScene()}
+        </ViroARScene>
+      </>
     );
   }
 }
@@ -94,11 +281,18 @@ ViroMaterials.createMaterials({
   transparent: {
     diffuseColor: 'rgba(0,0,0,0)'
   },
-  metal: {
-    lightingModel: 'Lambert',
-    diffuseTexture: planeDiffuse,
-    normalTexture: planeNormal,
-    specularTexture: planeSpecular
+  gameSurface: {
+    diffuseTexture: tableCloth
+  }
+});
+
+const styles = StyleSheet.create({
+  helloWorldTextStyle: {
+    fontFamily: 'Arial',
+    fontSize: 10,
+    color: '#ffffff',
+    textAlignVertical: 'center',
+    textAlign: 'center'
   }
 });
 
