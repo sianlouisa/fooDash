@@ -1,6 +1,6 @@
 # Final Project 
 
-## Project-AR-27
+## fooDash
 An Augmented Reality game where the user selects any flat surface to play on. The object of the game is for the character to get to a safe zone whilst dodging falling objects and staying on the playing surface. The back end is written in JavaScript using a mobile and web application development platform called Firebase, as well as a flexible and scalable database called Cloud Firestore. The front end is written using a JavaScript framework called React-Native, and an AR/VR platform called Viro Media  The app can currently only be run in a development environment. 
 
 ### Getting Started
